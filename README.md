@@ -21,6 +21,8 @@ That's all.
 
 ## Quick start
 
+#### Build
+
 Run:
 
 ```shell
@@ -48,3 +50,26 @@ There's also an option to build MPI library [[MPICH](https://www.mpich.org/)(v3.
 and [OpenMPI](https://www.open-mpi.org/)(v4.0.2)] locally, run
 `libs/mpilibs/build.sh` script, and update your `PATH` to point to locally
 built library (for example `libs/mpilibs/local/mpich3/bin`).
+
+
+####  Test your build
+
+1. Clone the repository containing pre-generated input data for global
+C96 configuration. Initial date: 2016-10-03 00Z
+
+```shell
+git clone https://github.com/DusanJovic-NOAA/ufs-test-data
+```
+
+2. Run the model executable on 8 tasks:
+
+```shell
+cd ufs-test-data
+mpiexec -np 8 <path>/simple-ufs/bin/ufs_model`
+```
+
+This will run global C96 grid configuration. If the run is successful
+you'll find a number of output files named `dynf???.nc` (dynamics variables)
+and `phyf???.nc` (physics variables) in the run directory.
+
+###### *** Good luck! ***
