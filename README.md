@@ -65,11 +65,17 @@ git clone https://github.com/DusanJovic-NOAA/ufs-test-data
 
 ```shell
 cd ufs-test-data
-mpiexec -np 8 <path>/simple-ufs/bin/ufs_model`
+mpiexec -np 8 <path>/simple-ufs/bin/ufs_model
 ```
 
 This will run global C96 grid configuration. If the run is successful
 you'll find a number of output files named `dynf???.nc` (dynamics variables)
 and `phyf???.nc` (physics variables) in the run directory.
+
+For reference and comparison, here are two example plots. Temperature at level 30 and total precipitation (24h forecast)
+
+![temp_l30_24h](https://user-images.githubusercontent.com/48258889/67684982-94371c00-f96a-11e9-94a3-9eece86839b5.png)
+
+![tprcp_24h](https://user-images.githubusercontent.com/48258889/67684996-9b5e2a00-f96a-11e9-801c-b7d7211b722a.png)
 
 ###### *** Good luck! ***
