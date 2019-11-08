@@ -112,20 +112,57 @@ fi
 #
 if true; then
 (
-  mkdir -p src/model/modulefiles/linux.${COMPILER}
-  cp src/patches/modulefiles_linux.${COMPILER}_fv3 src/model/modulefiles/linux.${COMPILER}/fv3
-  cp src/patches/conf_configure.fv3.linux.${COMPILER} src/model/conf/configure.fv3.linux.${COMPILER}
+  # gmake build
+  # -----------
+  # mkdir -p src/model/modulefiles/linux.${COMPILER}
+  # cp src/patches/modulefiles_linux.${COMPILER}_fv3 src/model/modulefiles/linux.${COMPILER}/fv3
+  # cp src/patches/conf_configure.fv3.linux.${COMPILER} src/model/conf/configure.fv3.linux.${COMPILER}
+
+  # export NCEPLIBS_DIR=${MYDIR}/libs/nceplibs/local
+  # export NEMS_COMPILER=${COMPILER}
+  # export BUILD_ENV=linux.${COMPILER}
+  # export FC=${MPIF90}  # for ccpp cmake
+
+  # cd src/model/NEMS
+  # make -j 4 COMPONENTS="CCPP,FV3" FV3_MAKEOPT="DEBUG=N 32BIT=Y OPENMP=N CCPP=Y STATIC=Y SUITES=FV3_GFS_2017" build
+  # cp exe/NEMS.x ${MYDIR}/bin/ufs_model
+
+
+  # cmake build
+  # -----------
+  export CMAKE_Platform=linux.${COMPILER}
+  export CMAKE_C_COMPILER=mpicc
+  export CMAKE_CXX_COMPILER=mpicxx
+  export CMAKE_Fortran_COMPILER=mpif90
 
   export NCEPLIBS_DIR=${MYDIR}/libs/nceplibs/local
-  export NEMS_COMPILER=${COMPILER}
-  export BUILD_ENV=linux.${COMPILER}
-  export FC=${MPIF90}  # for ccpp cmake
 
-  cd src/model/NEMS
+  export BACIO_LIB4=${NCEPLIBS_DIR}/bacio/lib/libbacio_v2.1.0_4.a
+  export NEMSIO_INC=${NCEPLIBS_DIR}/nemsio/include
+  export NEMSIO_LIB=${NCEPLIBS_DIR}/nemsio/lib/libnemsio_v2.2.3.a
+  export SP_LIBd=${NCEPLIBS_DIR}/sp/lib/libsp_v2.0.2_d.a
+  export W3EMC_LIBd=${NCEPLIBS_DIR}/w3emc/lib/libw3emc_v2.2.0_d.a
+  export W3NCO_LIBd=${NCEPLIBS_DIR}/w3nco/lib/libw3nco_v2.0.6_d.a
 
-  make -j 4 COMPONENTS="CCPP,FV3" FV3_MAKEOPT="DEBUG=N 32BIT=Y OPENMP=N CCPP=Y STATIC=Y SUITES=FV3_GFS_2017" build
+  BUILD_DIR=${MYDIR}/src/model/build
+  rm -rf ${BUILD_DIR}
+  mkdir ${BUILD_DIR}
 
-  cp exe/NEMS.x ${MYDIR}/bin/ufs_model
+  (
+    cd src/model
+    ./FV3/ccpp/framework/scripts/ccpp_prebuild.py \
+            --config=FV3/ccpp/config/ccpp_prebuild_config.py \
+            --static --suites=FV3_GFS_2017 \
+            --builddir=${BUILD_DIR}/FV3
+  )
+  source ${BUILD_DIR}/FV3/ccpp/physics/CCPP_SCHEMES.sh
+  source ${BUILD_DIR}/FV3/ccpp/physics/CCPP_CAPS.sh
+  source ${BUILD_DIR}/FV3/ccpp/physics/CCPP_STATIC_API.sh
+
+  cd ${BUILD_DIR}
+  cmake .. -D32BIT=Y -DOPENMP=N -DCCPP=Y -DSTATIC=Y -DSUITES=FV3_GFS_2017 -DNETCDF_DIR=${NETCDF}
+  make -j 4
+  cp NEMS.exe ${MYDIR}/bin/ufs_model
 )
 fi
 
