@@ -103,6 +103,19 @@ if true; then
   ./build_chgres.sh
   ./build_chgres_cube.sh
 
+  (
+     cd ./sfc_climo_gen.fd
+     export FCOMP=${MPIF90}
+     if [[ $COMPILER == gnu ]]; then
+       export FFLAGS="-O3 -g -fdefault-real-8"
+     elif [[ $COMPILER == intel ]]; then
+       export FFLAGS="-O3 -g -r8"
+     fi
+     make clean
+     make
+     make install
+  )
+
   cp ../exec/* ${MYDIR}/bin
 )
 fi
@@ -148,11 +161,13 @@ if true; then
   rm -rf ${BUILD_DIR}
   mkdir ${BUILD_DIR}
 
+  CCPP_SUITES="FV3_GFS_2017,FV3_GFS_2017_gfdlmp,FV3_GFS_2017_gfdlmp_regional"
+
   (
     cd src/model
     ./FV3/ccpp/framework/scripts/ccpp_prebuild.py \
             --config=FV3/ccpp/config/ccpp_prebuild_config.py \
-            --static --suites=FV3_GFS_2017 \
+            --static --suites=${CCPP_SUITES} \
             --builddir=${BUILD_DIR}/FV3
   )
   source ${BUILD_DIR}/FV3/ccpp/physics/CCPP_SCHEMES.sh
@@ -160,7 +175,7 @@ if true; then
   source ${BUILD_DIR}/FV3/ccpp/physics/CCPP_STATIC_API.sh
 
   cd ${BUILD_DIR}
-  cmake .. -D32BIT=Y -DOPENMP=N -DCCPP=Y -DSTATIC=Y -DSUITES=FV3_GFS_2017 -DNETCDF_DIR=${NETCDF}
+  cmake .. -D32BIT=Y -DOPENMP=N -DCCPP=Y -DSTATIC=Y -DSUITES=${CCPP_SUITES} -DNETCDF_DIR=${NETCDF}
   make -j 4
   cp NEMS.exe ${MYDIR}/bin/ufs_model
 )

@@ -136,7 +136,7 @@ echo
 ${CC} --version | head -1
 ${CXX} --version | head -1
 ${FC} --version | head -1
-mpiexec --version | head -1
+mpiexec --version
 echo
 
 ###
