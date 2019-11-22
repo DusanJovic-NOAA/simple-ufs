@@ -3,13 +3,14 @@ set -eu
 set -o pipefail
 
 usage() {
-  echo "Usage: $0 gnu | intel | pgi"
+  echo "Usage: $0 gnu|intel|pgi [-all] [-3rdparty] [-nceplibs] [-preproc] [-model] [-post]"
   exit 1
 }
 
-[[ $# -ne 1 ]] && usage
+[[ $# -lt 2 ]] && usage
 
 COMPILER=$1
+shift
 
 if [[ $COMPILER == gnu ]]; then
   export CC=gcc
@@ -29,6 +30,57 @@ elif [[ $COMPILER == pgi ]]; then
 else
   usage
 fi
+
+BUILD_3RDPARTY=no
+BUILD_NCEPLIBS=no
+BUILD_PREPROC=no
+BUILD_MODEL=no
+BUILD_POST=no
+
+while [[ $# -gt 0 ]]; do
+opt=$1
+
+case $opt in
+  -all)
+    BUILD_3RDPARTY=yes
+    BUILD_NCEPLIBS=yes
+    BUILD_PREPROC=yes
+    BUILD_MODEL=yes
+    BUILD_POST=yes
+    shift
+    ;;
+  -3rdparty)
+    BUILD_3RDPARTY=yes
+    shift
+    ;;
+  -nceplibs)
+    BUILD_NCEPLIBS=yes
+    shift
+    ;;
+  -preproc)
+    BUILD_PREPROC=yes
+    shift
+    ;;
+  -model)
+    BUILD_MODEL=yes
+    shift
+    ;;
+  -post)
+    BUILD_POST=yes
+    shift
+    ;;
+  *)
+    echo "unknown option ${opt}"
+    usage
+esac
+done
+
+echo "BUILD_3RDPARTY = ${BUILD_3RDPARTY}"
+echo "BUILD_NCEPLIBS = ${BUILD_NCEPLIBS}"
+echo "BUILD_PREPROC  = ${BUILD_PREPROC}"
+echo "BUILD_MODEL    = ${BUILD_MODEL}"
+echo "BUILD_POST     = ${BUILD_POST}"
+
 
 MYDIR=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
 
@@ -54,6 +106,7 @@ fi
 mpiexec --version | grep OpenRTE 2> /dev/null && MPI_IMPLEMENTATION=openmpi
 mpiexec --version | grep Intel 2> /dev/null && MPI_IMPLEMENTATION=intelmpi
 mpiexec --version
+echo
 
 export MPICH_CC=${CC}
 export MPICH_CXX=${CXX}
@@ -65,11 +118,12 @@ export OMPI_FC=${FC}
 #
 # 3rdparty
 #
-if true; then
+if [ $BUILD_3RDPARTY == yes ]; then
 (
   cd libs/3rdparty
   ./build.sh ${COMPILER}
-)
+) > log_3rdpaty 2>&1
+echo 'done'
 fi
 
 export PKG_CONFIG_PATH=${MYDIR}/libs/3rdparty/local/lib/pkgconfig
@@ -80,18 +134,20 @@ export ESMFMKFILE=${MYDIR}/libs/3rdparty/local/esmf/lib/libO/Linux.${ESMF_COMPIL
 #
 # nceplibs
 #
-if true; then
+if [ $BUILD_NCEPLIBS == yes ]; then
 (
   cd libs/nceplibs
   ./build.sh ${COMPILER}
-)
+) > log_nceplibs 2>&1
+echo 'done'
 fi
 
 
 #
 # preproc
 #
-if true; then
+if [ $BUILD_PREPROC == yes ]; then
+printf '%-.30s ' "Building preproc ..........................."
 (
   export target=linux.${COMPILER}
   export NCEPLIBS=${MYDIR}/libs/nceplibs/local
@@ -117,13 +173,15 @@ if true; then
   )
 
   cp ../exec/* ${MYDIR}/bin
-)
+) > log_preproc 2>&1
+echo 'done'
 fi
 
 #
 # model
 #
-if true; then
+if [ $BUILD_MODEL == yes ]; then
+printf '%-.30s ' "Building model ..........................."
 (
   # gmake build
   # -----------
@@ -178,19 +236,22 @@ if true; then
   cmake .. -D32BIT=Y -DOPENMP=N -DCCPP=Y -DSTATIC=Y -DSUITES=${CCPP_SUITES} -DNETCDF_DIR=${NETCDF}
   make -j 4
   cp NEMS.exe ${MYDIR}/bin/ufs_model
-)
+) > log_model 2>&1
+echo 'done'
 fi
 
 #
 # post
 #
-if false; then
+if [ $BUILD_POST == yes ]; then
+printf '%-.30s ' "Building post ..........................."
 (
   echo "post is not ported yet!"
 
   #cd src/post/sorc/ncep_post.fd
   #make -f makefile_module
-)
+) > log_post 2>&1
+echo 'done'
 fi
 
 echo "Done!"
