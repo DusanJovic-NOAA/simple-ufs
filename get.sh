@@ -29,5 +29,5 @@ git clone --recursive https://github.com/DusanJovic-NOAA/ufs-weather-model --bra
 (
 cd src
 rm -rf post
-git clone https://github.com/NOAA-EMC/EMC_post post
+git clone --recursive --branch spack-build https://github.com/DusanJovic-NOAA/EMC_post post
 )

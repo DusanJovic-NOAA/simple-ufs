@@ -9,7 +9,7 @@ usage() {
 
 [[ $# -lt 2 ]] && usage
 
-COMPILER=$1
+export COMPILER=$1
 shift
 
 if [[ $COMPILER == gnu ]]; then
@@ -215,27 +215,14 @@ printf '%-.30s ' "Building model ..........................."
   export W3EMC_LIBd=${NCEPLIBS_DIR}/w3emc/lib/libw3emc_v2.2.0_d.a
   export W3NCO_LIBd=${NCEPLIBS_DIR}/w3nco/lib/libw3nco_v2.0.6_d.a
 
-  BUILD_DIR=${MYDIR}/src/model/build
-  rm -rf ${BUILD_DIR}
-  mkdir ${BUILD_DIR}
+  cd ${MYDIR}/src/model
+  export CCPP_SUITES="FV3_GFS_2017,FV3_GFS_2017_gfdlmp,FV3_GFS_2017_gfdlmp_regional"
+  export CMAKE_FLAGS="-D32BIT=ON -DDYN32=ON"
 
-  CCPP_SUITES="FV3_GFS_2017,FV3_GFS_2017_gfdlmp,FV3_GFS_2017_gfdlmp_regional"
+  ./build.sh
 
-  (
-    cd src/model
-    ./FV3/ccpp/framework/scripts/ccpp_prebuild.py \
-            --config=FV3/ccpp/config/ccpp_prebuild_config.py \
-            --static --suites=${CCPP_SUITES} \
-            --builddir=${BUILD_DIR}/FV3
-  )
-  source ${BUILD_DIR}/FV3/ccpp/physics/CCPP_SCHEMES.sh
-  source ${BUILD_DIR}/FV3/ccpp/physics/CCPP_CAPS.sh
-  source ${BUILD_DIR}/FV3/ccpp/physics/CCPP_STATIC_API.sh
+  cp ufs_weather_model ${MYDIR}/bin/ufs_model
 
-  cd ${BUILD_DIR}
-  cmake .. -D32BIT=Y -DOPENMP=N -DCCPP=Y -DSTATIC=Y -DSUITES=${CCPP_SUITES} -DNETCDF_DIR=${NETCDF}
-  make -j 4
-  cp NEMS.exe ${MYDIR}/bin/ufs_model
 ) > log_model 2>&1
 echo 'done'
 fi
@@ -246,10 +233,58 @@ fi
 if [ $BUILD_POST == yes ]; then
 printf '%-.30s ' "Building post ..........................."
 (
-  echo "post is not ported yet!"
+  export NCEPLIBS_DIR=${MYDIR}/libs/nceplibs/local
 
-  #cd src/post/sorc/ncep_post.fd
-  #make -f makefile_module
+  export BACIO_LIB4=${NCEPLIBS_DIR}/bacio/lib/libbacio_v2.1.0_4.a
+  export BACIO="is set via environment"
+
+  export CRTM_INC=${NCEPLIBS_DIR}/crtm/include
+  export CRTM_LIB=${NCEPLIBS_DIR}/crtm/lib/libcrtm_v2.3.0.a
+  export CRTM="is set via environment"
+
+  export G2TMPL_INCd=${NCEPLIBS_DIR}/g2tmpl/include
+  export G2TMPL_LIBd=${NCEPLIBS_DIR}/g2tmpl/lib/libg2tmpl_v1.5.0.a
+
+  export G2_INC4=${NCEPLIBS_DIR}/g2/include_4
+  export G2_LIB4=${NCEPLIBS_DIR}/g2/lib/libg2_v3.1.0_4.a
+  export G2_LIBd=${NCEPLIBS_DIR}/g2/lib/libg2_v3.1.0_d.a
+
+  export GFSIO_INC=${NCEPLIBS_DIR}/gfsio/include_4
+  export GFSIO_INC4=${NCEPLIBS_DIR}/gfsio/include_4
+  export GFSIO_LIB4=${NCEPLIBS_DIR}/gfsio/lib/libgfsio_v1.1.0_4.a
+
+  export IP_LIB4=${NCEPLIBS_DIR}/ip/lib/libip_v3.0.0_4.a
+  export IP_LIBd=${NCEPLIBS_DIR}/ip/lib/libip_v3.0.0_d.a
+
+  export NEMSIO_INC=${NCEPLIBS_DIR}/nemsio/include
+  export NEMSIO_LIB=${NCEPLIBS_DIR}/nemsio/lib/libnemsio_v2.2.3.a
+
+  export SFCIO_INC=${NCEPLIBS_DIR}/sfcio/include
+  export SFCIO_LIB=${NCEPLIBS_DIR}/sfcio/lib/libsfcio_v1.1.0_4.a
+  export SFCIO="is set via environment"
+
+  export SIGIO_INC=${NCEPLIBS_DIR}/sigio/include
+  export SIGIO_LIB=${NCEPLIBS_DIR}/sigio/lib/libsigio_v2.1.0_4.a
+
+  export SP_LIB4=${NCEPLIBS_DIR}/sp/lib/libsp_v2.0.2_4.a
+  export SP_LIBd=${NCEPLIBS_DIR}/sp/lib/libsp_v2.0.2_d.a
+
+  export W3EMC_INC4=${NCEPLIBS_DIR}/w3emc/include_4
+  export W3EMC_LIB4=${NCEPLIBS_DIR}/w3emc/lib/libw3emc_v2.2.0_4.a
+  export W3EMC="is set via environment"
+
+  export W3NCO_LIB4=${NCEPLIBS_DIR}/w3nco/lib/libw3nco_v2.0.6_4.a
+
+  cd src/post
+
+  rm -rf build
+  mkdir build
+  cd build
+
+  cmake .. -DCMAKE_PREFIX_PATH=${MYDIR}/libs/3rdparty/local
+  make -j 8
+  cp bin/ncep_post ${MYDIR}/bin/ufs_post
+
 ) > log_post 2>&1
 echo 'done'
 fi
