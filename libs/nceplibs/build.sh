@@ -79,6 +79,28 @@ for libname in ${ALL_LIBS}; do
 done
 
 
+for libname in crtm; do
+  printf '%-.30s ' "Building ${libname} ..........................."
+  (
+    set -x
+    cd ${MYDIR}/EMC_${libname}
+    rm -rf build
+    mkdir build
+    cd build
+    cmake .. \
+          -DCMAKE_INSTALL_PREFIX=${MYDIR}/local/${libname} \
+          -DCMAKE_C_COMPILER=${CC} \
+          -DCMAKE_CXX_COMPILER=${CXX} \
+          -DCMAKE_Fortran_COMPILER=${FC} \
+          -DCMAKE_BUILD_TYPE=RELEASE \
+          -DCMAKE_PREFIX_PATH=${MYDIR}/../3rdparty/local
+    make VERBOSE=1
+    make install
+  ) > log_${libname} 2>&1
+  echo 'done'
+done
+
+
 # special case
 mv ${MYDIR}/local/sfcio/lib/libsfcio_v1.1.0.a ${MYDIR}/local/sfcio/lib/libsfcio_v1.1.0_4.a
 mv ${MYDIR}/local/sigio/lib/libsigio_v2.1.0.a ${MYDIR}/local/sigio/lib/libsigio_v2.1.0_4.a
