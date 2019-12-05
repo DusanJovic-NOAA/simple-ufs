@@ -1,0 +1,74 @@
+print_esmf:              .true.
+
+total_member:            1
+PE_MEMBER01:             8
+
+start_year:              _START_YEAR_
+start_month:             _START_MONTH_
+start_day:               _START_DAY_
+start_hour:              _START_HOUR_
+start_minute:            0
+start_second:            0
+nhours_fcst:             _NHOURS_FCST_
+RUN_CONTINUE:            .false.
+ENS_SPS:                 .false.
+dt_atmos:                225
+calendar:                'julian'
+cpl:                     .false.
+memuse_verbose:          .false.
+atmos_nthreads:          1
+use_hyper_thread:        .false.
+ncores_per_node:         24
+debug_affinity:          .true.
+restart_interval:        6
+output_1st_tstep_rst:    .false.
+
+quilting:                .true.
+write_groups:            1
+write_tasks_per_group:   2
+output_history:          .true.
+write_dopost:            .false.
+num_files:               2
+filename_base:           'dyn' 'phy'
+output_file:             'netcdf'
+write_nemsioflip:        .false.
+write_fsyncflag:         .false.
+
+# output_grid:             'gaussian_grid'
+# imo:                     384
+# jmo:                     190
+
+# output_grid:             'regional_latlon'
+# lon1:                    225.0
+# lon2:                    300.0
+# lat1:                    10.0
+# lat2:                    60.0
+# dlon:                    0.2
+# dlat:                    0.2
+
+ output_grid:             'rotated_latlon'
+ cen_lon:                 -97.5   # central longitude
+ cen_lat:                  34.0   # central latitude
+ lon1:                    -22.0   # longitude of lower-left point in rotated coordinate system (in degrees)
+ lat1:                    -17.0   # latitude of lower-left . . . .
+ lon2:                     22.0   # longitude of upper-right . . . .
+ lat2:                     17.0   # latitude of upper-right . . . .
+ dlon:                      0.2
+ dlat:                      0.2
+
+# output_grid:             'lambert_conformal'
+# cen_lon:                 -97.5   # central longitude
+# cen_lat:                  34.0   # central latitude
+# stdlat1:                  30.0
+# stdlat2:                  60.0
+# nx:                       450     # Number of points along x-axis.
+# ny:                       430     # Number of points along y-axis.
+# lon1:                    -116.0   # longitude of first grid point (lower-left) (in degrees)
+# lat1:                     13.0    # latitude of first grid point (lower-left) (in degrees)
+# dx:                       10000.0 # x-direction grid length
+# dy:                       10000.0 # y-direction grid length
+
+nfhout:                  3
+nfhmax_hf:               12
+nfhout_hf:               1
+nsout:                   -1

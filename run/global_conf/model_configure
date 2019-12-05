@@ -1,0 +1,44 @@
+print_esmf:              .true.
+
+total_member:            1
+PE_MEMBER01:             8
+
+start_year:              _START_YEAR_
+start_month:             _START_MONTH_
+start_day:               _START_DAY_
+start_hour:              _START_HOUR_
+start_minute:            0
+start_second:            0
+nhours_fcst:             _NHOURS_FCST_
+RUN_CONTINUE:            .false.
+ENS_SPS:                 .false.
+dt_atmos:                1200
+calendar:                'julian'
+cpl:                     .false.
+memuse_verbose:          .false.
+atmos_nthreads:          1
+use_hyper_thread:        .false.
+ncores_per_node:         24
+debug_affinity:          .true.
+restart_interval:        6
+output_1st_tstep_rst:    .false.
+
+quilting:                .true.
+write_groups:            1
+write_tasks_per_group:   2
+output_history:          .true.
+write_dopost:            .false.
+num_files:               2
+filename_base:           'dyn' 'phy'
+output_file:             'netcdf'
+write_nemsioflip:        .true.
+write_fsyncflag:         .false.
+
+output_grid:             'gaussian_grid'
+imo:                     384
+jmo:                     190
+
+nfhout:                  3
+nfhmax_hf:               12
+nfhout_hf:               1
+nsout:                   -1
