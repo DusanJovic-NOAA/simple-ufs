@@ -11,7 +11,7 @@ set -eu
 set -o pipefail
 
 usage() {
-  echo "Usage: $0 gnu | intel | pgi | fetch"
+  echo "Usage: $0 gnu | intel | fetch"
   exit 1
 }
 
@@ -21,17 +21,13 @@ COMPILERS=$1
 
 fetch_only=off
 if [[ $COMPILERS == gnu ]]; then
-  export FC=gfortran
-  export CC=gcc
-  export CXX=g++
+  export CC=${CC:-gcc}
+  export CXX=${CXX:-g++}
+  export FC=${FC:-gfortran}
 elif [[ $COMPILERS == intel ]]; then
-  export FC=ifort
-  export CC=icc
-  export CXX=icpc
-elif [[ $COMPILERS == pgi ]]; then
-  export FC=pgf95
-  export CC=pgcc
-  export CXX=pgc++
+  export CC=${CC:-icc}
+  export CXX=${CXX:-icpc}
+  export FC=${FC:-ifort}
 elif [[ $COMPILERS == fetch ]]; then
   fetch_only=on
 else

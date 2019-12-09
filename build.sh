@@ -3,7 +3,7 @@ set -eu
 set -o pipefail
 
 usage() {
-  echo "Usage: $0 gnu|intel|pgi [-all] [-3rdparty] [-nceplibs] [-preproc] [-model] [-post]"
+  echo "Usage: $0 gnu | intel [-all] [-3rdparty] [-nceplibs] [-preproc] [-model] [-post]"
   exit 1
 }
 
@@ -13,20 +13,21 @@ export COMPILER=$1
 shift
 
 if [[ $COMPILER == gnu ]]; then
-  export CC=gcc
-  export CXX=g++
-  export FC=gfortran
-  export MPIF90=mpif90
+  export CC=${CC:-gcc}
+  export CXX=${CXX:-g++}
+  export FC=${FC:-gfortran}
+  export MPICC=${MPICC:-mpicc}
+  export MPICXX=${MPICXX:-mpicxx}
+  export MPIF90=${MPIF90:-mpif90}
   ESMF_COMPILER=gfortran
 elif [[ $COMPILER == intel ]]; then
-  export CC=icc
-  export CXX=icpc
-  export FC=ifort
-  export MPIF90=mpif90
+  export CC=${CC:-icc}
+  export CXX=${CXX:-icpc}
+  export FC=${FC:-ifort}
+  export MPICC=${MPICC:-mpicc}
+  export MPICXX=${MPICXX:-mpicxx}
+  export MPIF90=${MPIF90:-mpif90}
   ESMF_COMPILER=intel
-elif [[ $COMPILER == pgi ]]; then
-  echo "PGI is unsupported"
-  exit 1
 else
   usage
 fi
@@ -202,9 +203,9 @@ printf '%-.30s ' "Building model ..........................."
   # cmake build
   # -----------
   export CMAKE_Platform=linux.${COMPILER}
-  export CMAKE_C_COMPILER=mpicc
-  export CMAKE_CXX_COMPILER=mpicxx
-  export CMAKE_Fortran_COMPILER=mpif90
+  export CMAKE_C_COMPILER=${MPICC}
+  export CMAKE_CXX_COMPILER=${MPICXX}
+  export CMAKE_Fortran_COMPILER=${MPIF90}
 
   export NCEPLIBS_DIR=${MYDIR}/libs/nceplibs/local
 

@@ -8,7 +8,7 @@ set -eu
 set -o pipefail
 
 usage() {
-  echo "Usage: $0 gnu | intel | pgi"
+  echo "Usage: $0 gnu | intel"
   exit 1
 }
 
@@ -17,17 +17,13 @@ usage() {
 COMPILERS=$1
 
 if [[ $COMPILERS == gnu ]]; then
-  export FC=gfortran
-  export CC=gcc
-  export CXX=g++
+  export CC=${CC:-gcc}
+  export CXX=${CXX:-g++}
+  export FC=${FC:-gfortran}
 elif [[ $COMPILERS == intel ]]; then
-  export FC=ifort
-  export CC=icc
-  export CXX=icpc
-elif [[ $COMPILERS == pgi ]]; then
-  export FC=pgf95
-  export CC=pgcc
-  export CXX=pgc++
+  export CC=${CC:-icc}
+  export CXX=${CXX:-icpc}
+  export FC=${FC:-ifort}
 else
   usage
 fi
