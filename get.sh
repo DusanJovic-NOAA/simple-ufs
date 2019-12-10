@@ -17,13 +17,13 @@ cd libs/nceplibs
 (
 cd src
 rm -rf preproc
-git clone https://github.com/DusanJovic-NOAA/UFS_UTILS --branch generic_linux preproc
+git clone --branch generic_linux https://github.com/DusanJovic-NOAA/UFS_UTILS preproc
 )
 
 (
 cd src
 rm -rf model
-git clone --recursive https://github.com/DusanJovic-NOAA/ufs-weather-model --branch cmake_rt  model
+git clone --recursive --branch ufs_public_release https://github.com/ufs-community/ufs-weather-model model
 )
 
 (
