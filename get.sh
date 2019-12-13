@@ -29,5 +29,5 @@ git clone --recursive --branch ufs_public_release https://github.com/ufs-communi
 (
 cd src
 rm -rf post
-git clone --recursive --branch spack-build https://github.com/DusanJovic-NOAA/EMC_post post
+git clone --recursive --branch ufs_release_v1.0 https://github.com/NOAA-EMC/EMC_post post
 )
