@@ -123,7 +123,7 @@ if [ $BUILD_3RDPARTY == yes ]; then
 (
   cd libs/3rdparty
   ./build.sh ${COMPILER}
-) > log_3rdpaty 2>&1
+) > log_3rdparty 2>&1
 echo 'done'
 fi
 

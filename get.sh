@@ -23,7 +23,7 @@ git clone --branch generic_linux https://github.com/DusanJovic-NOAA/UFS_UTILS pr
 (
 cd src
 rm -rf model
-git clone --recursive --branch ufs_public_release https://github.com/ufs-community/ufs-weather-model model
+git clone --recursive --branch develop https://github.com/ufs-community/ufs-weather-model model
 )
 
 (
