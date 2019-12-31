@@ -15,7 +15,8 @@ export OMP_NUM_THREADS_CH=1
 export CDATE=${START_YEAR}${START_MONTH}${START_DAY}${START_HOUR}
 export HOMEufs=${sufs}/src/preproc
 export EXECufs=${sufs}/bin
-export FIXfv3=${MYDIR}/grid_orog/C${res}
+export FIXfv3=${GRID_OROG_DATA}/C${res}
+export CRES=${res}
 
 export COMIN=${INPUT_DATA}
 export ATM_FILES_INPUT=gfs.t00z.atmanl.nemsio
@@ -65,3 +66,5 @@ fi
 
 rm -f ${DATA}/fort.41
 rm -f ${DATA}/PET*
+
+echo "Done!"

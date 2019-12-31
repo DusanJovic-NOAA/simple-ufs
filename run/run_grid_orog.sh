@@ -17,7 +17,7 @@ MYDIR=$(pwd)
 
 export machine=linux
 export TMPDIR=${MYDIR}/tmp_grid_orog_$$
-export out_dir=${MYDIR}/grid_orog/C${res}
+export out_dir=${GRID_OROG_DATA}/C${res}
 export home_dir=${sufs}/src/preproc
 export halo=3
 export APRUN=''
@@ -41,3 +41,5 @@ if [[ $gtype == "regional" ]]; then
 fi
 
 rm -rf ${TMPDIR}
+
+echo "Done!"

@@ -56,3 +56,5 @@ EOF
   rm itag
 
 done
+
+echo "Done!"

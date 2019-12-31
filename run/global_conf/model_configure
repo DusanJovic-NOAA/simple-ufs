@@ -12,7 +12,7 @@ start_second:            0
 nhours_fcst:             _NHOURS_FCST_
 RUN_CONTINUE:            .false.
 ENS_SPS:                 .false.
-dt_atmos:                1200
+dt_atmos:                _DT_ATMOS_
 calendar:                'julian'
 cpl:                     .false.
 memuse_verbose:          .false.
@@ -35,8 +35,8 @@ write_nemsioflip:        .true.
 write_fsyncflag:         .false.
 
 output_grid:             'gaussian_grid'
-imo:                     384
-jmo:                     190
+imo:                     _IMO_
+jmo:                     _JMO_
 
 nfhout:                  3
 nfhmax_hf:               12

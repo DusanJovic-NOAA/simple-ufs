@@ -22,7 +22,7 @@ mkdir -p ${MODEL_RUN_DIR}/RESTART
 
 cd ${INPUT_MODEL}
 
-export out_dir=${MYDIR}/grid_orog/C${res}
+export out_dir=${GRID_OROG_DATA}/C${res}
 export halo=3
 
 if [[ $gtype == "uniform" ]]; then
@@ -71,32 +71,62 @@ fi
 
 cd ${MODEL_RUN_DIR}
 
+NPX=$(( $res + 1 ))
+NPY=$(( $res + 1 ))
 
-cp ${FIX_DATA}/fix_am/global_climaeropac_global.txt                    aerosol.dat
-cp ${FIX_DATA}/fix_am/CFSR.SEAICE.1982.2012.monthly.clim.grb           .
-cp ${FIX_DATA}/fix_am/global_co2historicaldata_2013.txt                co2historicaldata_2013.txt
-cp ${FIX_DATA}/fix_am/RTGSST.1982.2012.monthly.clim.grb                .
-cp ${FIX_DATA}/fix_am/global_albedo4.1x1.grb                           .
-cp ${FIX_DATA}/fix_am/global_co2historicaldata_glob.txt                co2historicaldata_glob.txt
-cp ${FIX_DATA}/fix_am/global_co2monthlycyc1976_2009.txt                co2monthlycyc.txt
-cp ${FIX_DATA}/fix_am/global_glacier.2x2.grb                           .
-cp ${FIX_DATA}/fix_am/global_maxice.2x2.grb                            .
-cp ${FIX_DATA}/fix_am/global_mxsnoalb.uariz.t126.384.190.rg.grb        .
-cp ${FIX_DATA}/fix_am/global_o3prdlos.f77                              .
-cp ${FIX_DATA}/fix_am/global_shdmax.0.144x0.144.grb                    .
-cp ${FIX_DATA}/fix_am/global_shdmin.0.144x0.144.grb                    .
-cp ${FIX_DATA}/fix_am/global_slope.1x1.grb                             .
-cp ${FIX_DATA}/fix_am/global_snoclim.1.875.grb                         .
-cp ${FIX_DATA}/fix_am/global_snowfree_albedo.bosu.t126.384.190.rg.grb  .
-cp ${FIX_DATA}/fix_am/global_soilmgldas.t126.384.190.grb               .
-cp ${FIX_DATA}/fix_am/global_soiltype.statsgo.t126.384.190.rg.grb      .
-cp ${FIX_DATA}/fix_am/global_solarconstant_noaa_an.txt                 solarconstant_noaa_an.txt
-cp ${FIX_DATA}/fix_am/global_tg3clim.2.6x1.5.grb                       .
-cp ${FIX_DATA}/fix_am/global_vegfrac.0.144.decpercent.grb              .
-cp ${FIX_DATA}/fix_am/global_vegtype.igbp.t126.384.190.rg.grb          .
-cp ${FIX_DATA}/fix_am/global_zorclim.1x1.grb                           .
-cp ${FIX_DATA}/fix_am/seaice_newland.grb                               .
-cp ${FIX_DATA}/fix_am/global_sfc_emissivity_idx.txt                    sfc_emissivity_idx.txt
+case $res in
+  96)
+    JCAP=126
+    LONB=384
+    LATB=190
+    DT_ATMOS=1200
+    ;;
+  192)
+    JCAP=382
+    LONB=768
+    LATB=384
+    DT_ATMOS=600
+    ;;
+  *)
+    echo "Unsuppored resolution ${res}"
+    exit 1
+    ;;
+esac
+
+IMO=${LONB}
+JMO=${LATB}
+
+FNABSC="global_mxsnoalb.uariz.t${JCAP}.${LONB}.${LATB}.rg.grb"
+FNALBC="global_snowfree_albedo.bosu.t${JCAP}.${LONB}.${LATB}.rg.grb"
+FNVETC="global_vegtype.igbp.t${JCAP}.${LONB}.${LATB}.rg.grb"
+FNSOTC="global_soiltype.statsgo.t${JCAP}.${LONB}.${LATB}.rg.grb"
+FNSMCC="global_soilmgldas.t${JCAP}.${LONB}.${LATB}.grb"
+
+cp ${FIX_DATA}/fix_am/global_climaeropac_global.txt             aerosol.dat
+cp ${FIX_DATA}/fix_am/CFSR.SEAICE.1982.2012.monthly.clim.grb    .
+cp ${FIX_DATA}/fix_am/global_co2historicaldata_2013.txt         co2historicaldata_2013.txt
+cp ${FIX_DATA}/fix_am/RTGSST.1982.2012.monthly.clim.grb         .
+cp ${FIX_DATA}/fix_am/global_albedo4.1x1.grb                    .
+cp ${FIX_DATA}/fix_am/global_co2historicaldata_glob.txt         co2historicaldata_glob.txt
+cp ${FIX_DATA}/fix_am/co2monthlycyc.txt                         .
+cp ${FIX_DATA}/fix_am/global_glacier.2x2.grb                    .
+cp ${FIX_DATA}/fix_am/global_maxice.2x2.grb                     .
+cp ${FIX_DATA}/fix_am/global_o3prdlos.f77                       .
+cp ${FIX_DATA}/fix_am/global_shdmax.0.144x0.144.grb             .
+cp ${FIX_DATA}/fix_am/global_shdmin.0.144x0.144.grb             .
+cp ${FIX_DATA}/fix_am/global_slope.1x1.grb                      .
+cp ${FIX_DATA}/fix_am/global_snoclim.1.875.grb                  .
+cp ${FIX_DATA}/fix_am/global_solarconstant_noaa_an.txt          solarconstant_noaa_an.txt
+cp ${FIX_DATA}/fix_am/global_tg3clim.2.6x1.5.grb                .
+cp ${FIX_DATA}/fix_am/global_vegfrac.0.144.decpercent.grb       .
+cp ${FIX_DATA}/fix_am/global_sfc_emissivity_idx.txt             sfc_emissivity_idx.txt
+
+cp ${FIX_DATA}/fix_am/${FNABSC}                                 .
+cp ${FIX_DATA}/fix_am/global_slmask.t1534.3072.1536.grb         .
+cp ${FIX_DATA}/fix_am/${FNALBC}                                 .
+cp ${FIX_DATA}/fix_am/${FNSMCC}                                 .
+cp ${FIX_DATA}/fix_am/${FNSOTC}                                 .
+cp ${FIX_DATA}/fix_am/${FNVETC}                                 .
 
 if [[ $gtype == "uniform" ]]; then
    cp ${MYDIR}/global_conf/* .
@@ -108,9 +138,19 @@ sed -i -e "s/_START_YEAR_/${START_YEAR}/g
            s/_START_MONTH_/${START_MONTH}/g
            s/_START_DAY_/${START_DAY}/g
            s/_START_HOUR_/${START_HOUR}/g
-           s/_NHOURS_FCST_/${NHOURS_FCST}/g" model_configure
+           s/_NHOURS_FCST_/${NHOURS_FCST}/g
+           s/_DT_ATMOS_/${DT_ATMOS}/g
+           s/_IMO_/${IMO}/g
+           s/_JMO_/${JMO}/g" model_configure
 
-sed -i -e "s/_BC_INT_/${BC_INT}/g" input.nml
+sed -i -e "s/_BC_INT_/${BC_INT}/g
+           s/_NPX_/${NPX}/g
+           s/_NPY_/${NPY}/g
+           s/_FNABSC_/"${FNABSC}"/g
+           s/_FNALBC_/"${FNALBC}"/g
+           s/_FNSMCC_/"${FNSMCC}"/g
+           s/_FNSOTC_/"${FNSOTC}"/g
+           s/_FNVETC_/"${FNVETC}"/g" input.nml
 
 sed -i -e "s/_START_YEAR_/${START_YEAR}/g
            s/_START_MONTH_/${START_MONTH}/g
@@ -118,9 +158,10 @@ sed -i -e "s/_START_YEAR_/${START_YEAR}/g
            s/_START_HOUR_/${START_HOUR}/g
            s/_NHOURS_FCST_/${NHOURS_FCST}/g" diag_table
 
-
 #
 # Finally we have all necessary input data.
 # Let's run the model, that's why we are here.
 #
 mpiexec -np 8 ${sufs}/bin/ufs_model 1> stdout 2> stderr
+
+echo "Done!"

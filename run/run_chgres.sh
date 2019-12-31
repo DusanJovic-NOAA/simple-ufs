@@ -13,8 +13,9 @@ rm -rf ${DATA}
 export OMP_NUM_THREADS_CH=1
 export CDATE=${START_YEAR}${START_MONTH}${START_DAY}${START_HOUR}
 export HOMEgfs=${sufs}/src/preproc
-export FIXfv3=${MYDIR}/grid_orog
+export FIXfv3=${GRID_OROG_DATA}
 export CDUMP=gfs
+export CASE=C${res}
 export INIDIR=${INPUT_DATA}
 export LANDICE_OPT=2
 export OUTDIR=${MYDIR}/chgres
@@ -41,3 +42,5 @@ elif [[ $gtype == "regional" ]]; then
 fi
 
 rm -rf ${DATA}
+
+echo "Done!"
