@@ -70,6 +70,12 @@ for libname in ${ALL_LIBS}; do
           -DCMAKE_PREFIX_PATH=${MYDIR}/../3rdparty/local
     make VERBOSE=1
     make install
+
+    if [[ ${libname} == "nemsio" ]]; then
+      # inconsistent naming of nemsio include directory and library name
+      mv ${MYDIR}/local/nemsio/include_4 ${MYDIR}/local/nemsio/include
+    fi
+
   ) > log_${libname} 2>&1
   echo 'done'
 done

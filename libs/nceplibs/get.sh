@@ -2,52 +2,34 @@
 set -eu
 
 #
-# clone from NOAA-EMC/NCEPLIBS-
+# clone from NOAA-EMC
 #
-for libname in ip landsfcutil sfcio w3emc w3nco; do
+
+ALL_LIBS="
+NCEPLIBS-bacio
+NCEPLIBS-g2
+NCEPLIBS-g2tmpl
+NCEPLIBS-gfsio
+NCEPLIBS-ip
+NCEPLIBS-landsfcutil
+NCEPLIBS-nemsio
+NCEPLIBS-nemsiogfs
+NCEPLIBS-sfcio
+NCEPLIBS-sigio
+NCEPLIBS-sp
+NCEPLIBS-w3emc
+NCEPLIBS-w3nco
+EMC_crtm
+"
+
+for libname in ${ALL_LIBS}; do
 (
-  rm -rf NCEPLIBS-${libname}
+  rm -rf ${libname}
 
-  git clone https://github.com/NOAA-EMC/NCEPLIBS-${libname}
-  cd NCEPLIBS-${libname}
+  git clone --recursive https://github.com/NOAA-EMC/${libname}
+  cd ${libname}
 
-  git checkout spack-build
-  git submodule sync
-  git submodule update --init
-  git status
-  git diff
-)
-done
-
-#
-# clone from NOAA-EMC/EMC_
-#
-for libname in crtm; do
-(
-  rm -rf EMC_${libname}
-
-  git clone https://github.com/NOAA-EMC/EMC_${libname}
-  cd EMC_${libname}
-
-  git checkout spack-build
-  git submodule sync
-  git submodule update --init
-  git status
-  git diff
-)
-done
-
-#
-# clone from DusanJovic-NOAA
-#
-for libname in bacio gfsio g2 g2tmpl nemsio nemsiogfs sigio sp; do
-(
-  rm -rf NCEPLIBS-${libname}
-
-  git clone --recursive https://github.com/DusanJovic-NOAA/NCEPLIBS-${libname}
-  cd NCEPLIBS-${libname}
-
-  git checkout spack-build
+  git checkout ufs_release_v1.0
   git submodule sync
   git submodule update --init
   git status
