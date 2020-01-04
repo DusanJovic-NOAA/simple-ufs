@@ -159,19 +159,7 @@ printf '%-.30s ' "Building preproc ..........................."
   ./build_orog.sh
   ./build_chgres.sh
   ./build_chgres_cube.sh
-
-  (
-     cd ./sfc_climo_gen.fd
-     export FCOMP=${MPIF90}
-     if [[ $COMPILER == gnu ]]; then
-       export FFLAGS="-O3 -g -fdefault-real-8"
-     elif [[ $COMPILER == intel ]]; then
-       export FFLAGS="-O3 -g -r8"
-     fi
-     make clean
-     make
-     make install
-  )
+  ./build_sfc_climo_gen.sh
 
   cp ../exec/* ${MYDIR}/bin
 
