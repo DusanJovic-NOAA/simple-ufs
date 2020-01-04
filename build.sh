@@ -174,6 +174,43 @@ printf '%-.30s ' "Building preproc ..........................."
   )
 
   cp ../exec/* ${MYDIR}/bin
+
+  # cd src/UFS_UTILS
+
+  # rm -rf build
+  # mkdir build
+  # cd build
+
+  # export NCEPLIBS_DIR=${MYDIR}/libs/nceplibs/local
+
+  # export BACIO_LIB4=${NCEPLIBS_DIR}/bacio/lib/libbacio_v2.1.0_4.a
+  # export BACIO="is set via environment"
+
+  # export NEMSIO_INC=${NCEPLIBS_DIR}/nemsio/include_4
+  # export NEMSIO_LIB=${NCEPLIBS_DIR}/nemsio/lib/libnemsio_v2.2.3.a
+
+  # export SFCIO_INC=${NCEPLIBS_DIR}/sfcio/include
+  # export SFCIO_LIB=${NCEPLIBS_DIR}/sfcio/lib/libsfcio_v1.1.0_4.a
+  # export SFCIO="is set via environment"
+
+  # export SIGIO_INC=${NCEPLIBS_DIR}/sigio/include
+  # export SIGIO_INC4=${NCEPLIBS_DIR}/sigio/include
+  # export SIGIO_LIB=${NCEPLIBS_DIR}/sigio/lib/libsigio_v2.1.0_4.a
+
+  # export SP_LIB4=${NCEPLIBS_DIR}/sp/lib/libsp_v2.0.2_4.a
+  # export SP_LIBd=${NCEPLIBS_DIR}/sp/lib/libsp_v2.0.2_d.a
+
+  # export W3NCO_LIB4=${NCEPLIBS_DIR}/w3nco/lib/libw3nco_v2.0.6_4.a
+  # export W3NCO_LIBd=${NCEPLIBS_DIR}/w3nco/lib/libw3nco_v2.0.6_d.a
+
+  # cmake .. -DCMAKE_PREFIX_PATH=${MYDIR}/libs/3rdparty/local \
+  #          -DESMF_INC=${MYDIR}/libs/3rdparty/local/esmf/mod/modO/Linux.${ESMF_COMPILER}.64.${MPI_IMPLEMENTATION}.default \
+  #          -DESMF_LIB="-L${MYDIR}/libs/3rdparty/local/lib -L${MYDIR}/libs/3rdparty/local/esmf/lib/libO/Linux.${ESMF_COMPILER}.64.${MPI_IMPLEMENTATION}.default -lesmf -cxxlib -lrt -ldl -lnetcdff -lnetcdf -lhdf5_hl -lhdf5 -lm -lz -ldl"
+
+  # make -j 4
+
+  # cp sorc/chgres_cube.fd/chgres_cube.exe ${MYDIR}/bin
+
 ) > log_preproc 2>&1
 echo 'done'
 fi
@@ -243,8 +280,8 @@ printf '%-.30s ' "Building post ..........................."
   export CRTM_LIB=${NCEPLIBS_DIR}/crtm/lib/libcrtm_v2.3.0.a
   export CRTM="is set via environment"
 
-  export G2TMPL_INCd=${NCEPLIBS_DIR}/g2tmpl/include
-  export G2TMPL_LIBd=${NCEPLIBS_DIR}/g2tmpl/lib/libg2tmpl_v1.5.0.a
+  export G2TMPL_INCd=${NCEPLIBS_DIR}/g2tmpl/include_d
+  export G2TMPL_LIBd=${NCEPLIBS_DIR}/g2tmpl/lib/libg2tmpl_v1.5.0_d.a
 
   export G2_INC4=${NCEPLIBS_DIR}/g2/include_4
   export G2_LIB4=${NCEPLIBS_DIR}/g2/lib/libg2_v3.1.0_4.a
