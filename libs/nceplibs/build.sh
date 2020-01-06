@@ -44,7 +44,7 @@ mpiexec --version
 cmake --version | head -1
 echo
 
-MYDIR=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
+MYDIR=$(cd "$(dirname "$(readlink -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
 
 ALL_LIBS="bacio g2 g2tmpl gfsio ip landsfcutil nemsio nemsiogfs sfcio sigio sp w3emc w3nco"
 

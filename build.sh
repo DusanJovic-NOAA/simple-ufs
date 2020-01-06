@@ -83,7 +83,7 @@ echo "BUILD_MODEL    = ${BUILD_MODEL}"
 echo "BUILD_POST     = ${BUILD_POST}"
 
 
-MYDIR=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
+MYDIR=$(cd "$(dirname "$(readlink -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
 
 # print compiler version
 echo
@@ -93,6 +93,7 @@ ${FC} --version | head -1
 cmake --version | head -1
 echo
 
+OS=$(uname -s)
 
 MPI_IMPLEMENTATION=${MPI_IMPLEMENTATION:-mpich3}
 if ! command -v mpiexec > /dev/null ; then
@@ -130,7 +131,7 @@ fi
 export PKG_CONFIG_PATH=${MYDIR}/libs/3rdparty/local/lib/pkgconfig
 export HDF5=${MYDIR}/libs/3rdparty/local
 export NETCDF=${MYDIR}/libs/3rdparty/local
-export ESMFMKFILE=${MYDIR}/libs/3rdparty/local/esmf/lib/libO/Linux.${ESMF_COMPILER}.64.${MPI_IMPLEMENTATION}.default/esmf.mk
+export ESMFMKFILE=${MYDIR}/libs/3rdparty/local/esmf/lib/libO/${OS}.${ESMF_COMPILER}.64.${MPI_IMPLEMENTATION}.default/esmf.mk
 
 #
 # nceplibs
@@ -192,8 +193,8 @@ printf '%-.30s ' "Building preproc ..........................."
   # export W3NCO_LIBd=${NCEPLIBS_DIR}/w3nco/lib/libw3nco_v2.0.6_d.a
 
   # cmake .. -DCMAKE_PREFIX_PATH=${MYDIR}/libs/3rdparty/local \
-  #          -DESMF_INC=${MYDIR}/libs/3rdparty/local/esmf/mod/modO/Linux.${ESMF_COMPILER}.64.${MPI_IMPLEMENTATION}.default \
-  #          -DESMF_LIB="-L${MYDIR}/libs/3rdparty/local/lib -L${MYDIR}/libs/3rdparty/local/esmf/lib/libO/Linux.${ESMF_COMPILER}.64.${MPI_IMPLEMENTATION}.default -lesmf -cxxlib -lrt -ldl -lnetcdff -lnetcdf -lhdf5_hl -lhdf5 -lm -lz -ldl"
+  #          -DESMF_INC=${MYDIR}/libs/3rdparty/local/esmf/mod/modO/${OS}.${ESMF_COMPILER}.64.${MPI_IMPLEMENTATION}.default \
+  #          -DESMF_LIB="-L${MYDIR}/libs/3rdparty/local/lib -L${MYDIR}/libs/3rdparty/local/esmf/lib/libO/${OS}.${ESMF_COMPILER}.64.${MPI_IMPLEMENTATION}.default -lesmf -cxxlib -lrt -ldl -lnetcdff -lnetcdf -lhdf5_hl -lhdf5 -lm -lz -ldl"
 
   # make -j 4
 

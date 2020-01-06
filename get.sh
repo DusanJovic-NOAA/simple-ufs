@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-MYDIR=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
+MYDIR=$(cd "$(dirname "$(readlink -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
 cd ${MYDIR}
 
 (

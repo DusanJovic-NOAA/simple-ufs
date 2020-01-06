@@ -49,8 +49,8 @@ INSTALL_NETCDF_FORTRAN=on
 
 INSTALL_ESMF=on
 
-MYDIR=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
-PREFIX_PATH="$(readlink -f "${MYDIR}"/local)"
+MYDIR=$(cd "$(dirname "$(readlink -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
+PREFIX_PATH="${MYDIR}"/local
 export PATH=${PREFIX_PATH/bin}:$PATH
 
 SRC_PATH=${MYDIR}/src
@@ -75,7 +75,11 @@ download_and_check_md5sum()
 
   local MD5HASH=''
   if [[ -f "$OUT_FILE" ]]; then
-    MD5HASH=$(md5sum "$OUT_FILE" 2>/dev/null | awk '{print $1}')
+    if [[ $OS == Darwin ]]; then
+      MD5HASH=$(md5 "$OUT_FILE" 2>/dev/null | awk '{print $4}')
+    else
+      MD5HASH=$(md5sum "$OUT_FILE" 2>/dev/null | awk '{print $1}')
+    fi
   fi
   if [[ "$MD5HASH" == "$HASH" ]]; then
     echo -e "$OUT_FILE ${GREEN}checksum OK${NC}"
@@ -84,7 +88,11 @@ download_and_check_md5sum()
     printf '%s' "Downloading $OUT_FILE "
     curl -f -s -S -R -L "$URL" -o "$OUT_FILE"
     if [[ -f "$OUT_FILE" ]]; then
-      MD5HASH=$(md5sum "$OUT_FILE" 2>/dev/null | awk '{print $1}')
+      if [[ $OS == Darwin ]]; then
+        MD5HASH=$(md5 "$OUT_FILE" 2>/dev/null | awk '{print $4}')
+      else
+        MD5HASH=$(md5sum "$OUT_FILE" 2>/dev/null | awk '{print $1}')
+      fi
     fi
     if [[ "$MD5HASH" == "$HASH" ]]; then
       echo -e "${GREEN}checksum OK${NC}"
@@ -124,7 +132,11 @@ echo
 export CPPFLAGS=-I${PREFIX_PATH}/include
 export LDFLAGS=-L${PREFIX_PATH}/lib
 
+if [[ $OS == Darwin ]]; then
+NPROC=$(sysctl -n hw.logicalcpu)
+else
 NPROC=$(nproc --all)
+fi
 BUILD_JOBS=$(( $NPROC < $MAX_BUILD_JOBS ? $NPROC : $MAX_BUILD_JOBS ))
 
 #
