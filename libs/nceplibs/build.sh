@@ -46,7 +46,22 @@ echo
 
 MYDIR=$(cd "$(dirname "$(readlink -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
 
-ALL_LIBS="bacio g2 g2tmpl gfsio ip landsfcutil nemsio nemsiogfs sfcio sigio sp w3emc w3nco"
+ALL_LIBS="
+NCEPLIBS-bacio
+NCEPLIBS-g2
+NCEPLIBS-g2tmpl
+NCEPLIBS-gfsio
+NCEPLIBS-ip
+NCEPLIBS-landsfcutil
+NCEPLIBS-nemsio
+NCEPLIBS-nemsiogfs
+NCEPLIBS-sfcio
+NCEPLIBS-sigio
+NCEPLIBS-sp
+NCEPLIBS-w3emc
+NCEPLIBS-w3nco
+EMC_crtm
+"
 
 export NEMSIO_LIB=${MYDIR}/local/nemsio/lib
 export NEMSIO_INC=${MYDIR}/local/nemsio/include
@@ -57,12 +72,14 @@ for libname in ${ALL_LIBS}; do
   printf '%-.30s ' "Building ${libname} ..........................."
   (
     set -x
-    cd ${MYDIR}/NCEPLIBS-${libname}
+    install_name=${libname//NCEPLIBS-/}
+    install_name=${install_name//EMC_/}
+    cd ${MYDIR}/${libname}
     rm -rf build
     mkdir build
     cd build
     cmake .. \
-          -DCMAKE_INSTALL_PREFIX=${MYDIR}/local/${libname} \
+          -DCMAKE_INSTALL_PREFIX=${MYDIR}/local/${install_name} \
           -DCMAKE_C_COMPILER=${CC} \
           -DCMAKE_CXX_COMPILER=${CXX} \
           -DCMAKE_Fortran_COMPILER=${FC} \
@@ -71,33 +88,11 @@ for libname in ${ALL_LIBS}; do
     make VERBOSE=1
     make install
 
-    if [[ ${libname} == "nemsio" ]]; then
+    if [[ ${libname} == "NCEPLIBS-nemsio" ]]; then
       # inconsistent naming of nemsio include directory and library name
       mv ${MYDIR}/local/nemsio/include_4 ${MYDIR}/local/nemsio/include
     fi
 
-  ) > log_${libname} 2>&1
-  echo 'done'
-done
-
-
-for libname in crtm; do
-  printf '%-.30s ' "Building ${libname} ..........................."
-  (
-    set -x
-    cd ${MYDIR}/EMC_${libname}
-    rm -rf build
-    mkdir build
-    cd build
-    cmake .. \
-          -DCMAKE_INSTALL_PREFIX=${MYDIR}/local/${libname} \
-          -DCMAKE_C_COMPILER=${CC} \
-          -DCMAKE_CXX_COMPILER=${CXX} \
-          -DCMAKE_Fortran_COMPILER=${FC} \
-          -DCMAKE_BUILD_TYPE=RELEASE \
-          -DCMAKE_PREFIX_PATH=${MYDIR}/../3rdparty/local
-    make VERBOSE=1
-    make install
   ) > log_${libname} 2>&1
   echo 'done'
 done
