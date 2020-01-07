@@ -1,5 +1,8 @@
 # Welcome to the Simple UFS Weather App
 
+<a href="https://github.com/DusanJovic-NOAA/simple-ufs/actions"><img alt="GitHub Actions status" src="https://github.com/DusanJovic-NOAA/simple-ufs/workflows/Build%20Linux/badge.svg"></a>
+<a href="https://github.com/DusanJovic-NOAA/simple-ufs/actions"><img alt="GitHub Actions status" src="https://github.com/DusanJovic-NOAA/simple-ufs/workflows/Build%20macOS/badge.svg"></a>
+
 Let's start with a disclaimer.
 
 ## Disclaimer
@@ -13,7 +16,7 @@ By cloning, forking or downloading anything from this repository I assume you kn
 ## What is in this repository
 
 The purpose of this repository is to store my personal scripts I use to build UFS 
-Weather model in a simple and portable way. Emphasis is on providing faily simple
+Weather model in a simple and portable way. Emphasis is on providing fairly simple
 building of all dependencies and model itself on a workstation type of computer
 (desktop/laptop) using GNU compilers.
 
