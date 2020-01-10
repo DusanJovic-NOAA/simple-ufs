@@ -178,13 +178,12 @@ printf '%-.30s ' "Building preproc ..........................."
   # export NEMSIO_INC=${NCEPLIBS_DIR}/nemsio/include_4
   # export NEMSIO_LIB=${NCEPLIBS_DIR}/nemsio/lib/libnemsio_v2.2.3.a
 
-  # export SFCIO_INC=${NCEPLIBS_DIR}/sfcio/include
-  # export SFCIO_LIB=${NCEPLIBS_DIR}/sfcio/lib/libsfcio_v1.1.0_4.a
+  # export SFCIO_INC4=${NCEPLIBS_DIR}/sfcio/include_4
+  # export SFCIO_LIB4=${NCEPLIBS_DIR}/sfcio/lib/libsfcio_v1.1.0_4.a
   # export SFCIO="is set via environment"
 
-  # export SIGIO_INC=${NCEPLIBS_DIR}/sigio/include
-  # export SIGIO_INC4=${NCEPLIBS_DIR}/sigio/include
-  # export SIGIO_LIB=${NCEPLIBS_DIR}/sigio/lib/libsigio_v2.1.0_4.a
+  # export SIGIO_INC4=${NCEPLIBS_DIR}/sigio/include_4
+  # export SIGIO_LIB4=${NCEPLIBS_DIR}/sigio/lib/libsigio_v2.1.0_4.a
 
   # export SP_LIB4=${NCEPLIBS_DIR}/sp/lib/libsp_v2.0.2_4.a
   # export SP_LIBd=${NCEPLIBS_DIR}/sp/lib/libsp_v2.0.2_d.a
@@ -276,7 +275,6 @@ printf '%-.30s ' "Building post ..........................."
   export G2_LIB4=${NCEPLIBS_DIR}/g2/lib/libg2_v3.1.0_4.a
   export G2_LIBd=${NCEPLIBS_DIR}/g2/lib/libg2_v3.1.0_d.a
 
-  export GFSIO_INC=${NCEPLIBS_DIR}/gfsio/include_4
   export GFSIO_INC4=${NCEPLIBS_DIR}/gfsio/include_4
   export GFSIO_LIB4=${NCEPLIBS_DIR}/gfsio/lib/libgfsio_v1.1.0_4.a
 
@@ -286,12 +284,12 @@ printf '%-.30s ' "Building post ..........................."
   export NEMSIO_INC=${NCEPLIBS_DIR}/nemsio/include
   export NEMSIO_LIB=${NCEPLIBS_DIR}/nemsio/lib/libnemsio_v2.2.3.a
 
-  export SFCIO_INC=${NCEPLIBS_DIR}/sfcio/include
-  export SFCIO_LIB=${NCEPLIBS_DIR}/sfcio/lib/libsfcio_v1.1.0_4.a
+  export SFCIO_INC4=${NCEPLIBS_DIR}/sfcio/include_4
+  export SFCIO_LIB4=${NCEPLIBS_DIR}/sfcio/lib/libsfcio_v1.1.0_4.a
   export SFCIO="is set via environment"
 
-  export SIGIO_INC=${NCEPLIBS_DIR}/sigio/include
-  export SIGIO_LIB=${NCEPLIBS_DIR}/sigio/lib/libsigio_v2.1.0_4.a
+  export SIGIO_INC4=${NCEPLIBS_DIR}/sigio/include_4
+  export SIGIO_LIB4=${NCEPLIBS_DIR}/sigio/lib/libsigio_v2.1.0_4.a
 
   export SP_LIB4=${NCEPLIBS_DIR}/sp/lib/libsp_v2.0.2_4.a
   export SP_LIBd=${NCEPLIBS_DIR}/sp/lib/libsp_v2.0.2_d.a

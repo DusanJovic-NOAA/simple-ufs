@@ -65,8 +65,8 @@ EMC_crtm
 
 export NEMSIO_LIB=${MYDIR}/local/nemsio/lib
 export NEMSIO_INC=${MYDIR}/local/nemsio/include
-export SIGIO_LIB=${MYDIR}/local/sigio/lib
-export SIGIO_INC=${MYDIR}/local/sigio/include
+export SIGIO_LIB4=${MYDIR}/local/sigio/lib
+export SIGIO_INC4=${MYDIR}/local/sigio/include_4
 
 for libname in ${ALL_LIBS}; do
   printf '%-.30s ' "Building ${libname} ..........................."
@@ -88,19 +88,9 @@ for libname in ${ALL_LIBS}; do
     make VERBOSE=1
     make install
 
-    if [[ ${libname} == "NCEPLIBS-nemsio" ]]; then
-      # inconsistent naming of nemsio include directory and library name
-      mv ${MYDIR}/local/nemsio/include_4 ${MYDIR}/local/nemsio/include
-    fi
-
   ) > log_${libname} 2>&1
   echo 'done'
 done
-
-
-# special case
-mv ${MYDIR}/local/sfcio/lib/libsfcio_v1.1.0.a ${MYDIR}/local/sfcio/lib/libsfcio_v1.1.0_4.a
-mv ${MYDIR}/local/sigio/lib/libsigio_v2.1.0.a ${MYDIR}/local/sigio/lib/libsigio_v2.1.0_4.a
 
 echo
 date
