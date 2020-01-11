@@ -154,15 +154,22 @@ printf '%-.30s ' "Building preproc ..........................."
   export target=linux.${COMPILER}
   export NCEPLIBS=${MYDIR}/libs/nceplibs/local
 
-  cd src/preproc/sorc
+  (
+    cd src/preproc/sorc
+    ./build_fre-nctools.sh
+    ./build_orog.sh
+    ./build_chgres.sh
+    ./build_chgres_cube.sh
+    ./build_sfc_climo_gen.sh
+    cp ../exec/* ${MYDIR}/bin/
+  )
 
-  ./build_fre-nctools.sh
-  ./build_orog.sh
-  ./build_chgres.sh
-  ./build_chgres_cube.sh
-  ./build_sfc_climo_gen.sh
-
-  cp ../exec/* ${MYDIR}/bin
+  (
+    export WGRIB2_DIR=${MYDIR}/libs/3rdparty/local/wgrib2
+    cd src/preproc_grib/sorc
+    ./build_chgres_cube.sh
+    cp ../exec/chgres_cube.exe ${MYDIR}/bin/chgres_cube_grib2.exe
+  )
 
   # cd src/UFS_UTILS
 

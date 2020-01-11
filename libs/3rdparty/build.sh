@@ -49,6 +49,8 @@ INSTALL_NETCDF_FORTRAN=on
 
 INSTALL_ESMF=on
 
+INSTALL_WGRIB2=on
+
 MYDIR=$(cd "$(dirname "$(readlink -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
 PREFIX_PATH="${MYDIR}"/local
 export PATH=${PREFIX_PATH/bin}:$PATH
@@ -112,6 +114,7 @@ HDF5=hdf5-1.8.21
 NETCDF=netcdf-c-4.7.1
 NETCDF_FORTRAN=netcdf-fortran-4.5.2
 ESMF=esmf_8_0_0_src
+WGRIB2=wgrib2-2.0.8
 
 [ $INSTALL_ZLIB           == on ] && download_and_check_md5sum   1c9f62f0778697a09d36121ead88e08e   https://www.zlib.net/${ZLIB}.tar.gz
 [ $INSTALL_JPEG           == on ] && download_and_check_md5sum   93c62597eeef81a84d988bccbda1e990   http://www.ijg.org/files/jpegsrc.v9c.tar.gz ${JPEG}.tar.gz
@@ -122,6 +125,7 @@ ESMF=esmf_8_0_0_src
 [ $INSTALL_NETCDF_C       == on ] && download_and_check_md5sum   551145548251e9ac0696a20eec5991de   https://www.unidata.ucar.edu/downloads/netcdf/ftp/${NETCDF}.tar.gz
 [ $INSTALL_NETCDF_FORTRAN == on ] && download_and_check_md5sum   864c6a5548b6f1e00579caf3cbbe98cc   https://www.unidata.ucar.edu/downloads/netcdf/ftp/${NETCDF_FORTRAN}.tar.gz
 [ $INSTALL_ESMF           == on ] && download_and_check_md5sum   5cdb3814141068ef15420e7c2d2a158a   http://www.earthsystemmodeling.org/esmf_releases/public/ESMF_8_0_0/${ESMF}.tar.gz
+[ $INSTALL_WGRIB2         == on ] && download_and_check_md5sum   3d56cbed5de8c460d304bf2206abc8d3   https://www.ftp.cpc.ncep.noaa.gov/wd51we/wgrib2/wgrib2.tgz.v2.0.8 wgrib2-2.0.8.tar.gz
 
 [ $fetch_only == on ] && exit
 
@@ -263,7 +267,6 @@ printf '%-.30s ' 'Building hdf5 ...........................'
 echo 'done'
 fi
 
-export LIBS="-lhdf5_hl -lhdf5 -lm -lz -ldl"
 
 ###
 ### netcdf
@@ -271,6 +274,8 @@ export LIBS="-lhdf5_hl -lhdf5 -lm -lz -ldl"
 if [ $INSTALL_NETCDF_C == on ]; then
 printf '%-.30s ' 'Building netcdf-c ...........................'
 (
+  export LIBS="-lhdf5_hl -lhdf5 -lm -lz -ldl"
+
   set -x
   cd ${SRC_PATH}
   rm -rf ${NETCDF}
@@ -298,6 +303,8 @@ fi
 if [ $INSTALL_NETCDF_FORTRAN == on ]; then
 printf '%-.30s ' 'Building netcdf-fortran ...........................'
 (
+  export LIBS="-lhdf5_hl -lhdf5 -lm -lz -ldl"
+
   set -x
   cd ${SRC_PATH}
   rm -rf ${NETCDF_FORTRAN}
@@ -362,6 +369,37 @@ printf '%-.30s ' 'Building esmf ...........................'
   make install > log_install 2>&1
   rm -rf ${SRC_PATH}/esmf
 ) > log_esmf 2>&1
+echo 'done'
+fi
+
+
+###
+### wgrib2
+###
+if [ $INSTALL_WGRIB2 == on ]; then
+printf '%-.30s ' 'Building wgrib2 .........................'
+(
+  set -x
+  cd ${SRC_PATH}
+  rm -rf ${WGRIB2}
+  tar -zxf ${WGRIB2}.tar.gz && mv grib2 ${WGRIB2}
+  mkdir -p ${PREFIX_PATH}/wgrib2/{include,lib}
+
+  cd ${WGRIB2}
+  sed -i -e 's/^USE_NETCDF3=1/USE_NETCDF3=0/g' makefile
+  sed -i -e 's/^USE_IPOLATES=3/USE_IPOLATES=0/g' makefile
+  sed -i -e 's/^USE_OPENMP=1/USE_OPENMP=0/g' makefile
+  sed -i -e 's/^USE_AEC=1/USE_AEC=0/g' makefile
+
+  export COMP_SYS=${COMPILERS}_linux
+
+  make lib
+
+  # install
+  cp lib/*.mod       ${PREFIX_PATH}/wgrib2/include
+  cp lib/libwgrib2.a ${PREFIX_PATH}/wgrib2/lib
+
+) > log_wgrib2 2>&1
 echo 'done'
 fi
 
