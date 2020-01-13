@@ -10,33 +10,37 @@ FIX_URL="https://ftp.emc.ncep.noaa.gov/EIB/UFS/global/fix"
   mkdir -p ${GRID_OROG_DATA}
   cd ${GRID_OROG_DATA}
 
-  FIX_FV3_FILES="
-  C${res}_grid.tile[1-6].nc
-  C${res}_mosaic.nc
-  C${res}_oro_data.tile[1-6].nc
-  "
-  mkdir -p C${res}
-  cd C${res}
-  for file in ${FIX_FV3_FILES}; do
-      curl -f -s -S -R -L -O ${FIX_URL}/fix_fv3_gmted2010.v20191213/C${res}/${file}
-  done
+  for res in 96 192; do
+  (
+    FIX_FV3_FILES="
+    C${res}_grid.tile[1-6].nc
+    C${res}_mosaic.nc
+    C${res}_oro_data.tile[1-6].nc
+    "
+    mkdir -p C${res}
+    cd C${res}
+    for file in ${FIX_FV3_FILES}; do
+        curl -f -s -S -R -L -O ${FIX_URL}/fix_fv3_gmted2010.v20191213/C${res}/${file}
+    done
 
-  FIX_FV3_FIX_SFC_FILES="
-  C${res}.facsf.tile[1-6].nc
-  C${res}.maximum_snow_albedo.tile[1-6].nc
-  C${res}.slope_type.tile[1-6].nc
-  C${res}.snowfree_albedo.tile[1-6].nc
-  C${res}.soil_type.tile[1-6].nc
-  C${res}.substrate_temperature.tile[1-6].nc
-  C${res}.substrate_temperature.tile[1-6].nc
-  C${res}.vegetation_greenness.tile[1-6].nc
-  C${res}.vegetation_type.tile[1-6].nc
-  "
-  mkdir -p fix_sfc
-  cd fix_sfc
-  for file in ${FIX_FV3_FIX_SFC_FILES}; do
-      curl -f -s -S -R -L -O ${FIX_URL}/fix_fv3_gmted2010.v20191213/C${res}/fix_sfc/${file}
-  done
+    FIX_FV3_FIX_SFC_FILES="
+    C${res}.facsf.tile[1-6].nc
+    C${res}.maximum_snow_albedo.tile[1-6].nc
+    C${res}.slope_type.tile[1-6].nc
+    C${res}.snowfree_albedo.tile[1-6].nc
+    C${res}.soil_type.tile[1-6].nc
+    C${res}.substrate_temperature.tile[1-6].nc
+    C${res}.substrate_temperature.tile[1-6].nc
+    C${res}.vegetation_greenness.tile[1-6].nc
+    C${res}.vegetation_type.tile[1-6].nc
+    "
+    mkdir -p fix_sfc
+    cd fix_sfc
+    for file in ${FIX_FV3_FIX_SFC_FILES}; do
+        curl -f -s -S -R -L -O ${FIX_URL}/fix_fv3_gmted2010.v20191213/C${res}/fix_sfc/${file}
+    done
+  )
+  done # res
 )
 
 (
@@ -71,78 +75,83 @@ FIX_URL="https://ftp.emc.ncep.noaa.gov/EIB/UFS/global/fix"
   #     curl -f -s -S -R -L ${FIX_URL}/fix_sfc_climo/${file} -o fix_sfc_climo/${file}
   # done
 
-  # C96   t126.384.190    (t190.384.192)
-  # C192  t382.768.384
-  # C384  t766.1536.768
-  # C768  t1534.3072.1536
-
-  case $res in
-    96)
-      JCAP=126
-      LONB=384
-      LATB=190
-      ;;
-    192)
-      JCAP=382
-      LONB=768
-      LATB=384
-      ;;
-    384)
-      JCAP=766
-      LONB=1536
-      LATB=768
-      ;;
-    768)
-      JCAP=1534
-      LONB=3072
-      LATB=1536
-      ;;
-    *)
-      echo "Unsuppored resolution ${res}"
-      exit 1
-      ;;
-  esac
-
-  FIX_AM_FILES="
-  CFSR.SEAICE.1982.2012.monthly.clim.grb
-  RTGSST.1982.2012.monthly.clim.grb
-  co2monthlycyc.txt
-  global_albedo4.1x1.grb
-  global_climaeropac_global.txt
-  global_co2historicaldata_2013.txt
-  global_co2historicaldata_glob.txt
-  global_glacier.2x2.grb
-  global_hyblev.l65.txt
-  global_maxice.2x2.grb
-  global_o3prdlos.f77
-  global_sfc_emissivity_idx.txt
-  global_sfc_emissivity_idx.txt
-  global_shdmax.0.144x0.144.grb
-  global_shdmin.0.144x0.144.grb
-  global_slope.1x1.grb
-  global_snoclim.1.875.grb
-  global_solarconstant_noaa_an.txt
-  global_tg3clim.2.6x1.5.grb
-  global_vegfrac.0.144.decpercent.grb
-
-  global_slmask.t1534.3072.1536.grb
-
-  global_mxsnoalb.uariz.t${JCAP}.${LONB}.${LATB}.rg.grb
-  global_snowfree_albedo.bosu.t${JCAP}.${LONB}.${LATB}.rg.grb
-  global_soilmgldas.t${JCAP}.${LONB}.${LATB}.grb
-  global_soiltype.statsgo.t${JCAP}.${LONB}.${LATB}.rg.grb
-  global_vegtype.igbp.t${JCAP}.${LONB}.${LATB}.rg.grb
-  "
   rm -rf fix_am
   mkdir -p fix_am
-  for file in ${FIX_AM_FILES}; do
-      curl -f -s -S -R -L ${FIX_URL}/fix_am.v20191213/${file} -o fix_am/${file}
-  done
 
-  # cd fix_am
-  # ln -s global_mxsnoalb.uariz.t126.384.190.rg.grb        global_mxsnoalb.uariz.t190.384.192.rg.grb
-  # ln -s global_snowfree_albedo.bosu.t126.384.190.rg.grb  global_snowfree_albedo.bosu.t190.384.192.rg.grb
-  # ln -s global_soilmgldas.t126.384.190.grb               global_soilmgldas.t190.384.192.grb
-  # ln -s global_soiltype.statsgo.t126.384.190.rg.grb      global_soiltype.statsgo.t190.384.192.rg.grb
-  # ln -s global_vegtype.igbp.t126.384.190.rg.grb          global_vegtype.igbp.t190.384.192.rg.grb
+  for res in 96 192; do
+
+    # C96   t126.384.190    (t190.384.192)
+    # C192  t382.768.384
+    # C384  t766.1536.768
+    # C768  t1534.3072.1536
+
+    case $res in
+      96)
+        JCAP=126
+        LONB=384
+        LATB=190
+        ;;
+      192)
+        JCAP=382
+        LONB=768
+        LATB=384
+        ;;
+      384)
+        JCAP=766
+        LONB=1536
+        LATB=768
+        ;;
+      768)
+        JCAP=1534
+        LONB=3072
+        LATB=1536
+        ;;
+      *)
+        echo "Unsuppored resolution ${res}"
+        exit 1
+        ;;
+    esac
+
+    FIX_AM_FILES="
+    CFSR.SEAICE.1982.2012.monthly.clim.grb
+    RTGSST.1982.2012.monthly.clim.grb
+    co2monthlycyc.txt
+    global_albedo4.1x1.grb
+    global_climaeropac_global.txt
+    global_co2historicaldata_2013.txt
+    global_co2historicaldata_glob.txt
+    global_glacier.2x2.grb
+    global_hyblev.l65.txt
+    global_maxice.2x2.grb
+    global_o3prdlos.f77
+    global_sfc_emissivity_idx.txt
+    global_sfc_emissivity_idx.txt
+    global_shdmax.0.144x0.144.grb
+    global_shdmin.0.144x0.144.grb
+    global_slope.1x1.grb
+    global_snoclim.1.875.grb
+    global_solarconstant_noaa_an.txt
+    global_tg3clim.2.6x1.5.grb
+    global_vegfrac.0.144.decpercent.grb
+
+    global_slmask.t1534.3072.1536.grb
+
+    global_mxsnoalb.uariz.t${JCAP}.${LONB}.${LATB}.rg.grb
+    global_snowfree_albedo.bosu.t${JCAP}.${LONB}.${LATB}.rg.grb
+    global_soilmgldas.t${JCAP}.${LONB}.${LATB}.grb
+    global_soiltype.statsgo.t${JCAP}.${LONB}.${LATB}.rg.grb
+    global_vegtype.igbp.t${JCAP}.${LONB}.${LATB}.rg.grb
+    "
+    for file in ${FIX_AM_FILES}; do
+        curl -f -s -S -R -L ${FIX_URL}/fix_am.v20191213/${file} -o fix_am/${file}
+    done
+
+    # cd fix_am
+    # ln -s global_mxsnoalb.uariz.t126.384.190.rg.grb        global_mxsnoalb.uariz.t190.384.192.rg.grb
+    # ln -s global_snowfree_albedo.bosu.t126.384.190.rg.grb  global_snowfree_albedo.bosu.t190.384.192.rg.grb
+    # ln -s global_soilmgldas.t126.384.190.grb               global_soilmgldas.t190.384.192.grb
+    # ln -s global_soiltype.statsgo.t126.384.190.rg.grb      global_soiltype.statsgo.t190.384.192.rg.grb
+    # ln -s global_vegtype.igbp.t126.384.190.rg.grb          global_vegtype.igbp.t190.384.192.rg.grb
+
+  done # res
 )
