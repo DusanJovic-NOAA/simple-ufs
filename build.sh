@@ -121,6 +121,7 @@ export OMPI_FC=${FC}
 # 3rdparty
 #
 if [ $BUILD_3RDPARTY == yes ]; then
+printf '%-.30s ' "Building 3rdparty .........................."
 (
   cd libs/3rdparty
   ./build.sh ${COMPILER}
@@ -137,6 +138,7 @@ export ESMFMKFILE=${MYDIR}/libs/3rdparty/local/esmf/lib/libO/${OS}.${ESMF_COMPIL
 # nceplibs
 #
 if [ $BUILD_NCEPLIBS == yes ]; then
+printf '%-.30s ' "Building nceplibs .........................."
 (
   cd libs/nceplibs
   ./build.sh ${COMPILER}
@@ -154,15 +156,15 @@ printf '%-.30s ' "Building preproc ..........................."
   export target=linux.${COMPILER}
   export NCEPLIBS=${MYDIR}/libs/nceplibs/local
 
-  (
-    cd src/preproc/sorc
-    ./build_fre-nctools.sh
-    ./build_orog.sh
-    ./build_chgres.sh
-    ./build_chgres_cube.sh
-    ./build_sfc_climo_gen.sh
-    cp ../exec/* ${MYDIR}/bin/
-  )
+  #(
+  #  cd src/preproc/sorc
+  #  ./build_fre-nctools.sh
+  #  ./build_orog.sh
+  #  ./build_chgres.sh
+  #  ./build_chgres_cube.sh
+  #  ./build_sfc_climo_gen.sh
+  #  cp ../exec/* ${MYDIR}/bin/
+  #)
 
   (
     export WGRIB2_DIR=${MYDIR}/libs/3rdparty/local/wgrib2

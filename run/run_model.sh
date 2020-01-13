@@ -1,7 +1,9 @@
 #!/bin/bash
 set -eux
 
+if [[ $(uname -s) == Linux ]]; then
 ulimit -s unlimited
+fi
 
 source configuration.sh
 

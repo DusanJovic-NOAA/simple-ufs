@@ -1,7 +1,9 @@
 #!/bin/bash
 set -eux
 
+if [[ $(uname -s) == Linux ]]; then
 ulimit -s unlimited
+fi
 
 source configuration.sh
 
@@ -23,9 +25,11 @@ for FHR in $(seq -s ' ' -f %03g 00 $NFHOUT_HF $NFHMAX_HF); do
   FHRS+=( "$FHR" )
 done
 
-for FHR in $(seq -s ' ' -f %03g $((NFHMAX_HF + NFHOUT)) $NFHOUT $NHOURS_FCST); do
-  FHRS+=( "$FHR" )
-done
+if [[ $((NFHMAX_HF + NFHOUT)) -lt $NHOURS_FCST ]]; then
+  for FHR in $(seq -s ' ' -f %03g $((NFHMAX_HF + NFHOUT)) $NFHOUT $NHOURS_FCST); do
+    FHRS+=( "$FHR" )
+  done
+fi
 
 for FHR in ${FHRS[@]}; do
 

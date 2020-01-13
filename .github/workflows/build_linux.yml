@@ -79,10 +79,25 @@ jobs:
         fi
 
 # run
+#    - name: Run model
+#      run: |
+#        git clone https://github.com/DusanJovic-NOAA/ufs-test-data
+#        cd ufs-test-data
+#        sed -i -e 's/nhours_fcst:             24/nhours_fcst:             6/g' model_configure
+#        mpiexec -np 8 ../bin/ufs_model
+#        ls -lrt
+
+# run
     - name: Run model
       run: |
-        git clone https://github.com/DusanJovic-NOAA/ufs-test-data
-        cd ufs-test-data
-        sed -i -e 's/nhours_fcst:             24/nhours_fcst:             6/g' model_configure
-        mpiexec -np 8 ../bin/ufs_model
-        ls -lrt
+        cd run
+        sed -i -e 's/NHOURS_FCST=24/NHOURS_FCST=3/g' configuration.sh
+        sed -i -e 's/NFHMAX_HF=12/NFHMAX_HF=3/g' configuration.sh
+        ./fetch_fix_data.sh
+        ./fetch_input_data.sh
+        ./run_chgres_cube.sh
+        ./run_model.sh
+        ./run_post.sh
+        ls -l chgres
+        ls -l model_run
+        ls -l post_run
