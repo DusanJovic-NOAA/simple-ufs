@@ -1,0 +1,23 @@
+ &config
+  mosaic_file_target_grid="__FIXfv3__/C__RES___mosaic.nc"
+  fix_dir_target_grid="__FIXfv3__/fix_sfc"
+  orog_dir_target_grid="__FIXfv3__"
+  orog_files_target_grid="C__RES___oro_data.tile1.nc","C__RES___oro_data.tile2.nc","C__RES___oro_data.tile3.nc","C__RES___oro_data.tile4.nc","C__RES___oro_data.tile5.nc","C__RES___oro_data.tile6.nc"
+  vcoord_file_target_grid="__FIXam__/global_hyblev.l65.txt"
+
+
+
+  data_dir_input_grid="__INPUT_DATA__"
+  grib2_file_input_grid="gfs.t00z.pgrb2.0p50.f000"
+  varmap_file="GFSphys_var_map.txt"
+
+
+
+  cycle_mon=__START_MONTH__
+  cycle_day=__START_DAY__
+  cycle_hour=__START_HOUR__
+  convert_atm=.true.
+  convert_sfc=.true.
+  convert_nst=.false.
+  input_type="grib2"
+ /
