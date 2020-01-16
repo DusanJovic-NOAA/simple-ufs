@@ -20,7 +20,7 @@ export CDUMP=gfs
 export CASE=C${res}
 export INIDIR=${INPUT_DATA}
 export LANDICE_OPT=2
-export OUTDIR=${MYDIR}/chgres
+export OUTDIR=${MYDIR}/chgres_run
 rm -rf ${OUTDIR}
 
 if [[ $gtype == "uniform" ]]; then

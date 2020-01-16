@@ -56,7 +56,7 @@ fi
 #
 # Copy input data (created by chgres_cube) to model run directory
 #
-export DATA=${MYDIR}/chgres
+export DATA=${MYDIR}/chgres_run
 
 if [[ $gtype == "uniform" ]]; then
     cp ${DATA}/gfs_ctrl.nc       .

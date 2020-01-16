@@ -9,7 +9,7 @@ source configuration.sh
 
 MYDIR=$(pwd)
 
-export DATA=${MYDIR}/chgres
+export DATA=${MYDIR}/chgres_run
 rm -rf ${DATA}
 mkdir ${DATA}
 cd ${DATA}

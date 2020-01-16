@@ -8,7 +8,7 @@
 
 
   data_dir_input_grid="__INPUT_DATA__"
-  grib2_file_input_grid="gfs.t00z.pgrb2.0p50.f000"
+  grib2_file_input_grid="gfs.t__START_HOUR__z.pgrb2.0p50.f000"
   varmap_file="GFSphys_var_map.txt"
 
 
