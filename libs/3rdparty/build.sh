@@ -111,7 +111,7 @@ JASPER=jasper-1.900.16
 LIBPNG=libpng-1.6.35
 #HDF5=hdf5-1.10.5
 HDF5=hdf5-1.8.21
-NETCDF=netcdf-c-4.7.1
+NETCDF=netcdf-c-4.7.3
 NETCDF_FORTRAN=netcdf-fortran-4.5.2
 ESMF=esmf_8_0_0_src
 WGRIB2=wgrib2-2.0.8
@@ -122,7 +122,7 @@ WGRIB2=wgrib2-2.0.8
 [ $INSTALL_LIBPNG         == on ] && download_and_check_md5sum   d94d9587c421ac42316b6ab8f64f1b85   https://download.sourceforge.net/libpng/${LIBPNG}.tar.gz
 #[ $INSTALL_HDF5           == on ] && download_and_check_md5sum   e115eeb66e944fa7814482415dd21cc4   https://support.hdfgroup.org/ftp/HDF5/releases/${HDF5:0:9}/${HDF5}/src/${HDF5}.tar.gz
 [ $INSTALL_HDF5           == on ] && download_and_check_md5sum   15dbf8b2b466950e1c7be45b66317873   https://support.hdfgroup.org/ftp/HDF5/releases/${HDF5:0:8}/${HDF5}/src/${HDF5}.tar.gz
-[ $INSTALL_NETCDF_C       == on ] && download_and_check_md5sum   551145548251e9ac0696a20eec5991de   https://www.unidata.ucar.edu/downloads/netcdf/ftp/${NETCDF}.tar.gz
+[ $INSTALL_NETCDF_C       == on ] && download_and_check_md5sum   9e1d7f13c2aef921c854d87037bcbd96   https://www.unidata.ucar.edu/downloads/netcdf/ftp/${NETCDF}.tar.gz
 [ $INSTALL_NETCDF_FORTRAN == on ] && download_and_check_md5sum   864c6a5548b6f1e00579caf3cbbe98cc   https://www.unidata.ucar.edu/downloads/netcdf/ftp/${NETCDF_FORTRAN}.tar.gz
 [ $INSTALL_ESMF           == on ] && download_and_check_md5sum   5cdb3814141068ef15420e7c2d2a158a   http://www.earthsystemmodeling.org/esmf_releases/public/ESMF_8_0_0/${ESMF}.tar.gz
 [ $INSTALL_WGRIB2         == on ] && download_and_check_md5sum   3d56cbed5de8c460d304bf2206abc8d3   https://www.ftp.cpc.ncep.noaa.gov/wd51we/wgrib2/wgrib2.tgz.v2.0.8 wgrib2-2.0.8.tar.gz
