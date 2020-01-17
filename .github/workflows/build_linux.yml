@@ -98,6 +98,6 @@ jobs:
         ./run_chgres_cube.sh
         ./run_model.sh
         ./run_post.sh
-        ls -l chgres
+        ls -l chgres_run
         ls -l model_run
         ls -l post_run

@@ -108,6 +108,6 @@ jobs:
           ls -l post_run
           cat post_run/std*
         fi
-        ls -l chgres
+        ls -l chgres_run
         ls -l model_run
         ls -l post_run
