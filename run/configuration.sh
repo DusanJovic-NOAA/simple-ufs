@@ -6,8 +6,8 @@ export res=${res:-96}
 export gtype=uniform
 
 export START_YEAR=${START_YEAR:-2020}
-export START_MONTH=${START_MONTH:-01}
-export START_DAY=${START_DAY:-13}
+export START_MONTH=${START_MONTH:-02}
+export START_DAY=${START_DAY:-06}
 export START_HOUR=${START_HOUR:-00}
 
 export NHOURS_FCST=24

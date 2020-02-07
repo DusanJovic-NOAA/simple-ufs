@@ -29,7 +29,7 @@ for libname in ${ALL_LIBS}; do
   git clone --recursive https://github.com/NOAA-EMC/${libname}
   cd ${libname}
 
-  git checkout ufs_release_v1.0
+  git checkout release/public-v1
   git submodule sync
   git submodule update --init
   git status

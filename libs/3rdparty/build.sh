@@ -36,7 +36,7 @@ fi
 
 date
 
-MAX_BUILD_JOBS=${MAX_BUILD_JOBS:-4}
+MAX_BUILD_JOBS=${MAX_BUILD_JOBS:-8}
 
 INSTALL_ZLIB=on
 INSTALL_JPEG=on
@@ -361,7 +361,11 @@ printf '%-.30s ' 'Building esmf ...........................'
   export ESMF_NETCDF_LIBS="-lnetcdff -lnetcdf -lhdf5_hl -lhdf5 -lm -lz -ldl"
   export ESMF_SHARED_LIB_BUILD=OFF
 
-  export ESMF_INSTALL_PREFIX=${PREFIX_PATH}/esmf
+  export ESMF_INSTALL_PREFIX=${PREFIX_PATH}
+  export ESMF_INSTALL_HEADERDIR=${ESMF_INSTALL_PREFIX}/include
+  export ESMF_INSTALL_MODDIR=${ESMF_INSTALL_PREFIX}/mod
+  export ESMF_INSTALL_LIBDIR=${ESMF_INSTALL_PREFIX}/lib
+  export ESMF_INSTALL_BINDIR=${ESMF_INSTALL_PREFIX}/bin
 
   make info > log_info 2>&1
   make -j ${BUILD_JOBS} > log_make 2>&1
@@ -383,7 +387,7 @@ printf '%-.30s ' 'Building wgrib2 .........................'
   cd ${SRC_PATH}
   rm -rf ${WGRIB2}
   tar -zxf ${WGRIB2}.tar.gz && mv grib2 ${WGRIB2}
-  mkdir -p ${PREFIX_PATH}/wgrib2/{include,lib}
+  mkdir -p ${PREFIX_PATH}/{include,lib}
 
   cd ${WGRIB2}
   sed -i -e 's/^USE_NETCDF3=1/USE_NETCDF3=0/g' makefile
@@ -396,9 +400,9 @@ printf '%-.30s ' 'Building wgrib2 .........................'
   make lib
 
   # install
-  cp lib/*.mod       ${PREFIX_PATH}/wgrib2/include
-  cp lib/libwgrib2.a ${PREFIX_PATH}/wgrib2/lib
-
+  cp lib/*.mod       ${PREFIX_PATH}/include
+  cp lib/libwgrib2.a ${PREFIX_PATH}/lib
+  rm -rf ${SRC_PATH}/${WGRIB2}
 ) > log_wgrib2 2>&1
 echo 'done'
 fi

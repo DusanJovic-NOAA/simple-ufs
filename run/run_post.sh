@@ -56,7 +56,26 @@ GFS
 EOF
 
   cp itag.${FHR} itag
-  mpiexec -np 4 ${sufs}/bin/ufs_post 1> stdout.${FHR} 2> stderr.${FHR}
+
+  # On 8 CPUs (Intel(R) Xeon(R) W-2123 CPU @ 3.60GHz)
+
+  # ~17 sec
+  #export OMP_NUM_THREADS=8
+  #export NUM_TASKS=1
+
+  # ~11 sec
+  #export OMP_NUM_THREADS=4
+  #export NUM_TASKS=2
+
+  # ~7.5 sec
+  #export OMP_NUM_THREADS=2
+  #export NUM_TASKS=4
+
+  # ~5 sec
+  export OMP_NUM_THREADS=1
+  export NUM_TASKS=8
+
+  time mpiexec -np ${NUM_TASKS} ${sufs}/bin/ufs_post 1> stdout.${FHR} 2> stderr.${FHR}
   rm itag
 
 done

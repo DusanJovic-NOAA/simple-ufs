@@ -54,7 +54,6 @@ NCEPLIBS-gfsio
 NCEPLIBS-ip
 NCEPLIBS-landsfcutil
 NCEPLIBS-nemsio
-NCEPLIBS-nemsiogfs
 NCEPLIBS-sfcio
 NCEPLIBS-sigio
 NCEPLIBS-sp
@@ -62,11 +61,6 @@ NCEPLIBS-w3emc
 NCEPLIBS-w3nco
 EMC_crtm
 "
-
-export NEMSIO_LIB=${MYDIR}/local/nemsio/lib
-export NEMSIO_INC=${MYDIR}/local/nemsio/include
-export SIGIO_LIB4=${MYDIR}/local/sigio/lib
-export SIGIO_INC4=${MYDIR}/local/sigio/include_4
 
 for libname in ${ALL_LIBS}; do
   printf '%-.30s ' "Building ${libname} ..........................."
@@ -79,7 +73,7 @@ for libname in ${ALL_LIBS}; do
     mkdir build
     cd build
     cmake .. \
-          -DCMAKE_INSTALL_PREFIX=${MYDIR}/local/${install_name} \
+          -DCMAKE_INSTALL_PREFIX=${MYDIR}/local \
           -DCMAKE_C_COMPILER=${CC} \
           -DCMAKE_CXX_COMPILER=${CXX} \
           -DCMAKE_Fortran_COMPILER=${FC} \
