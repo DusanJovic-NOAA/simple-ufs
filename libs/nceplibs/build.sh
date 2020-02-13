@@ -21,9 +21,15 @@ if [[ $COMPILERS == gnu ]]; then
   export CXX=${CXX:-g++}
   export FC=${FC:-gfortran}
 elif [[ $COMPILERS == intel ]]; then
-  export CC=${CC:-icc}
-  export CXX=${CXX:-icpc}
-  export FC=${FC:-ifort}
+  if [[ $(type ftn) ]]; then # Special case on Cray system
+    export CC=${CC:-cc}
+    export CXX=${CXX:-CC}
+    export FC=${FC:-ftn}
+  else
+    export CC=${CC:-icc}
+    export CXX=${CXX:-icpc}
+    export FC=${FC:-ifort}
+  fi
 else
   usage
 fi

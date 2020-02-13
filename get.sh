@@ -32,6 +32,7 @@ cd src
 rm -rf model
 git clone --recursive --branch develop https://github.com/ufs-community/ufs-weather-model model
 sed -i'' -e '/affinity.c/s/^/\#/' model/CMakeLists.txt
+sed -i'' -e '/LibXml2 REQUIRED/s/^/\#/' model/FV3/ccpp/framework/src/CMakeLists.txt
 )
 
 (

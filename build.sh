@@ -12,6 +12,9 @@ usage() {
 export COMPILER=$1
 shift
 
+OS=$(uname -s)
+ESMF_OS=${OS}
+
 if [[ $COMPILER == gnu ]]; then
   export CC=${CC:-gcc}
   export CXX=${CXX:-g++}
@@ -21,12 +24,23 @@ if [[ $COMPILER == gnu ]]; then
   export MPIF90=${MPIF90:-mpif90}
   ESMF_COMPILER=gfortran
 elif [[ $COMPILER == intel ]]; then
-  export CC=${CC:-icc}
-  export CXX=${CXX:-icpc}
-  export FC=${FC:-ifort}
-  export MPICC=${MPICC:-mpicc}
-  export MPICXX=${MPICXX:-mpicxx}
-  export MPIF90=${MPIF90:-mpif90}
+  if [[ $(type ftn) ]]; then # Special case on Cray system
+    export CC=${CC:-cc}
+    export CXX=${CXX:-CC}
+    export FC=${FC:-ftn}
+    export MPICC=${MPICC:-cc}
+    export MPICXX=${MPICXX:-CC}
+    export MPIF90=${MPIF90:-ftn}
+    ESMF_OS=Unicos
+    MPI_IMPLEMENTATION=mpi
+  else
+    export CC=${CC:-icc}
+    export CXX=${CXX:-icpc}
+    export FC=${FC:-ifort}
+    export MPICC=${MPICC:-mpicc}
+    export MPICXX=${MPICXX:-mpicxx}
+    export MPIF90=${MPIF90:-mpif90}
+  fi
   ESMF_COMPILER=intel
 else
   usage

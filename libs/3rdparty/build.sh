@@ -25,9 +25,15 @@ if [[ $COMPILERS == gnu ]]; then
   export CXX=${CXX:-g++}
   export FC=${FC:-gfortran}
 elif [[ $COMPILERS == intel ]]; then
-  export CC=${CC:-icc}
-  export CXX=${CXX:-icpc}
-  export FC=${FC:-ifort}
+  if [[ $(type ftn) ]]; then # Special case on Cray system
+    export CC=${CC:-cc}
+    export CXX=${CXX:-CC}
+    export FC=${FC:-ftn}
+  else
+    export CC=${CC:-icc}
+    export CXX=${CXX:-icpc}
+    export FC=${FC:-ifort}
+  fi
 elif [[ $COMPILERS == fetch ]]; then
   fetch_only=on
 else
@@ -341,6 +347,10 @@ printf '%-.30s ' 'Building esmf ...........................'
   MPI_IMPLEMENTATION=${MPI_IMPLEMENTATION:-mpich3}
   mpiexec --version | grep OpenRTE 2> /dev/null && MPI_IMPLEMENTATION=openmpi
   mpiexec --version | grep Intel 2> /dev/null && MPI_IMPLEMENTATION=intelmpi
+
+  if [[ $(scripts/esmf_os) == Unicos ]]; then
+    MPI_IMPLEMENTATION=mpi
+  fi
 
   if [[ $COMPILERS == intel ]]; then
     export ESMF_COMPILER=intel
