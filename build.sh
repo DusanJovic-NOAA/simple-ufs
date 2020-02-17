@@ -24,7 +24,8 @@ if [[ $COMPILER == gnu ]]; then
   export MPIF90=${MPIF90:-mpif90}
   ESMF_COMPILER=gfortran
 elif [[ $COMPILER == intel ]]; then
-  if [[ $(type ftn) ]]; then # Special case on Cray system
+  if [[ $(type ftn &> /dev/null) ]]; then
+    # Special case on Cray systems
     export CC=${CC:-cc}
     export CXX=${CXX:-CC}
     export FC=${FC:-ftn}
@@ -112,7 +113,7 @@ OS=$(uname -s)
 MPI_IMPLEMENTATION=${MPI_IMPLEMENTATION:-mpich3}
 if ! command -v mpiexec > /dev/null ; then
   if [[ -f ${MYDIR}/mpilibs/local/${MPI_IMPLEMENTATION}/bin/mpiexec ]]; then
-	export PATH=${MYDIR}/mpilibs/local/${MPI_IMPLEMENTATION}/bin:$PATH
+    export PATH=${MYDIR}/mpilibs/local/${MPI_IMPLEMENTATION}/bin:$PATH
   else
     echo "Missing mpiexec for ${MPI_IMPLEMENTATION}"
     exit 1
@@ -179,64 +180,65 @@ printf '%-.30s ' "Building preproc ..........................."
   #  cp ../exec/* ${MYDIR}/bin/
   #)
 
+  #(
+  #  export IP_INCd=${NCEPLIBS}/include_d
+  #  export NEMSIO_INC=${NCEPLIBS}/include
+  #  export SFCIO_INC4=${NCEPLIBS}/include_4
+  #  export SIGIO_INC4=${NCEPLIBS}/include_4
+
+  #  export BACIO_LIB4=${NCEPLIBS}/lib/libbacio_v2.1.0_4.a
+  #  export IP_LIBd=${NCEPLIBS}/lib/libip_v3.0.0_d.a
+  #  export NEMSIO_LIB=${NCEPLIBS}/lib/libnemsio_v2.2.3.a
+  #  export SFCIO_LIB4=${NCEPLIBS}/lib/libsfcio_v1.1.0_4.a
+  #  export SIGIO_LIB4=${NCEPLIBS}/lib/libsigio_v2.1.0_4.a
+  #  export SP_LIBd=${NCEPLIBS}/lib/libsp_v2.0.2_d.a
+  #  export W3NCO_LIBd=${NCEPLIBS}/lib/libw3nco_v2.0.6_d.a
+
+  #  export WGRIB2_DIR=${MYDIR}/libs/3rdparty/local
+
+  #  export WGRIB2API_INC=${WGRIB2_DIR}/include
+  #  export WGRIB2_LIB=${WGRIB2_DIR}/lib/libwgrib2.a
+
+  #  cd src/preproc/sorc
+  #  ./build_chgres_cube.sh
+  #  cp ../exec/chgres_cube.exe ${MYDIR}/bin/chgres_cube_grib2.exe
+  #)
+
   (
-	export IP_INCd=${NCEPLIBS}/include_d
-	export NEMSIO_INC=${NCEPLIBS}/include
-	export SFCIO_INC4=${NCEPLIBS}/include_4
-	export SIGIO_INC4=${NCEPLIBS}/include_4
+    cd src/preproc
 
-	export BACIO_LIB4=${NCEPLIBS}/lib/libbacio_v2.1.0_4.a
-	export IP_LIBd=${NCEPLIBS}/lib/libip_v3.0.0_d.a
-	export NEMSIO_LIB=${NCEPLIBS}/lib/libnemsio_v2.2.3.a
-	export SFCIO_LIB4=${NCEPLIBS}/lib/libsfcio_v1.1.0_4.a
-	export SIGIO_LIB4=${NCEPLIBS}/lib/libsigio_v2.1.0_4.a
-	export SP_LIBd=${NCEPLIBS}/lib/libsp_v2.0.2_d.a
-	export W3NCO_LIBd=${NCEPLIBS}/lib/libw3nco_v2.0.6_d.a
+    rm -rf build
+    mkdir build
+    cd build
 
-    export WGRIB2_DIR=${MYDIR}/libs/3rdparty/local
+    export NCEPLIBS_DIR=${MYDIR}/libs/nceplibs/local
 
-    export WGRIB2API_INC=${WGRIB2_DIR}/include
-    export WGRIB2_LIB=${WGRIB2_DIR}/lib/libwgrib2.a
+    export BACIO_LIB4=${NCEPLIBS_DIR}/lib/libbacio_v2.1.0_4.a
 
-    cd src/preproc_grib/sorc
-    ./build_chgres_cube.sh
-    cp ../exec/chgres_cube.exe ${MYDIR}/bin/chgres_cube_grib2.exe
+    export NEMSIO_INC=${NCEPLIBS_DIR}/include
+    export NEMSIO_LIB=${NCEPLIBS_DIR}/lib/libnemsio_v2.2.3.a
+
+    export SFCIO_INC4=${NCEPLIBS_DIR}/include_4
+    export SFCIO_LIB4=${NCEPLIBS_DIR}/lib/libsfcio_v1.1.0_4.a
+
+    export SIGIO_INC4=${NCEPLIBS_DIR}/include_4
+    export SIGIO_LIB4=${NCEPLIBS_DIR}/lib/libsigio_v2.1.0_4.a
+
+    export SP_LIB4=${NCEPLIBS_DIR}/lib/libsp_v2.0.2_4.a
+    export SP_LIBd=${NCEPLIBS_DIR}/lib/libsp_v2.0.2_d.a
+
+    export W3NCO_LIB4=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_4.a
+    export W3NCO_LIBd=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_d.a
+
+    cmake .. -DCMAKE_PREFIX_PATH=${MYDIR}/libs/3rdparty/local \
+             -DCMAKE_C_COMPILER=${MPICC} \
+             -DCMAKE_CXX_COMPILER=${MPICXX} \
+             -DCMAKE_Fortran_COMPILER=${MPIF90}
+
+    make -j 8
+
+    cp sorc/chgres_cube.fd/chgres_cube.exe ${MYDIR}/bin/chgres_cube_grib2.exe
   )
-
-  # cd src/UFS_UTILS
-
-  # rm -rf build
-  # mkdir build
-  # cd build
-
-  # export NCEPLIBS_DIR=${MYDIR}/libs/nceplibs/local
-
-  # export BACIO_LIB4=${NCEPLIBS_DIR}/bacio/lib/libbacio_v2.1.0_4.a
-  # export BACIO="is set via environment"
-
-  # export NEMSIO_INC=${NCEPLIBS_DIR}/nemsio/include_4
-  # export NEMSIO_LIB=${NCEPLIBS_DIR}/nemsio/lib/libnemsio_v2.2.3.a
-
-  # export SFCIO_INC4=${NCEPLIBS_DIR}/sfcio/include_4
-  # export SFCIO_LIB4=${NCEPLIBS_DIR}/sfcio/lib/libsfcio_v1.1.0_4.a
-  # export SFCIO="is set via environment"
-
-  # export SIGIO_INC4=${NCEPLIBS_DIR}/sigio/include_4
-  # export SIGIO_LIB4=${NCEPLIBS_DIR}/sigio/lib/libsigio_v2.1.0_4.a
-
-  # export SP_LIB4=${NCEPLIBS_DIR}/sp/lib/libsp_v2.0.2_4.a
-  # export SP_LIBd=${NCEPLIBS_DIR}/sp/lib/libsp_v2.0.2_d.a
-
-  # export W3NCO_LIB4=${NCEPLIBS_DIR}/w3nco/lib/libw3nco_v2.0.6_4.a
-  # export W3NCO_LIBd=${NCEPLIBS_DIR}/w3nco/lib/libw3nco_v2.0.6_d.a
-
-  # cmake .. -DCMAKE_PREFIX_PATH=${MYDIR}/libs/3rdparty/local \
-  #          -DESMF_INC=${MYDIR}/libs/3rdparty/local/esmf/mod/modO/${OS}.${ESMF_COMPILER}.64.${MPI_IMPLEMENTATION}.default \
-  #          -DESMF_LIB="-L${MYDIR}/libs/3rdparty/local/lib -L${MYDIR}/libs/3rdparty/local/esmf/lib/libO/${OS}.${ESMF_COMPILER}.64.${MPI_IMPLEMENTATION}.default -lesmf -cxxlib -lrt -ldl -lnetcdff -lnetcdf -lhdf5_hl -lhdf5 -lm -lz -ldl"
-
-  # make -j 4
-
-  # cp sorc/chgres_cube.fd/chgres_cube.exe ${MYDIR}/bin
 
 ) > log_preproc 2>&1
 echo 'done'
@@ -301,31 +303,33 @@ printf '%-.30s ' "Building post ..........................."
   export NCEPLIBS_DIR=${MYDIR}/libs/nceplibs/local
 
   export BACIO_LIB4=${NCEPLIBS_DIR}/lib/libbacio_v2.1.0_4.a
-  export BACIO="is set via environment"
 
   export CRTM_INC=${NCEPLIBS_DIR}/include
   export CRTM_LIB=${NCEPLIBS_DIR}/lib/libcrtm_v2.3.0.a
-  export CRTM="is set via environment"
 
   export G2TMPL_INCd=${NCEPLIBS_DIR}/include_d
   export G2TMPL_LIBd=${NCEPLIBS_DIR}/lib/libg2tmpl_v1.5.0_d.a
 
   export G2_INC4=${NCEPLIBS_DIR}/include_4
+  export G2_INCd=${NCEPLIBS_DIR}/include_d
   export G2_LIB4=${NCEPLIBS_DIR}/lib/libg2_v3.1.0_4.a
   export G2_LIBd=${NCEPLIBS_DIR}/lib/libg2_v3.1.0_d.a
 
   export GFSIO_INC4=${NCEPLIBS_DIR}/include_4
   export GFSIO_LIB4=${NCEPLIBS_DIR}/lib/libgfsio_v1.1.0_4.a
 
+  export IP_INC4=${NCEPLIBS_DIR}/include_4
+  export IP_INCd=${NCEPLIBS_DIR}/include_d
+  export IP_INC8=${NCEPLIBS_DIR}/include_8
   export IP_LIB4=${NCEPLIBS_DIR}/lib/libip_v3.0.0_4.a
   export IP_LIBd=${NCEPLIBS_DIR}/lib/libip_v3.0.0_d.a
+  export IP_LIB8=${NCEPLIBS_DIR}/lib/libip_v3.0.0_8.a
 
   export NEMSIO_INC=${NCEPLIBS_DIR}/include
   export NEMSIO_LIB=${NCEPLIBS_DIR}/lib/libnemsio_v2.2.3.a
 
   export SFCIO_INC4=${NCEPLIBS_DIR}/include_4
   export SFCIO_LIB4=${NCEPLIBS_DIR}/lib/libsfcio_v1.1.0_4.a
-  export SFCIO="is set via environment"
 
   export SIGIO_INC4=${NCEPLIBS_DIR}/include_4
   export SIGIO_LIB4=${NCEPLIBS_DIR}/lib/libsigio_v2.1.0_4.a
@@ -335,9 +339,12 @@ printf '%-.30s ' "Building post ..........................."
 
   export W3EMC_INC4=${NCEPLIBS_DIR}/include_4
   export W3EMC_LIB4=${NCEPLIBS_DIR}/lib/libw3emc_v2.2.0_4.a
-  export W3EMC="is set via environment"
+  export W3EMC_LIBd=${NCEPLIBS_DIR}/lib/libw3emc_v2.2.0_d.a
+  export W3EMC_LIB8=${NCEPLIBS_DIR}/lib/libw3emc_v2.2.0_8.a
 
   export W3NCO_LIB4=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_4.a
+  export W3NCO_LIBd=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_d.a
+  export W3NCO_LIB8=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_8.a
 
   cd src/post
 
@@ -345,9 +352,13 @@ printf '%-.30s ' "Building post ..........................."
   mkdir build
   cd build
 
-  cmake .. -DCMAKE_PREFIX_PATH=${MYDIR}/libs/3rdparty/local
+  cmake .. -DCMAKE_PREFIX_PATH=${MYDIR}/libs/3rdparty/local \
+           -DCMAKE_C_COMPILER=${MPICC} \
+           -DCMAKE_CXX_COMPILER=${MPICXX} \
+           -DCMAKE_Fortran_COMPILER=${MPIF90}
+
   make -j 8
-  cp bin/ncep_post ${MYDIR}/bin/ufs_post
+  cp sorc/ncep_post.fd/ncep_post ${MYDIR}/bin/ufs_post
 
 ) > log_post 2>&1
 echo 'done'

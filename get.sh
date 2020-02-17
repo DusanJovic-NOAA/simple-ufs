@@ -16,15 +16,22 @@ cd libs/nceplibs
 
 (
 cd src
-#rm -rf preproc
-#git clone --branch generic_linux https://github.com/DusanJovic-NOAA/UFS_UTILS preproc
-#git clone --recursive --branch release/ufs_release_v1.0 https://github.com/NOAA-EMC/UFS_UTILS preproc
+rm -rf preproc
+git clone --recursive --branch release/public-v1 https://github.com/NOAA-EMC/UFS_UTILS preproc
 
-rm -rf preproc_grib
-git clone --branch feature/chgres_cube_grib2_release https://github.com/GeorgeGayno-NOAA/UFS_UTILS preproc_grib
+#
+# Fix find_library bug
+#
+cd preproc/cmake
+git checkout release/public-v1
+for f in Modules/Find*.cmake
+do
+  echo $f
+  sed -i'' -e '/find_library/i unset(lib_path CACHE)' $f
+done
 
-sed -i'' -e '/NCEPLIBS/s/^/\#/' preproc_grib/modulefiles/chgres_cube.linux.gnu
-sed -i'' -e '/NCEPLIBS/s/^/\#/' preproc_grib/modulefiles/chgres_cube.linux.intel
+#sed -i'' -e '/NCEPLIBS/s/^/\#/' preproc/modulefiles/chgres_cube.linux.gnu
+#sed -i'' -e '/NCEPLIBS/s/^/\#/' preproc/modulefiles/chgres_cube.linux.intel
 )
 
 (
@@ -38,5 +45,17 @@ sed -i'' -e '/LibXml2 REQUIRED/s/^/\#/' model/FV3/ccpp/framework/src/CMakeLists.
 (
 cd src
 rm -rf post
-git clone --recursive --branch ufs_release_v1.0 https://github.com/NOAA-EMC/EMC_post post
+git clone --recursive --branch release/public-v4 https://github.com/NOAA-EMC/EMC_post post
+
+#
+# Fix find_library bug
+#
+cd post/cmake
+git checkout release/public-v1
+for f in Modules/Find*.cmake
+do
+  echo $f
+  sed -i'' -e '/find_library/i unset(lib_path CACHE)' $f
+done
+
 )
