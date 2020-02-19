@@ -283,7 +283,7 @@ printf '%-.30s ' "Building model ..........................."
   export W3NCO_LIBd=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_d.a
 
   cd ${MYDIR}/src/model
-  export CCPP_SUITES="FV3_GFS_2017,FV3_GFS_2017_gfdlmp,FV3_GFS_2017_gfdlmp_regional"
+  export CCPP_SUITES="FV3_GFS_v15p2"
   export CMAKE_FLAGS="-D32BIT=ON -DDYN32=ON"
 
   ./build.sh

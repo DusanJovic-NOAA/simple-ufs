@@ -29,23 +29,19 @@ do
   echo $f
   sed -i'' -e '/find_library/i unset(lib_path CACHE)' $f
 done
-
-#sed -i'' -e '/NCEPLIBS/s/^/\#/' preproc/modulefiles/chgres_cube.linux.gnu
-#sed -i'' -e '/NCEPLIBS/s/^/\#/' preproc/modulefiles/chgres_cube.linux.intel
+sed -i'' -e 's/ESMF_F90ESMFLINKLIBS/ESMF_F90ESMFLINKLIBS} ${ESMF_F90LINKOPTS/' Modules/FindESMF.cmake
 )
 
 (
 cd src
 rm -rf model
-git clone --recursive --branch develop https://github.com/ufs-community/ufs-weather-model model
-sed -i'' -e '/affinity.c/s/^/\#/' model/CMakeLists.txt
-sed -i'' -e '/LibXml2 REQUIRED/s/^/\#/' model/FV3/ccpp/framework/src/CMakeLists.txt
+git clone --recursive --branch release/public-v1 https://github.com/ufs-community/ufs-weather-model model
 )
 
 (
 cd src
 rm -rf post
-git clone --recursive --branch release/public-v4 https://github.com/NOAA-EMC/EMC_post post
+git clone --recursive --branch release/public-v8 https://github.com/NOAA-EMC/EMC_post post
 
 #
 # Fix find_library bug
@@ -57,5 +53,4 @@ do
   echo $f
   sed -i'' -e '/find_library/i unset(lib_path CACHE)' $f
 done
-
 )

@@ -14,11 +14,12 @@ jobs:
     - name: Update packages
       run: |
         /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-        brew install autoconf automake coreutils gcc libtool mpich
+        brew install autoconf automake coreutils gcc libtool mpich gnu-sed
         ln -s /usr/local/bin/gcc-9 /usr/local/bin/gcc
         ln -s /usr/local/bin/g++-9 /usr/local/bin/g++
         ln -s /usr/local/bin/greadlink /usr/local/bin/readlink
         ln -s /usr/local/bin/gdate /usr/local/bin/date
+        ln -s /usr/local/bin/gsed /usr/local/bin/sed
 
     - name: Fetch dependencies
       run: ./get.sh

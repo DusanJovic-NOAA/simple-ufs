@@ -112,8 +112,9 @@ cp ${FIX_DATA}/fix_am/global_albedo4.1x1.grb                    .
 cp ${FIX_DATA}/fix_am/global_co2historicaldata_glob.txt         co2historicaldata_glob.txt
 cp ${FIX_DATA}/fix_am/co2monthlycyc.txt                         .
 cp ${FIX_DATA}/fix_am/global_glacier.2x2.grb                    .
+cp ${FIX_DATA}/fix_am/global_h2o_pltc.f77                       global_h2oprdlos.f77
 cp ${FIX_DATA}/fix_am/global_maxice.2x2.grb                     .
-cp ${FIX_DATA}/fix_am/global_o3prdlos.f77                       .
+cp ${FIX_DATA}/fix_am/ozprdlos_2015_new_sbuvO3_tclm15_nuchem.f77 global_o3prdlos.f77
 cp ${FIX_DATA}/fix_am/global_shdmax.0.144x0.144.grb             .
 cp ${FIX_DATA}/fix_am/global_shdmin.0.144x0.144.grb             .
 cp ${FIX_DATA}/fix_am/global_slope.1x1.grb                      .
@@ -124,7 +125,7 @@ cp ${FIX_DATA}/fix_am/global_vegfrac.0.144.decpercent.grb       .
 cp ${FIX_DATA}/fix_am/global_sfc_emissivity_idx.txt             sfc_emissivity_idx.txt
 
 cp ${FIX_DATA}/fix_am/${FNABSC}                                 .
-cp ${FIX_DATA}/fix_am/global_slmask.t1534.3072.1536.grb         .
+cp ${FIX_DATA}/fix_am/global_slmask.t1534.3072.1536.grb         seaice_newland.grb
 cp ${FIX_DATA}/fix_am/${FNALBC}                                 .
 cp ${FIX_DATA}/fix_am/${FNSMCC}                                 .
 cp ${FIX_DATA}/fix_am/${FNSOTC}                                 .

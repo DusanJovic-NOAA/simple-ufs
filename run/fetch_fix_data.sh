@@ -121,9 +121,9 @@ FIX_URL="https://ftp.emc.ncep.noaa.gov/EIB/UFS/global/fix"
     global_co2historicaldata_2013.txt
     global_co2historicaldata_glob.txt
     global_glacier.2x2.grb
+    global_h2o_pltc.f77
     global_hyblev.l65.txt
     global_maxice.2x2.grb
-    global_o3prdlos.f77
     global_sfc_emissivity_idx.txt
     global_sfc_emissivity_idx.txt
     global_shdmax.0.144x0.144.grb
@@ -135,6 +135,9 @@ FIX_URL="https://ftp.emc.ncep.noaa.gov/EIB/UFS/global/fix"
     global_vegfrac.0.144.decpercent.grb
 
     global_slmask.t1534.3072.1536.grb
+
+    global_o3prdlos.f77
+    ozprdlos_2015_new_sbuvO3_tclm15_nuchem.f77
 
     global_mxsnoalb.uariz.t${JCAP}.${LONB}.${LATB}.rg.grb
     global_snowfree_albedo.bosu.t${JCAP}.${LONB}.${LATB}.rg.grb
