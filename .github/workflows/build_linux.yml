@@ -13,7 +13,7 @@ jobs:
 
     - name: Update packages
       run: |
-        sudo apt-get install -y cmake g++ gcc gfortran libmpich-dev libxml2-dev
+        sudo apt-get install -y cmake g++ gcc gfortran libmpich-dev
 
     - name: Fetch dependencies
       run: ./get.sh
