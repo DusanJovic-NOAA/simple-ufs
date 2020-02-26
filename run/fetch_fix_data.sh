@@ -125,7 +125,6 @@ FIX_URL="https://ftp.emc.ncep.noaa.gov/EIB/UFS/global/fix"
     global_hyblev.l65.txt
     global_maxice.2x2.grb
     global_sfc_emissivity_idx.txt
-    global_sfc_emissivity_idx.txt
     global_shdmax.0.144x0.144.grb
     global_shdmin.0.144x0.144.grb
     global_slope.1x1.grb

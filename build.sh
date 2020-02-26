@@ -230,6 +230,13 @@ printf '%-.30s ' "Building preproc ..........................."
     export W3NCO_LIB4=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_4.a
     export W3NCO_LIBd=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_d.a
 
+    export LANDSFCUTIL_INC4=${NCEPLIBS_DIR}/include
+    export LANDSFCUTIL_INC8=${NCEPLIBS_DIR}/include
+    export LANDSFCUTIL_INCd=${NCEPLIBS_DIR}/include
+    export LANDSFCUTIL_LIB4=${NCEPLIBS_DIR}/lib/liblandsfcutil_v2.1.0_4.a
+    export LANDSFCUTIL_LIB8=${NCEPLIBS_DIR}/lib/liblandsfcutil_v2.1.0_8.a
+    export LANDSFCUTIL_LIBd=${NCEPLIBS_DIR}/lib/liblandsfcutil_v2.1.0_d.a
+
     cmake .. -DCMAKE_PREFIX_PATH=${MYDIR}/libs/3rdparty/local \
              -DCMAKE_C_COMPILER=${MPICC} \
              -DCMAKE_CXX_COMPILER=${MPICXX} \
@@ -307,8 +314,8 @@ printf '%-.30s ' "Building post ..........................."
   export CRTM_INC=${NCEPLIBS_DIR}/include
   export CRTM_LIB=${NCEPLIBS_DIR}/lib/libcrtm_v2.3.0.a
 
-  export G2TMPL_INCd=${NCEPLIBS_DIR}/include_d
-  export G2TMPL_LIBd=${NCEPLIBS_DIR}/lib/libg2tmpl_v1.5.0_d.a
+  export G2TMPL_INC=${NCEPLIBS_DIR}/include
+  export G2TMPL_LIB=${NCEPLIBS_DIR}/lib/libg2tmpl_v1.5.0.a
 
   export G2_INC4=${NCEPLIBS_DIR}/include_4
   export G2_INCd=${NCEPLIBS_DIR}/include_d
@@ -338,6 +345,8 @@ printf '%-.30s ' "Building post ..........................."
   export SP_LIBd=${NCEPLIBS_DIR}/lib/libsp_v2.0.2_d.a
 
   export W3EMC_INC4=${NCEPLIBS_DIR}/include_4
+  export W3EMC_INCd=${NCEPLIBS_DIR}/include_d
+  export W3EMC_INC8=${NCEPLIBS_DIR}/include_8
   export W3EMC_LIB4=${NCEPLIBS_DIR}/lib/libw3emc_v2.2.0_4.a
   export W3EMC_LIBd=${NCEPLIBS_DIR}/lib/libw3emc_v2.2.0_d.a
   export W3EMC_LIB8=${NCEPLIBS_DIR}/lib/libw3emc_v2.2.0_8.a
