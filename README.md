@@ -3,6 +3,10 @@
 <a href="https://github.com/DusanJovic-NOAA/simple-ufs/actions"><img alt="GitHub Actions status" src="https://github.com/DusanJovic-NOAA/simple-ufs/workflows/Build%20Linux/badge.svg"></a>
 <a href="https://github.com/DusanJovic-NOAA/simple-ufs/actions"><img alt="GitHub Actions status" src="https://github.com/DusanJovic-NOAA/simple-ufs/workflows/Build%20macOS/badge.svg"></a>
 
+<a href="https://github.com/DusanJovic-NOAA/simple-ufs/actions"><img alt="GitHub Actions status" src="https://github.com/DusanJovic-NOAA/simple-ufs/workflows/Build%20CentOS%207/badge.svg"></a>
+<a href="https://github.com/DusanJovic-NOAA/simple-ufs/actions"><img alt="GitHub Actions status" src="https://github.com/DusanJovic-NOAA/simple-ufs/workflows/Build%20CentOS%208/badge.svg"></a>
+<a href="https://github.com/DusanJovic-NOAA/simple-ufs/actions"><img alt="GitHub Actions status" src="https://github.com/DusanJovic-NOAA/simple-ufs/workflows/Build%20Ubuntu/badge.svg"></a>
+
 Let's start with a disclaimer.
 
 ## Disclaimer
