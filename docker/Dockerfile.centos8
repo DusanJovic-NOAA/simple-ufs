@@ -1,0 +1,56 @@
+FROM centos:8
+
+RUN dnf -y install 'dnf-command(config-manager)'
+RUN dnf config-manager --enable PowerTools
+RUN dnf -y update
+RUN dnf clean all
+RUN dnf -y install \
+           autoconf \
+           automake \
+           curl \
+           gcc-c++ \
+           gcc-gfortran \
+           git \
+           libtool \
+           make \
+           python2 \
+           redhat-rpm-config \
+           which
+
+RUN alternatives --set python /usr/bin/python2
+
+RUN cd /tmp && \
+    curl -f -s -S -R -L -O https://github.com/Kitware/CMake/releases/download/v3.16.4/cmake-3.16.4-Linux-x86_64.tar.gz && \
+    mkdir -p /usr/local/cmake && \
+    tar zxvf cmake-3.16.4-Linux-x86_64.tar.gz -C /usr/local/cmake --strip-components=1 && \
+    rm cmake-3.16.4-Linux-x86_64.tar.gz && \
+    echo export PATH=/usr/local/cmake/bin:\$PATH >> /etc/bashrc
+
+RUN useradd -ms /bin/bash builder
+WORKDIR /home/builder
+RUN mkdir /home/builder/simple-ufs
+COPY . /home/builder/simple-ufs
+RUN chown -R builder:builder /home/builder/simple-ufs
+
+USER builder
+
+RUN . /etc/bashrc && \
+ cd /home/builder/simple-ufs/libs/mpilibs && \
+ ./build.sh gnu && \
+ export PATH=/home/builder/simple-ufs/libs/mpilibs/local/mpich3/bin:$PATH && \
+ cd /home/builder/simple-ufs && \
+ ./get.sh && \
+ ./build.sh gnu -3rdparty -nceplibs -preproc -model -post && \
+ cd run && \
+ sed -i -e 's/NHOURS_FCST=24/NHOURS_FCST=3/g' configuration.sh && \
+ sed -i -e 's/NFHMAX_HF=12/NFHMAX_HF=3/g' configuration.sh && \
+ ./fetch_fix_data.sh && \
+ ./fetch_input_data.sh && \
+ ./run_chgres_cube.sh && \
+ ./run_model.sh && \
+ ./run_post.sh && \
+ ls -l chgres_run && \
+ ls -l model_run && \
+ ls -l post_run
+
+CMD ["/bin/bash"]
