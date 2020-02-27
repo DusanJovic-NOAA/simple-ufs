@@ -1,0 +1,22 @@
+name: Build Ubuntu
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Build docker image
+      run: |
+        docker build -t sufs_ubuntu -f docker/Dockerfile.ubuntu .
+        docker save sufs_ubuntu:latest | gzip > sufs_ubuntu.tar.gz
+
+#    - uses: actions/upload-artifact@v1
+#      with:
+#        name: sufs_ubuntu.tar.gz
+#        path: sufs_ubuntu.tar.gz

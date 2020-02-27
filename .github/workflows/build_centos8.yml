@@ -1,0 +1,22 @@
+name: Build CentOS 8
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Build docker image
+      run: |
+        docker build -t sufs_centos8 -f docker/Dockerfile.centos8 .
+        docker save sufs_centos8:latest | gzip > sufs_centos8.tar.gz
+
+#    - uses: actions/upload-artifact@v1
+#      with:
+#        name: sufs_centos8.tar.gz
+#        path: sufs_centos8.tar.gz

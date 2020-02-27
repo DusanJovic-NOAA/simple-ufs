@@ -37,7 +37,7 @@ echo
 MAX_BUILD_JOBS=${MAX_BUILD_JOBS:-4}
 
 INSTALL_MPICH=on
-INSTALL_OPENMPI=on
+INSTALL_OPENMPI=off
 
 MYDIR=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
 PREFIX_PATH="$(readlink -f "${MYDIR}"/local)"
