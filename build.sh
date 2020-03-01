@@ -167,76 +167,18 @@ fi
 if [ $BUILD_PREPROC == yes ]; then
 printf '%-.30s ' "Building preproc ..........................."
 (
-  export target=linux.${COMPILER}
-  export NCEPLIBS=${MYDIR}/libs/nceplibs/local
+  cd src/preproc
 
-  #(
-  #  cd src/preproc/sorc
-  #  ./build_fre-nctools.sh
-  #  ./build_orog.sh
-  #  ./build_chgres.sh
-  #  ./build_chgres_cube.sh
-  #  ./build_sfc_climo_gen.sh
-  #  cp ../exec/* ${MYDIR}/bin/
-  #)
+  rm -rf build
+  mkdir build
+  cd build
 
-  #(
-  #  export IP_INCd=${NCEPLIBS}/include_d
-  #  export NEMSIO_INC=${NCEPLIBS}/include
-  #  export SFCIO_INC4=${NCEPLIBS}/include_4
-  #  export SIGIO_INC4=${NCEPLIBS}/include_4
+  cmake .. -DCMAKE_PREFIX_PATH="${MYDIR}/libs/3rdparty/local;${MYDIR}/libs/nceplibs/local" \
+		   -DCMAKE_Fortran_COMPILER=${MPIF90}
 
-  #  export BACIO_LIB4=${NCEPLIBS}/lib/libbacio_v2.1.0_4.a
-  #  export IP_LIBd=${NCEPLIBS}/lib/libip_v3.0.0_d.a
-  #  export NEMSIO_LIB=${NCEPLIBS}/lib/libnemsio_v2.2.3.a
-  #  export SFCIO_LIB4=${NCEPLIBS}/lib/libsfcio_v1.1.0_4.a
-  #  export SIGIO_LIB4=${NCEPLIBS}/lib/libsigio_v2.1.0_4.a
-  #  export SP_LIBd=${NCEPLIBS}/lib/libsp_v2.0.2_d.a
-  #  export W3NCO_LIBd=${NCEPLIBS}/lib/libw3nco_v2.0.6_d.a
+  make -j 8
 
-  #  export WGRIB2_DIR=${MYDIR}/libs/3rdparty/local
-
-  #  export WGRIB2API_INC=${WGRIB2_DIR}/include
-  #  export WGRIB2_LIB=${WGRIB2_DIR}/lib/libwgrib2.a
-
-  #  cd src/preproc/sorc
-  #  ./build_chgres_cube.sh
-  #  cp ../exec/chgres_cube.exe ${MYDIR}/bin/chgres_cube_grib2.exe
-  #)
-
-  (
-    cd src/preproc
-
-    rm -rf build
-    mkdir build
-    cd build
-
-#    export NCEPLIBS_DIR=${MYDIR}/libs/nceplibs/local
-#
-#    export BACIO_LIB4=${NCEPLIBS_DIR}/lib/libbacio_v2.1.0_4.a
-#
-#    export NEMSIO_INC=${NCEPLIBS_DIR}/include
-#    export NEMSIO_LIB=${NCEPLIBS_DIR}/lib/libnemsio_v2.2.3.a
-#
-#    export SFCIO_INC4=${NCEPLIBS_DIR}/include_4
-#    export SFCIO_LIB4=${NCEPLIBS_DIR}/lib/libsfcio_v1.1.0_4.a
-#
-#    export SIGIO_INC4=${NCEPLIBS_DIR}/include_4
-#    export SIGIO_LIB4=${NCEPLIBS_DIR}/lib/libsigio_v2.1.0_4.a
-#
-#    export SP_LIB4=${NCEPLIBS_DIR}/lib/libsp_v2.0.2_4.a
-#    export SP_LIBd=${NCEPLIBS_DIR}/lib/libsp_v2.0.2_d.a
-#
-#    export W3NCO_LIB4=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_4.a
-#    export W3NCO_LIBd=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_d.a
-
-    cmake .. -DCMAKE_PREFIX_PATH="${MYDIR}/libs/3rdparty/local;${MYDIR}/libs/nceplibs/local" \
-             -DCMAKE_Fortran_COMPILER=${MPIF90}
-
-    make -j 8
-
-    cp sorc/chgres_cube.fd/chgres_cube.exe ${MYDIR}/bin/chgres_cube_grib2.exe
-  )
+  cp sorc/chgres_cube.fd/chgres_cube.exe ${MYDIR}/bin/chgres_cube_grib2.exe
 
 ) > log_preproc 2>&1
 echo 'done'
@@ -248,24 +190,7 @@ fi
 if [ $BUILD_MODEL == yes ]; then
 printf '%-.30s ' "Building model ..........................."
 (
-  # gmake build
-  # -----------
-  # mkdir -p src/model/modulefiles/linux.${COMPILER}
-  # cp src/patches/modulefiles_linux.${COMPILER}_fv3 src/model/modulefiles/linux.${COMPILER}/fv3
-  # cp src/patches/conf_configure.fv3.linux.${COMPILER} src/model/conf/configure.fv3.linux.${COMPILER}
 
-  # export NCEPLIBS_DIR=${MYDIR}/libs/nceplibs/local
-  # export NEMS_COMPILER=${COMPILER}
-  # export BUILD_ENV=linux.${COMPILER}
-  # export FC=${MPIF90}  # for ccpp cmake
-
-  # cd src/model/NEMS
-  # make -j 4 COMPONENTS="CCPP,FV3" FV3_MAKEOPT="DEBUG=N 32BIT=Y OPENMP=N CCPP=Y STATIC=Y SUITES=FV3_GFS_2017" build
-  # cp exe/NEMS.x ${MYDIR}/bin/ufs_model
-
-
-  # cmake build
-  # -----------
   export CMAKE_Platform=linux.${COMPILER}
   export CMAKE_C_COMPILER=${MPICC}
   export CMAKE_CXX_COMPILER=${MPICXX}
@@ -298,52 +223,6 @@ fi
 if [ $BUILD_POST == yes ]; then
 printf '%-.30s ' "Building post ..........................."
 (
-# export NCEPLIBS_DIR=${MYDIR}/libs/nceplibs/local
-#
-# export BACIO_LIB4=${NCEPLIBS_DIR}/lib/libbacio_v2.1.0_4.a
-#
-# export CRTM_INC=${NCEPLIBS_DIR}/include
-# export CRTM_LIB=${NCEPLIBS_DIR}/lib/libcrtm_v2.3.0.a
-#
-# export G2TMPL_INCd=${NCEPLIBS_DIR}/include_d
-# export G2TMPL_LIBd=${NCEPLIBS_DIR}/lib/libg2tmpl_v1.5.0_d.a
-#
-# export G2_INC4=${NCEPLIBS_DIR}/include_4
-# export G2_INCd=${NCEPLIBS_DIR}/include_d
-# export G2_LIB4=${NCEPLIBS_DIR}/lib/libg2_v3.1.0_4.a
-# export G2_LIBd=${NCEPLIBS_DIR}/lib/libg2_v3.1.0_d.a
-#
-# export GFSIO_INC4=${NCEPLIBS_DIR}/include_4
-# export GFSIO_LIB4=${NCEPLIBS_DIR}/lib/libgfsio_v1.1.0_4.a
-#
-# export IP_INC4=${NCEPLIBS_DIR}/include_4
-# export IP_INCd=${NCEPLIBS_DIR}/include_d
-# export IP_INC8=${NCEPLIBS_DIR}/include_8
-# export IP_LIB4=${NCEPLIBS_DIR}/lib/libip_v3.0.0_4.a
-# export IP_LIBd=${NCEPLIBS_DIR}/lib/libip_v3.0.0_d.a
-# export IP_LIB8=${NCEPLIBS_DIR}/lib/libip_v3.0.0_8.a
-#
-# export NEMSIO_INC=${NCEPLIBS_DIR}/include
-# export NEMSIO_LIB=${NCEPLIBS_DIR}/lib/libnemsio_v2.2.3.a
-#
-# export SFCIO_INC4=${NCEPLIBS_DIR}/include_4
-# export SFCIO_LIB4=${NCEPLIBS_DIR}/lib/libsfcio_v1.1.0_4.a
-#
-# export SIGIO_INC4=${NCEPLIBS_DIR}/include_4
-# export SIGIO_LIB4=${NCEPLIBS_DIR}/lib/libsigio_v2.1.0_4.a
-#
-# export SP_LIB4=${NCEPLIBS_DIR}/lib/libsp_v2.0.2_4.a
-# export SP_LIBd=${NCEPLIBS_DIR}/lib/libsp_v2.0.2_d.a
-#
-# export W3EMC_INC4=${NCEPLIBS_DIR}/include_4
-# export W3EMC_LIB4=${NCEPLIBS_DIR}/lib/libw3emc_v2.2.0_4.a
-# export W3EMC_LIBd=${NCEPLIBS_DIR}/lib/libw3emc_v2.2.0_d.a
-# export W3EMC_LIB8=${NCEPLIBS_DIR}/lib/libw3emc_v2.2.0_8.a
-#
-# export W3NCO_LIB4=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_4.a
-# export W3NCO_LIBd=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_d.a
-# export W3NCO_LIB8=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_8.a
-
   cd src/post
 
   rm -rf build
