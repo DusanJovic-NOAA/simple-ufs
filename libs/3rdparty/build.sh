@@ -405,6 +405,7 @@ printf '%-.30s ' 'Building wgrib2 .........................'
   sed -i -e 's/^USE_IPOLATES=3/USE_IPOLATES=0/g' makefile
   sed -i -e 's/^USE_OPENMP=1/USE_OPENMP=0/g' makefile
   sed -i -e 's/^USE_AEC=1/USE_AEC=0/g' makefile
+  sed -i -e '/CCjasper/ s/gcc/${CC}/' makefile
 
   export COMP_SYS=${COMPILERS}_linux
 

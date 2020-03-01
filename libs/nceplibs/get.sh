@@ -13,7 +13,6 @@ NCEPLIBS-gfsio
 NCEPLIBS-ip
 NCEPLIBS-landsfcutil
 NCEPLIBS-nemsio
-NCEPLIBS-nemsiogfs
 NCEPLIBS-sfcio
 NCEPLIBS-sigio
 NCEPLIBS-sp
@@ -25,14 +24,6 @@ EMC_crtm
 for libname in ${ALL_LIBS}; do
 (
   rm -rf ${libname}
-
-  git clone --recursive https://github.com/NOAA-EMC/${libname}
-  cd ${libname}
-
-  git checkout release/public-v1
-  git submodule sync
-  git submodule update --init
-  git status
-  git diff
+  git clone --recursive --branch release/public-v1 https://github.com/NOAA-EMC/${libname}
 )
 done

@@ -24,7 +24,7 @@ if [[ $COMPILER == gnu ]]; then
   export MPIF90=${MPIF90:-mpif90}
   ESMF_COMPILER=gfortran
 elif [[ $COMPILER == intel ]]; then
-  if [[ $(type ftn &> /dev/null) ]]; then
+  if [[ $(command -v ftn) ]]; then
     # Special case on Cray systems
     export CC=${CC:-cc}
     export CXX=${CXX:-CC}
@@ -211,35 +211,26 @@ printf '%-.30s ' "Building preproc ..........................."
     mkdir build
     cd build
 
-    export NCEPLIBS_DIR=${MYDIR}/libs/nceplibs/local
+#    export NCEPLIBS_DIR=${MYDIR}/libs/nceplibs/local
+#
+#    export BACIO_LIB4=${NCEPLIBS_DIR}/lib/libbacio_v2.1.0_4.a
+#
+#    export NEMSIO_INC=${NCEPLIBS_DIR}/include
+#    export NEMSIO_LIB=${NCEPLIBS_DIR}/lib/libnemsio_v2.2.3.a
+#
+#    export SFCIO_INC4=${NCEPLIBS_DIR}/include_4
+#    export SFCIO_LIB4=${NCEPLIBS_DIR}/lib/libsfcio_v1.1.0_4.a
+#
+#    export SIGIO_INC4=${NCEPLIBS_DIR}/include_4
+#    export SIGIO_LIB4=${NCEPLIBS_DIR}/lib/libsigio_v2.1.0_4.a
+#
+#    export SP_LIB4=${NCEPLIBS_DIR}/lib/libsp_v2.0.2_4.a
+#    export SP_LIBd=${NCEPLIBS_DIR}/lib/libsp_v2.0.2_d.a
+#
+#    export W3NCO_LIB4=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_4.a
+#    export W3NCO_LIBd=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_d.a
 
-    export BACIO_LIB4=${NCEPLIBS_DIR}/lib/libbacio_v2.1.0_4.a
-
-    export NEMSIO_INC=${NCEPLIBS_DIR}/include
-    export NEMSIO_LIB=${NCEPLIBS_DIR}/lib/libnemsio_v2.2.3.a
-
-    export SFCIO_INC4=${NCEPLIBS_DIR}/include_4
-    export SFCIO_LIB4=${NCEPLIBS_DIR}/lib/libsfcio_v1.1.0_4.a
-
-    export SIGIO_INC4=${NCEPLIBS_DIR}/include_4
-    export SIGIO_LIB4=${NCEPLIBS_DIR}/lib/libsigio_v2.1.0_4.a
-
-    export SP_LIB4=${NCEPLIBS_DIR}/lib/libsp_v2.0.2_4.a
-    export SP_LIBd=${NCEPLIBS_DIR}/lib/libsp_v2.0.2_d.a
-
-    export W3NCO_LIB4=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_4.a
-    export W3NCO_LIBd=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_d.a
-
-    export LANDSFCUTIL_INC4=${NCEPLIBS_DIR}/include
-    export LANDSFCUTIL_INC8=${NCEPLIBS_DIR}/include
-    export LANDSFCUTIL_INCd=${NCEPLIBS_DIR}/include
-    export LANDSFCUTIL_LIB4=${NCEPLIBS_DIR}/lib/liblandsfcutil_v2.1.0_4.a
-    export LANDSFCUTIL_LIB8=${NCEPLIBS_DIR}/lib/liblandsfcutil_v2.1.0_8.a
-    export LANDSFCUTIL_LIBd=${NCEPLIBS_DIR}/lib/liblandsfcutil_v2.1.0_d.a
-
-    cmake .. -DCMAKE_PREFIX_PATH=${MYDIR}/libs/3rdparty/local \
-             -DCMAKE_C_COMPILER=${MPICC} \
-             -DCMAKE_CXX_COMPILER=${MPICXX} \
+    cmake .. -DCMAKE_PREFIX_PATH="${MYDIR}/libs/3rdparty/local;${MYDIR}/libs/nceplibs/local" \
              -DCMAKE_Fortran_COMPILER=${MPIF90}
 
     make -j 8
@@ -282,15 +273,15 @@ printf '%-.30s ' "Building model ..........................."
 
   export NCEPLIBS_DIR=${MYDIR}/libs/nceplibs/local
 
-  export BACIO_LIB4=${NCEPLIBS_DIR}/lib/libbacio_v2.1.0_4.a
-  export NEMSIO_INC=${NCEPLIBS_DIR}/include
-  export NEMSIO_LIB=${NCEPLIBS_DIR}/lib/libnemsio_v2.2.3.a
-  export SP_LIBd=${NCEPLIBS_DIR}/lib/libsp_v2.0.2_d.a
-  export W3EMC_LIBd=${NCEPLIBS_DIR}/lib/libw3emc_v2.2.0_d.a
-  export W3NCO_LIBd=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_d.a
+  export BACIO_LIB4=${NCEPLIBS_DIR}/bacio_2.2.0/lib/libbacio_v2.2.0_4.a
+  export NEMSIO_INC=${NCEPLIBS_DIR}/nemsio_2.2.3/include
+  export NEMSIO_LIB=${NCEPLIBS_DIR}/nemsio_2.2.3/lib/libnemsio_v2.2.3.a
+  export SP_LIBd=${NCEPLIBS_DIR}/sp_2.0.2/lib/libsp_v2.0.2_d.a
+  export W3EMC_LIBd=${NCEPLIBS_DIR}/w3emc_2.2.0/lib/libw3emc_v2.2.0_d.a
+  export W3NCO_LIBd=${NCEPLIBS_DIR}/w3nco_2.0.6/lib/libw3nco_v2.0.6_d.a
 
   cd ${MYDIR}/src/model
-  export CCPP_SUITES="FV3_GFS_v15p2"
+  export CCPP_SUITES="FV3_GFS_v15p2,FV3_GFS_v15p2_no_nsst"
   export CMAKE_FLAGS="-D32BIT=ON -DDYN32=ON"
 
   ./build.sh
@@ -307,53 +298,51 @@ fi
 if [ $BUILD_POST == yes ]; then
 printf '%-.30s ' "Building post ..........................."
 (
-  export NCEPLIBS_DIR=${MYDIR}/libs/nceplibs/local
-
-  export BACIO_LIB4=${NCEPLIBS_DIR}/lib/libbacio_v2.1.0_4.a
-
-  export CRTM_INC=${NCEPLIBS_DIR}/include
-  export CRTM_LIB=${NCEPLIBS_DIR}/lib/libcrtm_v2.3.0.a
-
-  export G2TMPL_INC=${NCEPLIBS_DIR}/include
-  export G2TMPL_LIB=${NCEPLIBS_DIR}/lib/libg2tmpl_v1.5.0.a
-
-  export G2_INC4=${NCEPLIBS_DIR}/include_4
-  export G2_INCd=${NCEPLIBS_DIR}/include_d
-  export G2_LIB4=${NCEPLIBS_DIR}/lib/libg2_v3.1.0_4.a
-  export G2_LIBd=${NCEPLIBS_DIR}/lib/libg2_v3.1.0_d.a
-
-  export GFSIO_INC4=${NCEPLIBS_DIR}/include_4
-  export GFSIO_LIB4=${NCEPLIBS_DIR}/lib/libgfsio_v1.1.0_4.a
-
-  export IP_INC4=${NCEPLIBS_DIR}/include_4
-  export IP_INCd=${NCEPLIBS_DIR}/include_d
-  export IP_INC8=${NCEPLIBS_DIR}/include_8
-  export IP_LIB4=${NCEPLIBS_DIR}/lib/libip_v3.0.0_4.a
-  export IP_LIBd=${NCEPLIBS_DIR}/lib/libip_v3.0.0_d.a
-  export IP_LIB8=${NCEPLIBS_DIR}/lib/libip_v3.0.0_8.a
-
-  export NEMSIO_INC=${NCEPLIBS_DIR}/include
-  export NEMSIO_LIB=${NCEPLIBS_DIR}/lib/libnemsio_v2.2.3.a
-
-  export SFCIO_INC4=${NCEPLIBS_DIR}/include_4
-  export SFCIO_LIB4=${NCEPLIBS_DIR}/lib/libsfcio_v1.1.0_4.a
-
-  export SIGIO_INC4=${NCEPLIBS_DIR}/include_4
-  export SIGIO_LIB4=${NCEPLIBS_DIR}/lib/libsigio_v2.1.0_4.a
-
-  export SP_LIB4=${NCEPLIBS_DIR}/lib/libsp_v2.0.2_4.a
-  export SP_LIBd=${NCEPLIBS_DIR}/lib/libsp_v2.0.2_d.a
-
-  export W3EMC_INC4=${NCEPLIBS_DIR}/include_4
-  export W3EMC_INCd=${NCEPLIBS_DIR}/include_d
-  export W3EMC_INC8=${NCEPLIBS_DIR}/include_8
-  export W3EMC_LIB4=${NCEPLIBS_DIR}/lib/libw3emc_v2.2.0_4.a
-  export W3EMC_LIBd=${NCEPLIBS_DIR}/lib/libw3emc_v2.2.0_d.a
-  export W3EMC_LIB8=${NCEPLIBS_DIR}/lib/libw3emc_v2.2.0_8.a
-
-  export W3NCO_LIB4=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_4.a
-  export W3NCO_LIBd=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_d.a
-  export W3NCO_LIB8=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_8.a
+# export NCEPLIBS_DIR=${MYDIR}/libs/nceplibs/local
+#
+# export BACIO_LIB4=${NCEPLIBS_DIR}/lib/libbacio_v2.1.0_4.a
+#
+# export CRTM_INC=${NCEPLIBS_DIR}/include
+# export CRTM_LIB=${NCEPLIBS_DIR}/lib/libcrtm_v2.3.0.a
+#
+# export G2TMPL_INCd=${NCEPLIBS_DIR}/include_d
+# export G2TMPL_LIBd=${NCEPLIBS_DIR}/lib/libg2tmpl_v1.5.0_d.a
+#
+# export G2_INC4=${NCEPLIBS_DIR}/include_4
+# export G2_INCd=${NCEPLIBS_DIR}/include_d
+# export G2_LIB4=${NCEPLIBS_DIR}/lib/libg2_v3.1.0_4.a
+# export G2_LIBd=${NCEPLIBS_DIR}/lib/libg2_v3.1.0_d.a
+#
+# export GFSIO_INC4=${NCEPLIBS_DIR}/include_4
+# export GFSIO_LIB4=${NCEPLIBS_DIR}/lib/libgfsio_v1.1.0_4.a
+#
+# export IP_INC4=${NCEPLIBS_DIR}/include_4
+# export IP_INCd=${NCEPLIBS_DIR}/include_d
+# export IP_INC8=${NCEPLIBS_DIR}/include_8
+# export IP_LIB4=${NCEPLIBS_DIR}/lib/libip_v3.0.0_4.a
+# export IP_LIBd=${NCEPLIBS_DIR}/lib/libip_v3.0.0_d.a
+# export IP_LIB8=${NCEPLIBS_DIR}/lib/libip_v3.0.0_8.a
+#
+# export NEMSIO_INC=${NCEPLIBS_DIR}/include
+# export NEMSIO_LIB=${NCEPLIBS_DIR}/lib/libnemsio_v2.2.3.a
+#
+# export SFCIO_INC4=${NCEPLIBS_DIR}/include_4
+# export SFCIO_LIB4=${NCEPLIBS_DIR}/lib/libsfcio_v1.1.0_4.a
+#
+# export SIGIO_INC4=${NCEPLIBS_DIR}/include_4
+# export SIGIO_LIB4=${NCEPLIBS_DIR}/lib/libsigio_v2.1.0_4.a
+#
+# export SP_LIB4=${NCEPLIBS_DIR}/lib/libsp_v2.0.2_4.a
+# export SP_LIBd=${NCEPLIBS_DIR}/lib/libsp_v2.0.2_d.a
+#
+# export W3EMC_INC4=${NCEPLIBS_DIR}/include_4
+# export W3EMC_LIB4=${NCEPLIBS_DIR}/lib/libw3emc_v2.2.0_4.a
+# export W3EMC_LIBd=${NCEPLIBS_DIR}/lib/libw3emc_v2.2.0_d.a
+# export W3EMC_LIB8=${NCEPLIBS_DIR}/lib/libw3emc_v2.2.0_8.a
+#
+# export W3NCO_LIB4=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_4.a
+# export W3NCO_LIBd=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_d.a
+# export W3NCO_LIB8=${NCEPLIBS_DIR}/lib/libw3nco_v2.0.6_8.a
 
   cd src/post
 
@@ -361,9 +350,7 @@ printf '%-.30s ' "Building post ..........................."
   mkdir build
   cd build
 
-  cmake .. -DCMAKE_PREFIX_PATH=${MYDIR}/libs/3rdparty/local \
-           -DCMAKE_C_COMPILER=${MPICC} \
-           -DCMAKE_CXX_COMPILER=${MPICXX} \
+  cmake .. -DCMAKE_PREFIX_PATH="${MYDIR}/libs/3rdparty/local;${MYDIR}/libs/nceplibs/local" \
            -DCMAKE_Fortran_COMPILER=${MPIF90}
 
   make -j 8

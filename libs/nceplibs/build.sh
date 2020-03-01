@@ -73,19 +73,27 @@ for libname in ${ALL_LIBS}; do
   printf '%-.30s ' "Building ${libname} ..........................."
   (
     set -x
+    cd ${MYDIR}/${libname}
+
     install_name=${libname//NCEPLIBS-/}
     install_name=${install_name//EMC_/}
-    cd ${MYDIR}/${libname}
+
+    if [[ -f VERSION ]]; then
+      version=$(cat VERSION)
+      install_name+="_${version}"
+    fi
+
     rm -rf build
     mkdir build
     cd build
+    rm -rf ${MYDIR}/local/${install_name}
+
     cmake .. \
-          -DCMAKE_INSTALL_PREFIX=${MYDIR}/local \
+          -DCMAKE_INSTALL_PREFIX=${MYDIR}/local/${install_name} \
           -DCMAKE_C_COMPILER=${CC} \
-          -DCMAKE_CXX_COMPILER=${CXX} \
           -DCMAKE_Fortran_COMPILER=${FC} \
           -DCMAKE_BUILD_TYPE=RELEASE \
-          -DCMAKE_PREFIX_PATH=${MYDIR}/../3rdparty/local
+          -DCMAKE_PREFIX_PATH="${MYDIR}/../3rdparty/local;${MYDIR}/local"
     make VERBOSE=1
     make install
 

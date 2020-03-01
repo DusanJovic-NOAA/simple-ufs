@@ -1,22 +1,17 @@
-&amip_interp_nml
-  interp_oi_sst = .true.
-  use_ncep_sst = .true.
-  use_ncep_ice = .false.
-  no_anom_sst = .false.
-  data_set = 'reynolds_oi'
-  date_out_of_range = 'climo'
-/
-
 &atmos_model_nml
   blocksize = 32
   chksum_debug = .false.
   dycore_only = .false.
-  fdiag = 0,1,2,3,4,5,6,7,8,9,10,11,12,15,18,21,24
-  ccpp_suite = 'FV3_GFS_v15p2'
+  fdiag = 1
+  fhmax = 384
+  fhout = 3
+  fhmaxhf = 120
+  fhouthf = 1
+  ccpp_suite = 'FV3_GFS_v15p2_no_nsst'
 /
 
 &diag_manager_nml
-       prepend_date = .F.
+  prepend_date = .false.
 /
 
 &fms_io_nml
@@ -39,7 +34,7 @@
   ntiles = 6
   npz = 64
   grid_type = -1
-  make_nh = .false.
+  make_nh = .true.
   fv_debug = .false.
   range_warn = .false.
   reset_eta = .false.
@@ -63,7 +58,7 @@
   k_split = 2
   n_split = 6
   nwat = 6
-  na_init = 0
+  na_init = 1
   d_ext = 0.
   dnats = 1
   fv_sg_adj = 450
@@ -149,15 +144,15 @@
   debug        = .false.
   oz_phys      = .F.
   oz_phys_2015 = .T.
-  nstf_name    = 2,1,0,0,0
+  nstf_name    = 0,0,0,0,0
   nst_anl      = .true.
   psautco      = 0.0008,0.0005
   prautco      = 0.00015,0.00015
   lgfdlmprad   = .true.
   effr_in      = .true.
-  do_sppt      = .true.
-  do_shum      = .true.
-  do_skeb      = .true.
+  do_sppt      = .false.
+  do_shum      = .false.
+  do_skeb      = .false.
   do_sfcperts  = .false.
 /
 
