@@ -199,11 +199,11 @@ printf '%-.30s ' "Building model ..........................."
   export NCEPLIBS_DIR=${MYDIR}/libs/nceplibs/local
 
   export BACIO_LIB4=${NCEPLIBS_DIR}/bacio_2.2.0/lib/libbacio_v2.2.0_4.a
-  export NEMSIO_INC=${NCEPLIBS_DIR}/nemsio_2.2.3/include
-  export NEMSIO_LIB=${NCEPLIBS_DIR}/nemsio_2.2.3/lib/libnemsio_v2.2.3.a
-  export SP_LIBd=${NCEPLIBS_DIR}/sp_2.0.2/lib/libsp_v2.0.2_d.a
-  export W3EMC_LIBd=${NCEPLIBS_DIR}/w3emc_2.2.0/lib/libw3emc_v2.2.0_d.a
-  export W3NCO_LIBd=${NCEPLIBS_DIR}/w3nco_2.0.6/lib/libw3nco_v2.0.6_d.a
+  export NEMSIO_INC=${NCEPLIBS_DIR}/nemsio_2.3.0/include
+  export NEMSIO_LIB=${NCEPLIBS_DIR}/nemsio_2.3.0/lib/libnemsio_v2.3.0.a
+  export SP_LIBd=${NCEPLIBS_DIR}/sp_2.1.0/lib/libsp_v2.1.0_d.a
+  export W3EMC_LIBd=${NCEPLIBS_DIR}/w3emc_2.5.0/lib/libw3emc_v2.5.0_d.a
+  export W3NCO_LIBd=${NCEPLIBS_DIR}/w3nco_2.1.0/lib/libw3nco_v2.1.0_d.a
 
   cd ${MYDIR}/src/model
   export CCPP_SUITES="FV3_GFS_v15p2,FV3_GFS_v15p2_no_nsst"
