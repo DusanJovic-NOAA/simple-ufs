@@ -14,9 +14,3 @@ jobs:
     - name: Build docker image
       run: |
         docker build -t sufs_centos7 -f docker/Dockerfile.centos7 .
-        docker save sufs_centos7:latest | gzip > sufs_centos7.tar.gz
-
-#    - uses: actions/upload-artifact@v1
-#      with:
-#        name: sufs_centos7.tar.gz
-#        path: sufs_centos7.tar.gz
