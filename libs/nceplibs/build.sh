@@ -63,6 +63,7 @@ NCEPLIBS-sp
 NCEPLIBS-landsfcutil
 NCEPLIBS-w3nco
 NCEPLIBS-nemsio
+NCEPLIBS-nemsiogfs
 NCEPLIBS-sfcio
 NCEPLIBS-sigio
 NCEPLIBS-w3emc

@@ -47,7 +47,7 @@ if [[ $gtype == "uniform" ]]; then
                  s:__START_DAY__:${START_DAY}:g
                  s:__START_HOUR__:${START_HOUR}:g" fort.41
 
-      ${APRUN} ${EXECufs}/chgres_cube_grib2.exe
+      ${APRUN} ${EXECufs}/chgres_cube
 
     else
 

@@ -13,6 +13,7 @@ NCEPLIBS-gfsio
 NCEPLIBS-ip
 NCEPLIBS-landsfcutil
 NCEPLIBS-nemsio
+NCEPLIBS-nemsiogfs
 NCEPLIBS-sfcio
 NCEPLIBS-sigio
 NCEPLIBS-sp

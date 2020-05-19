@@ -17,13 +17,14 @@ cd libs/nceplibs
 (
 cd src
 rm -rf preproc
-git clone --recursive --branch release/public-v1 https://github.com/NOAA-EMC/UFS_UTILS preproc
+git clone --recursive --branch develop https://github.com/NOAA-EMC/UFS_UTILS preproc
 )
 
 (
 cd src
 rm -rf model
-git clone --recursive --branch release/public-v1 https://github.com/ufs-community/ufs-weather-model model
+git clone --recursive --branch develop https://github.com/ufs-community/ufs-weather-model model
+sed -i -e '/affinity.c/d' model/CMakeLists.txt
 )
 
 (

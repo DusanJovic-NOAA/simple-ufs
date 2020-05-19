@@ -175,11 +175,12 @@ printf '%-.30s ' "Building preproc ..........................."
   cd build
 
   cmake .. -DCMAKE_PREFIX_PATH="${MYDIR}/libs/3rdparty/local;${MYDIR}/libs/nceplibs/local" \
-		   -DCMAKE_Fortran_COMPILER=${MPIF90}
+           -DCMAKE_Fortran_COMPILER=${MPIF90} \
+           -DNetCDF_PATH="${MYDIR}/libs/3rdparty/local" \
+           -DCMAKE_INSTALL_PREFIX="${MYDIR}"
 
   make -j 8
-
-  cp sorc/chgres_cube.fd/chgres_cube.exe ${MYDIR}/bin/chgres_cube_grib2.exe
+  make install
 
 ) > log_preproc 2>&1
 echo 'done'
