@@ -5,9 +5,9 @@ export res=${res:-96}
 #export gtype=regional
 export gtype=uniform
 
-export START_YEAR=${START_YEAR:-2020}
-export START_MONTH=${START_MONTH:-05}
-export START_DAY=${START_DAY:-11}
+export START_YEAR=${START_YEAR:-$(date --date="1 day ago" --utc +%Y)}
+export START_MONTH=${START_MONTH:-$(date --date="1 day ago" --utc +%m)}
+export START_DAY=${START_DAY:-$(date --date="1 day ago" --utc +%d)}
 export START_HOUR=${START_HOUR:-00}
 
 export NHOURS_FCST=24
