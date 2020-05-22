@@ -76,12 +76,26 @@ for libname in ${ALL_LIBS}; do
     set -x
     cd ${MYDIR}/${libname}
 
-    install_name=${libname//NCEPLIBS-/}
-    install_name=${install_name//EMC_/}
+    lib_name=${libname//NCEPLIBS-/}
+    lib_name=${lib_name//EMC_/}
+
 
     if [[ -f VERSION ]]; then
       version=$(cat VERSION)
-      install_name+="_${version}"
+      install_name="${lib_name}_${version}"
+    fi
+
+    install_prefix=${MYDIR}/local/${install_name}
+
+    mkdir -p ${MYDIR}/local/modulefiles/${lib_name}
+    modulefile=${MYDIR}/local/modulefiles/${lib_name}/${version}
+    echo "#%Module"                                                       >  ${modulefile}
+    echo "setenv ${lib_name}_VERSION ${version}"                          >> ${modulefile}
+    echo "setenv ${lib_name}_DIR ${install_prefix}/lib/cmake/${lib_name}" >> ${modulefile}
+
+    # for backward compatibility with WW3
+    if [[ ${lib_name} == bacio || ${lib_name} == g2 || ${lib_name} == w3nco ]]; then
+    echo "setenv ${lib_name^^}_LIB4 ${install_prefix}/lib/lib${lib_name}_v${version}_4.a" >> ${modulefile}
     fi
 
     rm -rf build
@@ -90,7 +104,7 @@ for libname in ${ALL_LIBS}; do
     rm -rf ${MYDIR}/local/${install_name}
 
     cmake .. \
-          -DCMAKE_INSTALL_PREFIX=${MYDIR}/local/${install_name} \
+          -DCMAKE_INSTALL_PREFIX=${install_prefix} \
           -DCMAKE_C_COMPILER=${CC} \
           -DCMAKE_Fortran_COMPILER=${FC} \
           -DCMAKE_BUILD_TYPE=RELEASE \
