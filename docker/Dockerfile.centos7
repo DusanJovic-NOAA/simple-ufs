@@ -3,7 +3,7 @@ FROM centos:7
 RUN yum -y update
 RUN yum clean all
 RUN yum -y install centos-release-scl
-RUN yum -y install devtoolset-8-gcc-c++ devtoolset-8-gcc-gfortran
+RUN yum -y install devtoolset-9-gcc-c++ devtoolset-9-gcc-gfortran
 RUN yum -y install \
            autoconf \
            automake \
@@ -14,7 +14,7 @@ RUN yum -y install \
            python27 \
            which
 
-RUN echo PATH=/opt/rh/devtoolset-8/root/usr/bin/:\$PATH >> /etc/bashrc
+RUN echo PATH=/opt/rh/devtoolset-9/root/usr/bin/:\$PATH >> /etc/bashrc
 
 RUN cd /tmp && \
     curl -f -s -S -R -L -O https://github.com/Kitware/CMake/releases/download/v3.16.4/cmake-3.16.4-Linux-x86_64.tar.gz && \

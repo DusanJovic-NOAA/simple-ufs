@@ -4,18 +4,20 @@ RUN dnf -y install 'dnf-command(config-manager)'
 RUN dnf config-manager --enable PowerTools
 RUN dnf -y update
 RUN dnf clean all
+RUN dnf -y install centos-release-stream
+RUN dnf -y install gcc-toolset-9-gcc gcc-toolset-9-gcc-c++ gcc-toolset-9-gcc-gfortran
 RUN dnf -y install \
            autoconf \
            automake \
            curl \
-           gcc-c++ \
-           gcc-gfortran \
            git \
            libtool \
            make \
            python2 \
            redhat-rpm-config \
            which
+
+RUN echo export PATH=/opt/rh/gcc-toolset-9/root/usr/bin/:\$PATH >> /etc/bashrc
 
 RUN alternatives --set python /usr/bin/python2
 
