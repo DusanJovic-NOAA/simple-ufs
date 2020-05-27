@@ -95,7 +95,8 @@ for libname in ${ALL_LIBS}; do
 
     # for backward compatibility with WW3
     if [[ ${lib_name} == bacio || ${lib_name} == g2 || ${lib_name} == w3nco ]]; then
-    echo "setenv ${lib_name^^}_LIB4 ${install_prefix}/lib/lib${lib_name}_v${version}_4.a" >> ${modulefile}
+      lib_name_uc=$( echo "${lib_name}" | tr '/a-z/' '/A-Z/' )
+      echo "setenv ${lib_name_uc}_LIB4 ${install_prefix}/lib/lib${lib_name}_v${version}_4.a" >> ${modulefile}
     fi
 
     rm -rf build

@@ -5,18 +5,29 @@ on: [push, pull_request]
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - name: Update packages
+    - name: Set environment
       run: |
-        sudo apt-get install -y cmake g++ gcc gfortran libmpich-dev
+        echo "::set-env name=CC::gcc-9"
+        echo "::set-env name=CXX::g++-9"
+        echo "::set-env name=FC::gfortran-9"
+        echo "::set-env name=MPICH_CC::gcc-9"
+        echo "::set-env name=MPICH_CXX::g++-9"
+        echo "::set-env name=MPICH_FC::gfortran-9"
 
     - name: Fetch dependencies
       run: ./get.sh
+
+# libs/mpilibs
+    - name: Build libs/mpilibs
+      run: |
+        cd ${GITHUB_WORKSPACE}/libs/mpilibs && ./build.sh gnu
+        echo "::set-env name=PATH::${GITHUB_WORKSPACE}/libs/mpilibs/local/mpich3/bin:${PATH}"
 
 # libs/3rdparty
     - name: Build libs/3rdparty
