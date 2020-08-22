@@ -11,18 +11,33 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - name: Update packages
+    - name: Update brew packages
       run: |
-        /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-        brew install autoconf automake coreutils gcc libtool mpich gnu-sed pkg-config
+        brew install autoconf automake coreutils gnu-sed pkg-config
         ln -s /usr/local/bin/gcc-9 /usr/local/bin/gcc
         ln -s /usr/local/bin/g++-9 /usr/local/bin/g++
+        ln -s /usr/local/bin/gfortran-9 /usr/local/bin/gfortran
         ln -s /usr/local/bin/greadlink /usr/local/bin/readlink
         ln -s /usr/local/bin/gdate /usr/local/bin/date
         ln -s /usr/local/bin/gsed /usr/local/bin/sed
 
-    - name: Fetch dependencies
-      run: ./get.sh
+# libs/mpilibs
+    - name: Build libs/mpilibs
+      run: |
+        cd libs/mpilibs
+        if ./build.sh gnu; then
+          cat src/log_mpich
+          ls -lR local
+        else
+          cat src/log_mpich
+          ls -lR local
+          exit 1
+        fi
+        echo "::add-path::$GITHUB_WORKSPACE/libs/mpilibs/local/mpich3/bin"
+
+    - name: Fetch preproc, model and post source code
+      run: |
+        ./get.sh
 
 # libs/3rdparty
     - name: Build libs/3rdparty
@@ -44,11 +59,11 @@ jobs:
       run: |
         if ./build.sh gnu -nceplibs; then
           cat log_nceplibs
-          cat libs/nceplibs/log_*
+          cat libs/nceplibs/*.log
           ls -lR libs/nceplibs/local
         else
           cat log_nceplibs
-          for log in libs/nceplibs/log_*; do
+          for log in libs/nceplibs/*.log; do
             if [ -f "$log" ]; then cat $log; fi
           done
           exit 1

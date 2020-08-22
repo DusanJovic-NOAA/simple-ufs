@@ -12,9 +12,6 @@ usage() {
 export COMPILER=$1
 shift
 
-OS=$(uname -s)
-ESMF_OS=${OS}
-
 if [[ $COMPILER == gnu ]]; then
   export CC=${CC:-gcc}
   export CXX=${CXX:-g++}
@@ -22,7 +19,6 @@ if [[ $COMPILER == gnu ]]; then
   export MPICC=${MPICC:-mpicc}
   export MPICXX=${MPICXX:-mpicxx}
   export MPIF90=${MPIF90:-mpif90}
-  ESMF_COMPILER=gfortran
 elif [[ $COMPILER == intel ]]; then
   if [[ $(command -v ftn) ]]; then
     # Special case on Cray systems
@@ -32,7 +28,6 @@ elif [[ $COMPILER == intel ]]; then
     export MPICC=${MPICC:-cc}
     export MPICXX=${MPICXX:-CC}
     export MPIF90=${MPIF90:-ftn}
-    ESMF_OS=Unicos
     MPI_IMPLEMENTATION=mpi
   else
     export CC=${CC:-icc}
@@ -42,7 +37,6 @@ elif [[ $COMPILER == intel ]]; then
     export MPICXX=${MPICXX:-mpicxx}
     export MPIF90=${MPIF90:-mpif90}
   fi
-  ESMF_COMPILER=intel
 else
   usage
 fi
@@ -108,8 +102,6 @@ ${FC} --version | head -1
 cmake --version | head -1
 echo
 
-OS=$(uname -s)
-
 MPI_IMPLEMENTATION=${MPI_IMPLEMENTATION:-mpich3}
 if ! command -v mpiexec > /dev/null ; then
   if [[ -f ${MYDIR}/mpilibs/local/${MPI_IMPLEMENTATION}/bin/mpiexec ]]; then
@@ -145,8 +137,8 @@ printf '%-.30s ' "Building 3rdparty .........................."
 echo 'done'
 fi
 
-export HDF5=${MYDIR}/libs/3rdparty/local
 export NETCDF=${MYDIR}/libs/3rdparty/local
+export PATH=${NETCDF}/bin:${PATH} # for nc-config for WW3
 export ESMFMKFILE=${MYDIR}/libs/3rdparty/local/lib/esmf.mk
 
 #
@@ -175,6 +167,7 @@ printf '%-.30s ' "Building preproc ..........................."
   cd build
 
   cmake .. -DCMAKE_PREFIX_PATH="${MYDIR}/libs/3rdparty/local;${MYDIR}/libs/nceplibs/local" \
+           -DCMAKE_C_COMPILER=${MPICC} \
            -DCMAKE_Fortran_COMPILER=${MPIF90} \
            -DNetCDF_PATH="${MYDIR}/libs/3rdparty/local" \
            -DCMAKE_INSTALL_PREFIX="${MYDIR}"
@@ -192,28 +185,24 @@ fi
 if [ $BUILD_MODEL == yes ]; then
 printf '%-.30s ' "Building model ..........................."
 (
-
-  export CMAKE_Platform=linux.${COMPILER}
   export CMAKE_C_COMPILER=${MPICC}
   export CMAKE_CXX_COMPILER=${MPICXX}
   export CMAKE_Fortran_COMPILER=${MPIF90}
 
-  export NCEPLIBS_DIR=${MYDIR}/libs/nceplibs/local
-
-  export BACIO_LIB4=${NCEPLIBS_DIR}/bacio_2.2.0/lib/libbacio_v2.2.0_4.a
-  export NEMSIO_INC=${NCEPLIBS_DIR}/nemsio_2.3.0/include
-  export NEMSIO_LIB=${NCEPLIBS_DIR}/nemsio_2.3.0/lib/libnemsio_v2.3.0.a
-  export SP_LIBd=${NCEPLIBS_DIR}/sp_2.1.0/lib/libsp_v2.1.0_d.a
-  export W3EMC_LIBd=${NCEPLIBS_DIR}/w3emc_2.5.0/lib/libw3emc_v2.5.0_d.a
-  export W3NCO_LIBd=${NCEPLIBS_DIR}/w3nco_2.1.0/lib/libw3nco_v2.1.0_d.a
-
   cd ${MYDIR}/src/model
   export CCPP_SUITES="FV3_GFS_v15p2,FV3_GFS_v15p2_no_nsst"
-  export CMAKE_FLAGS="-D32BIT=ON -DDYN32=ON"
+  export CMAKE_FLAGS="-D32BIT=ON -DDYN32=ON -DWW3=OFF -DINLINE_POST=OFF -DPARALLEL_NETCDF=ON"
+  export CMAKE_PREFIX_PATH=${MYDIR}/libs/3rdparty/local:${MYDIR}/libs/nceplibs/local
 
-  ./build.sh
+#  ./build.sh
+  rm -rf build
+  mkdir build
+  cd build
+  cmake .. -DCMAKE_INSTALL_PREFIX=install -DNETCDF_DIR=${NETCDF} -DCMAKE_BUILD_TYPE=Debug -DDEBUG=ON
+  make -j8
+  make install
 
-  cp ufs_weather_model ${MYDIR}/bin/ufs_model
+  cp NEMS.exe ${MYDIR}/bin/ufs_model
 
 ) > log_model 2>&1
 echo 'done'
@@ -234,8 +223,8 @@ printf '%-.30s ' "Building post ..........................."
   cmake .. -DCMAKE_PREFIX_PATH="${MYDIR}/libs/3rdparty/local;${MYDIR}/libs/nceplibs/local" \
            -DCMAKE_Fortran_COMPILER=${MPIF90}
 
-  make -j 8
-  cp sorc/ncep_post.fd/ncep_post ${MYDIR}/bin/ufs_post
+  make -j8
+  cp sorc/ncep_post.fd/nceppost.x ${MYDIR}/bin/ufs_post
 
 ) > log_post 2>&1
 echo 'done'

@@ -5,29 +5,19 @@ on: [push, pull_request]
 jobs:
   build:
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - name: Set environment
+    - name: Install mpich
       run: |
-        echo "::set-env name=CC::gcc-9"
-        echo "::set-env name=CXX::g++-9"
-        echo "::set-env name=FC::gfortran-9"
-        echo "::set-env name=MPICH_CC::gcc-9"
-        echo "::set-env name=MPICH_CXX::g++-9"
-        echo "::set-env name=MPICH_FC::gfortran-9"
+        sudo apt-get update
+        sudo apt-get install libmpich-dev
 
     - name: Fetch dependencies
       run: ./get.sh
-
-# libs/mpilibs
-    - name: Build libs/mpilibs
-      run: |
-        cd ${GITHUB_WORKSPACE}/libs/mpilibs && ./build.sh gnu
-        echo "::set-env name=PATH::${GITHUB_WORKSPACE}/libs/mpilibs/local/mpich3/bin:${PATH}"
 
 # libs/3rdparty
     - name: Build libs/3rdparty
@@ -49,11 +39,11 @@ jobs:
       run: |
         if ./build.sh gnu -nceplibs; then
           cat log_nceplibs
-          cat libs/nceplibs/log_*
+          cat libs/nceplibs/*.log
           ls -lR libs/nceplibs/local
         else
           cat log_nceplibs
-          for log in libs/nceplibs/log_*; do
+          for log in libs/nceplibs/*.log; do
             if [ -f "$log" ]; then cat $log; fi
           done
           exit 1

@@ -16,10 +16,16 @@ usage() {
 
 COMPILERS=$1
 
+function ver { printf "%d%02d%02d" $(echo "$1" | tr '.' ' '); }
+
 if [[ $COMPILERS == gnu ]]; then
   export CC=${CC:-gcc}
   export CXX=${CXX:-g++}
   export FC=${FC:-gfortran}
+  gcc_ver=$( gcc -dumpfullversion )
+  if [[ $(ver $gcc_ver ) -ge $(ver 10.0) ]]; then
+    export FFLAGS="-fallow-argument-mismatch" # for gcc 10
+  fi
 elif [[ $COMPILERS == intel ]]; then
   export CC=${CC:-icc}
   export CXX=${CXX:-icpc}
@@ -65,16 +71,24 @@ download_and_check_md5sum()
 
   local MD5HASH=''
   if [[ -f "$OUT_FILE" ]]; then
-    MD5HASH=$(md5sum "$OUT_FILE" 2>/dev/null | awk '{print $1}')
+    if [[ $OS == Darwin ]]; then
+      MD5HASH=$(md5 "$OUT_FILE" 2>/dev/null | awk '{print $4}')
+    else
+      MD5HASH=$(md5sum "$OUT_FILE" 2>/dev/null | awk '{print $1}')
+    fi
   fi
   if [[ "$MD5HASH" == "$HASH" ]]; then
     echo -e "$OUT_FILE ${GREEN}checksum OK${NC}"
   else
     rm -f "${OUT_FILE}"
     printf '%s' "Downloading $OUT_FILE "
-    curl -f -s -S -R -L "$URL" -o "$OUT_FILE"
+    curl -f -k -s -S -R -L "$URL" -o "$OUT_FILE"
     if [[ -f "$OUT_FILE" ]]; then
-      MD5HASH=$(md5sum "$OUT_FILE" 2>/dev/null | awk '{print $1}')
+      if [[ $OS == Darwin ]]; then
+        MD5HASH=$(md5 "$OUT_FILE" 2>/dev/null | awk '{print $4}')
+      else
+        MD5HASH=$(md5sum "$OUT_FILE" 2>/dev/null | awk '{print $1}')
+      fi
     fi
     if [[ "$MD5HASH" == "$HASH" ]]; then
       echo -e "${GREEN}checksum OK${NC}"
@@ -85,10 +99,10 @@ download_and_check_md5sum()
   fi
 }
 
-MPICH=mpich-3.3.1
+MPICH=mpich-3.3.2
 OPENMPI=openmpi-4.0.2
 
-[ $INSTALL_MPICH          == on ] && download_and_check_md5sum   9ed4cabd3fb86525427454381b25f6af   https://www.mpich.org/static/downloads/${MPICH:6:12}/${MPICH}.tar.gz
+[ $INSTALL_MPICH          == on ] && download_and_check_md5sum   2d680f620583beadd7a08acdcfe355e6   https://www.mpich.org/static/downloads/${MPICH:6:12}/${MPICH}.tar.gz
 [ $INSTALL_OPENMPI        == on ] && download_and_check_md5sum   d712bcc68a5a0bcce76b39843ed48158   https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.2.tar.gz
 
 #
@@ -101,7 +115,7 @@ ${FC} --version | head -1
 echo
 
 NPROC=$(nproc --all)
-BUILD_JOBS=$(( $NPROC < $MAX_BUILD_JOBS ? $NPROC : $MAX_BUILD_JOBS ))
+BUILD_JOBS=$(( NPROC < MAX_BUILD_JOBS ? NPROC : MAX_BUILD_JOBS ))
 
 
 ###
@@ -121,7 +135,7 @@ printf '%-.30s ' 'Building mpich ..........................'
               --disable-shared
   make -j ${BUILD_JOBS}
   make install
-  rm -rf ${SRC_PATH}/${MPICH}
+  rm -rf ${SRC_PATH:?}/${MPICH}
 ) > log_mpich 2>&1
 echo 'done'
 fi
@@ -144,7 +158,7 @@ printf '%-.30s ' 'Building openmpi ........................'
               --disable-oshmem
   make -j ${BUILD_JOBS}
   make install
-  rm -rf ${SRC_PATH}/${OPENMPI}
+  rm -rf ${SRC_PATH:?}/${OPENMPI}
 ) > log_openmpi 2>&1
 echo 'done'
 fi
