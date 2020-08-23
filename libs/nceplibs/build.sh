@@ -136,17 +136,12 @@ for lib in ${ALL_LIBS[*]}; do
     cd build
     rm -rf ${MYDIR}/local/${install_name}
 
-    # if [[ ${lib_name} == wgrib2 ]]; then
-    #   extra_cmake_flags=("-DUSE_NETCDF4=OFF")
-    # fi
-
-    cmake .. --trace-expand \
+    cmake .. \
           -DCMAKE_INSTALL_PREFIX=${install_prefix} \
           -DCMAKE_C_COMPILER=${MPICC} \
           -DCMAKE_Fortran_COMPILER=${MPIF90} \
           -DCMAKE_BUILD_TYPE=RELEASE \
-          -DCMAKE_PREFIX_PATH="${MYDIR}/../3rdparty/local;${install_root}" #\
-#          ${extra_cmake_flags[@]:-}
+          -DCMAKE_PREFIX_PATH="${MYDIR}/../3rdparty/local;${install_root}"
 
     make VERBOSE=1
     make install
