@@ -61,7 +61,7 @@ date
 MAX_BUILD_JOBS=${MAX_BUILD_JOBS:-8}
 
 INSTALL_ZLIB=on
-INSTALL_JPEG=on
+INSTALL_JPEG=off
 INSTALL_JASPER=on
 INSTALL_LIBPNG=on
 
@@ -126,22 +126,22 @@ download_and_check_md5sum()
 }
 
 ZLIB=zlib-1.2.11
-JPEG=jpeg-9c
-JASPER=jasper-1.900.16
+JPEG=libjpeg-9c
+JASPER=jasper-2.0.19
 LIBPNG=libpng-1.6.35
-HDF5=hdf5-1.12.0
+HDF5=hdf5-1_12_0
 NETCDF=netcdf-c-4.7.4
 NETCDF_FORTRAN=netcdf-fortran-4.5.3
 ESMF=ESMF_8_1_0_beta_snapshot_26
 
-[ $INSTALL_ZLIB           == on ] && download_and_check_md5sum   0095d2d2d1f3442ce1318336637b695f   https://github.com/madler/zlib/archive/v${ZLIB:5}.tar.gz ${ZLIB}.tar.gz
-[ $INSTALL_JPEG           == on ] && download_and_check_md5sum   93c62597eeef81a84d988bccbda1e990   http://www.ijg.org/files/jpegsrc.v9c.tar.gz ${JPEG}.tar.gz
-[ $INSTALL_JASPER         == on ] && download_and_check_md5sum   d0401ced2f5cc7aa1629696c5cba5980   http://www.ece.uvic.ca/~frodo/jasper/software/${JASPER}.tar.gz
-[ $INSTALL_LIBPNG         == on ] && download_and_check_md5sum   d94d9587c421ac42316b6ab8f64f1b85   https://download.sourceforge.net/libpng/${LIBPNG}.tar.gz
-[ $INSTALL_HDF5           == on ] && download_and_check_md5sum   9e22217d22eb568e09f0cc15fb641d7c   https://support.hdfgroup.org/ftp/HDF5/releases/${HDF5:0:9}/${HDF5}/src/${HDF5}.tar.gz
-[ $INSTALL_NETCDF_C       == on ] && download_and_check_md5sum   3e0a97e6abb9a989f8a8a2e395473597   https://www.unidata.ucar.edu/downloads/netcdf/ftp/${NETCDF}.tar.gz
-[ $INSTALL_NETCDF_FORTRAN == on ] && download_and_check_md5sum   10cfce1ed4f474af30dbbad076b085d2   https://www.unidata.ucar.edu/downloads/netcdf/ftp/${NETCDF_FORTRAN}.tar.gz
-[ $INSTALL_ESMF           == on ] && download_and_check_md5sum   2e8279f8e3c207655b1572b2eb3ea206   https://github.com/esmf-org/esmf/archive/${ESMF}.tar.gz
+[ $INSTALL_ZLIB           == on ] && download_and_check_md5sum   0095d2d2d1f3442ce1318336637b695f   https://github.com/madler/zlib/archive/v${ZLIB:5}.tar.gz                       ${ZLIB}.tar.gz
+[ $INSTALL_JPEG           == on ] && download_and_check_md5sum   e9d4612ccdadfacfa2276d81ca083639   https://github.com/winlibs/libjpeg/archive/${JPEG}.tar.gz                      ${JPEG}.tar.gz
+[ $INSTALL_JASPER         == on ] && download_and_check_md5sum   165376c403c9ccfd115c23db4e7815ea   https://github.com/jasper-software/jasper/archive/version-${JASPER:7}.tar.gz   ${JASPER}.tar.gz
+[ $INSTALL_LIBPNG         == on ] && download_and_check_md5sum   d703ed4913fcfb40021bd3d4d35e00b6   https://github.com/glennrp/libpng/archive/v${LIBPNG:7}.tar.gz                  ${LIBPNG}.tar.gz
+[ $INSTALL_HDF5           == on ] && download_and_check_md5sum   7181d12d1940b725248046077a849f54   https://github.com/HDFGroup/hdf5/archive/hdf5-${HDF5:5}.tar.gz                 ${HDF5}.tar.gz
+[ $INSTALL_NETCDF_C       == on ] && download_and_check_md5sum   33979e8f0cf4ee31323fc0934282111b   https://github.com/Unidata/netcdf-c/archive/v${NETCDF:9}.tar.gz                ${NETCDF}.tar.gz
+[ $INSTALL_NETCDF_FORTRAN == on ] && download_and_check_md5sum   47bf6eed50bd50b23b7e391dc1f8b5c4   https://github.com/Unidata/netcdf-fortran/archive/v${NETCDF_FORTRAN:15}.tar.gz ${NETCDF_FORTRAN}.tar.gz
+[ $INSTALL_ESMF           == on ] && download_and_check_md5sum   2e8279f8e3c207655b1572b2eb3ea206   https://github.com/esmf-org/esmf/archive/${ESMF}.tar.gz                        ${ESMF}.tar.gz
 
 [ $fetch_only == on ] && exit
 
@@ -168,6 +168,7 @@ ${CC} --version | head -1
 ${CXX} --version | head -1
 ${FC} --version | head -1
 mpiexec --version
+cmake --version
 echo
 
 ###
@@ -200,9 +201,9 @@ printf '%-.30s ' 'Building jpeg ...........................'
 (
   set -x
   cd ${SRC_PATH}
-  rm -rf ${JPEG}
+  rm -rf libjpeg-${JPEG}
   tar -zxf ${JPEG}.tar.gz
-  cd ${JPEG}
+  cd libjpeg-${JPEG}
   ./configure --prefix=${PREFIX_PATH} \
               --disable-shared
   make
@@ -223,13 +224,18 @@ printf '%-.30s ' 'Building jasper ...........................'
   cd ${SRC_PATH}
   rm -rf ${JASPER}
   tar -zxf ${JASPER}.tar.gz
+  mv jasper-version-${JASPER:7} ${JASPER}
   cd ${JASPER}
-  sed -i -e 's/ -pedantic-errors//g' configure.ac
-  sed -i -e 's/1.11 foreign dist-xz dist-bzip2/1.10 foreign/g' configure.ac # for wcoss cray
-  sed -i -e 's/tmpnam(obj->pathname);/snprintf(obj->pathname, L_tmpnam, "%stmp.XXXXXXXXXX", P_tmpdir);/g' src/libjasper/base/jas_stream.c
-  autoreconf -fiv
-  ./configure --prefix=${PREFIX_PATH} \
-              --disable-shared
+  mkdir bld && cd bld
+  cmake .. -DCMAKE_INSTALL_PREFIX=${PREFIX_PATH} \
+           -DCMAKE_BUILD_TYPE=Release \
+           -DJAS_ENABLE_DOC=OFF \
+           -DJAS_ENABLE_SHARED=OFF \
+           -DJAS_ENABLE_AUTOMATIC_DEPENDENCIES=OFF \
+           -DJAS_ENABLE_PROGRAMS=OFF \
+           -DJAS_ENABLE_OPENGL=OFF \
+           -DJAS_ENABLE_LIBJPEG=OFF \
+           -DCMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP=ON
   make
   make install
   rm -rf ${SRC_PATH:?}/${JASPER}
@@ -269,6 +275,7 @@ printf '%-.30s ' 'Building hdf5 ...........................'
   cd ${SRC_PATH}
   rm -rf ${HDF5}
   tar -zxf ${HDF5}.tar.gz
+  mv hdf5-${HDF5} ${HDF5}
   cd ${HDF5}
   CC=${MPICC} \
   CFLAGS+=" -pthread" \
