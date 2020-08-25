@@ -8,7 +8,7 @@ set -eu
 set -o pipefail
 
 usage() {
-  echo "Usage: $0 gnu | intel"
+  echo "Usage: $0 gnu | intel | fetch"
   exit 1
 }
 
@@ -16,6 +16,7 @@ usage() {
 
 COMPILERS=$1
 
+fetch_only=off
 if [[ $COMPILERS == gnu ]]; then
   export CC=${CC:-gcc}
   export CXX=${CXX:-g++}
@@ -40,25 +41,32 @@ elif [[ $COMPILERS == intel ]]; then
     export MPICXX=${MPICXX:-mpiicpc}
     export MPIF90=${MPIF90:-mpiifort}
   fi
+elif [[ $COMPILERS == fetch ]]; then
+  fetch_only=on
 else
   usage
 fi
 
 date
 
-echo
-echo "Building nceplibs libraries using ${COMPILERS} compilers"
-echo
-#
-# print compiler version
-#
-echo
-${CC} --version | head -1
-${CXX} --version | head -1
-${FC} --version | head -1
-mpiexec --version
-cmake --version | head -1
-echo
+if [[ $fetch_only == off ]]; then
+  echo
+  echo "Building nceplibs libraries using ${COMPILERS} compilers"
+  echo
+  #
+  # print compiler version
+  #
+  ${CC} --version | head -1
+  ${CXX} --version | head -1
+  ${FC} --version | head -1
+  mpiexec --version
+  cmake --version | head -1
+  echo
+else
+  echo
+  echo "Fetching nceplibs libraries"
+  echo
+fi
 
 MYDIR=$(cd "$(dirname "$(readlink -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
 
@@ -96,13 +104,18 @@ for lib in ${ALL_LIBS[*]}; do
 
   repo=$( basename ${repo_url} )
 
-  printf '%-.30s ' "Cloning  ${lib_name} ..........................."
-  (
-    cd ${MYDIR}
-    rm -rf ${repo}
-    git clone --recursive --branch ${tag} https://github.com/${repo_url}
-  ) > ${lib_name}_clone.log 2>&1
-  echo 'done'
+  if [[ ! -d ${repo} ]]; then
+	printf '%-.30s ' "Cloning  ${lib_name} ..........................."
+	(
+	  cd ${MYDIR}
+      rm -rf ${repo}-cloning
+	  git clone --recursive --branch ${tag} https://github.com/${repo_url} ${repo}-cloning
+      mv ${repo}-cloning ${repo}
+	) > ${lib_name}_clone.log 2>&1
+	echo 'done'
+  fi
+
+  [[ $fetch_only == on ]] && continue
 
   printf '%-.30s ' "Building ${lib_name} ..........................."
   (

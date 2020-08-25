@@ -71,8 +71,6 @@ INSTALL_NETCDF_FORTRAN=on
 
 INSTALL_ESMF=on
 
-INSTALL_WGRIB2=off
-
 MYDIR=$(cd "$(dirname "$(readlink -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
 PREFIX_PATH="${MYDIR}"/local
 export PATH=${PREFIX_PATH/bin}:$PATH
@@ -131,23 +129,19 @@ ZLIB=zlib-1.2.11
 JPEG=jpeg-9c
 JASPER=jasper-1.900.16
 LIBPNG=libpng-1.6.35
-#HDF5=hdf5-1.10.6
 HDF5=hdf5-1.12.0
 NETCDF=netcdf-c-4.7.4
 NETCDF_FORTRAN=netcdf-fortran-4.5.3
-ESMF=esmf_8_0_0_src
-WGRIB2=wgrib2-2.0.8
+ESMF=ESMF_8_1_0_beta_snapshot_26
 
-[ $INSTALL_ZLIB           == on ] && download_and_check_md5sum   1c9f62f0778697a09d36121ead88e08e   https://www.zlib.net/${ZLIB}.tar.gz
+[ $INSTALL_ZLIB           == on ] && download_and_check_md5sum   0095d2d2d1f3442ce1318336637b695f   https://github.com/madler/zlib/archive/v${ZLIB:5}.tar.gz ${ZLIB}.tar.gz
 [ $INSTALL_JPEG           == on ] && download_and_check_md5sum   93c62597eeef81a84d988bccbda1e990   http://www.ijg.org/files/jpegsrc.v9c.tar.gz ${JPEG}.tar.gz
 [ $INSTALL_JASPER         == on ] && download_and_check_md5sum   d0401ced2f5cc7aa1629696c5cba5980   http://www.ece.uvic.ca/~frodo/jasper/software/${JASPER}.tar.gz
 [ $INSTALL_LIBPNG         == on ] && download_and_check_md5sum   d94d9587c421ac42316b6ab8f64f1b85   https://download.sourceforge.net/libpng/${LIBPNG}.tar.gz
-#[ $INSTALL_HDF5           == on ] && download_and_check_md5sum   37f3089e7487daf0890baf3d3328e54a   https://support.hdfgroup.org/ftp/HDF5/releases/${HDF5:0:9}/${HDF5}/src/${HDF5}.tar.gz
 [ $INSTALL_HDF5           == on ] && download_and_check_md5sum   9e22217d22eb568e09f0cc15fb641d7c   https://support.hdfgroup.org/ftp/HDF5/releases/${HDF5:0:9}/${HDF5}/src/${HDF5}.tar.gz
 [ $INSTALL_NETCDF_C       == on ] && download_and_check_md5sum   3e0a97e6abb9a989f8a8a2e395473597   https://www.unidata.ucar.edu/downloads/netcdf/ftp/${NETCDF}.tar.gz
 [ $INSTALL_NETCDF_FORTRAN == on ] && download_and_check_md5sum   10cfce1ed4f474af30dbbad076b085d2   https://www.unidata.ucar.edu/downloads/netcdf/ftp/${NETCDF_FORTRAN}.tar.gz
-[ $INSTALL_ESMF           == on ] && download_and_check_md5sum   5cdb3814141068ef15420e7c2d2a158a   http://www.earthsystemmodeling.org/esmf_releases/public/ESMF_8_0_0/${ESMF}.tar.gz
-[ $INSTALL_WGRIB2         == on ] && download_and_check_md5sum   3d56cbed5de8c460d304bf2206abc8d3   https://www.ftp.cpc.ncep.noaa.gov/wd51we/wgrib2/wgrib2.tgz.v2.0.8 wgrib2-2.0.8.tar.gz
+[ $INSTALL_ESMF           == on ] && download_and_check_md5sum   2e8279f8e3c207655b1572b2eb3ea206   https://github.com/esmf-org/esmf/archive/${ESMF}.tar.gz
 
 [ $fetch_only == on ] && exit
 
@@ -155,6 +149,7 @@ echo
 echo "Building 3rdparty libraries using ${COMPILERS} compilers"
 echo
 
+export CFLAGS=-fPIE
 export CPPFLAGS=-I${PREFIX_PATH}/include
 export LDFLAGS=-L${PREFIX_PATH}/lib
 
@@ -276,7 +271,7 @@ printf '%-.30s ' 'Building hdf5 ...........................'
   tar -zxf ${HDF5}.tar.gz
   cd ${HDF5}
   CC=${MPICC} \
-  CFLAGS="-pthread" \
+  CFLAGS+=" -pthread" \
   ./configure --prefix=${PREFIX_PATH} \
               --disable-shared \
               --enable-static \
@@ -357,9 +352,9 @@ printf '%-.30s ' 'Building esmf ...........................'
 (
   set -x
   cd ${SRC_PATH}
-  rm -rf esmf
+  rm -rf esmf-${ESMF}
   tar -zxf ${ESMF}.tar.gz
-  cd esmf
+  cd esmf-${ESMF}
   export NETCDF=${PREFIX_PATH}
   export ESMF_DIR=$(pwd)
   export ESMF_BOPT=O
@@ -380,10 +375,6 @@ printf '%-.30s ' 'Building esmf ...........................'
   elif [[ $COMPILERS == gnu ]]; then
     export ESMF_COMPILER=gfortran
     export ESMF_COMM=${MPI_IMPLEMENTATION}
-  elif [[ $COMPILERS == pgi ]]; then
-    export ESMF_COMPILER=pgi
-    export ESMF_COMM=${MPI_IMPLEMENTATION}
-    sed -i 's/pgf90rc/pgf90llvmrc/g' scripts/version.pgf90
   fi
 
   export ESMF_F90COMPILEOPTS="${FFLAGS:-}"
@@ -410,37 +401,6 @@ printf '%-.30s ' 'Building esmf ...........................'
 echo 'done'
 fi
 
-
-###
-### wgrib2
-###
-if [ $INSTALL_WGRIB2 == on ]; then
-printf '%-.30s ' 'Building wgrib2 .........................'
-(
-  set -x
-  cd ${SRC_PATH}
-  rm -rf ${WGRIB2}
-  tar -zxf ${WGRIB2}.tar.gz && mv grib2 ${WGRIB2}
-  mkdir -p ${PREFIX_PATH}/{include,lib}
-
-  cd ${WGRIB2}
-  sed -i -e "s/^USE_NETCDF3=1/USE_NETCDF3=0/g" makefile
-  sed -i -e "s/^USE_IPOLATES=3/USE_IPOLATES=0/g" makefile
-  sed -i -e "s/^USE_OPENMP=1/USE_OPENMP=0/g" makefile
-  sed -i -e "s/^USE_AEC=1/USE_AEC=0/g" makefile
-  sed -i -e "/CCjasper/ s/gcc/${CC}/" makefile
-
-  export COMP_SYS=${COMPILERS}_linux
-
-  make lib
-
-  # install
-  cp lib/*.mod       ${PREFIX_PATH}/include
-  cp lib/libwgrib2.a ${PREFIX_PATH}/lib
-  rm -rf ${SRC_PATH:?}/${WGRIB2}
-) > log_wgrib2 2>&1
-echo 'done'
-fi
 
 echo
 date
