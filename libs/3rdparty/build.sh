@@ -60,6 +60,14 @@ date
 
 MAX_BUILD_JOBS=${MAX_BUILD_JOBS:-8}
 
+OS=$(uname -s)
+if [[ $OS == Darwin ]]; then
+  NPROC=$(sysctl -n hw.logicalcpu)
+else
+  NPROC=$(nproc --all)
+fi
+BUILD_JOBS=$(( NPROC < MAX_BUILD_JOBS ? NPROC : MAX_BUILD_JOBS ))
+
 INSTALL_ZLIB=on
 INSTALL_JPEG=on
 INSTALL_JASPER=on
@@ -78,8 +86,6 @@ export PATH=${PREFIX_PATH/bin}:$PATH
 SRC_PATH=${MYDIR}/src
 mkdir -p ${SRC_PATH}
 cd ${SRC_PATH}
-
-OS=$(uname -s)
 
 download_and_check_md5sum()
 {
@@ -153,13 +159,6 @@ export CFLAGS=-fPIE
 export CPPFLAGS=-I${PREFIX_PATH}/include
 export LDFLAGS=-L${PREFIX_PATH}/lib
 
-if [[ $OS == Darwin ]]; then
-NPROC=$(sysctl -n hw.logicalcpu)
-else
-NPROC=$(nproc --all)
-fi
-BUILD_JOBS=$(( NPROC < MAX_BUILD_JOBS ? NPROC : MAX_BUILD_JOBS ))
-
 #
 # print compiler version
 #
@@ -175,6 +174,7 @@ echo
 ### zlib
 ###
 if [ $INSTALL_ZLIB == on ]; then
+SECONDS=0
 printf '%-.30s ' 'Building zlib ...........................'
 (
   set -x
@@ -189,7 +189,7 @@ printf '%-.30s ' 'Building zlib ...........................'
   make install
   rm -rf ${SRC_PATH:?}/${ZLIB}
 ) > log_zlib 2>&1
-echo 'done'
+printf 'done [%4d sec]\n' ${SECONDS}
 fi
 
 
@@ -197,6 +197,7 @@ fi
 ### jpeg
 ###
 if [ $INSTALL_JPEG == on ]; then
+SECONDS=0
 printf '%-.30s ' 'Building jpeg ...........................'
 (
   set -x
@@ -210,7 +211,7 @@ printf '%-.30s ' 'Building jpeg ...........................'
   make install
   rm -rf ${SRC_PATH:?}/${JPEG}
 ) > log_jpeg 2>&1
-echo 'done'
+printf 'done [%4d sec]\n' ${SECONDS}
 fi
 
 
@@ -218,6 +219,7 @@ fi
 ### jasper
 ###
 if [ $INSTALL_JASPER == on ]; then
+SECONDS=0
 printf '%-.30s ' 'Building jasper ...........................'
 (
   set -x
@@ -240,7 +242,7 @@ printf '%-.30s ' 'Building jasper ...........................'
   make install
   rm -rf ${SRC_PATH:?}/${JASPER}
 ) > log_jasper 2>&1
-echo 'done'
+printf 'done [%4d sec]\n' ${SECONDS}
 fi
 
 
@@ -248,6 +250,7 @@ fi
 ### libpng
 ###
 if [ $INSTALL_LIBPNG == on ]; then
+SECONDS=0
 printf '%-.30s ' 'Building libpng ...........................'
 (
   set -x
@@ -261,7 +264,7 @@ printf '%-.30s ' 'Building libpng ...........................'
   make install
   rm -rf ${SRC_PATH:?}/${LIBPNG}
 ) > log_libpng 2>&1
-echo 'done'
+printf 'done [%4d sec]\n' ${SECONDS}
 fi
 
 
@@ -269,6 +272,7 @@ fi
 ### hdf5
 ###
 if [ $INSTALL_HDF5 == on ]; then
+SECONDS=0
 printf '%-.30s ' 'Building hdf5 ...........................'
 (
   set -x
@@ -291,7 +295,7 @@ printf '%-.30s ' 'Building hdf5 ...........................'
   make check-install
   rm -rf ${SRC_PATH:?}/${HDF5}
 ) > log_hdf5 2>&1
-echo 'done'
+printf 'done [%4d sec]\n' ${SECONDS}
 fi
 
 
@@ -299,6 +303,7 @@ fi
 ### netcdf
 ###
 if [ $INSTALL_NETCDF_C == on ]; then
+SECONDS=0
 printf '%-.30s ' 'Building netcdf-c ...........................'
 (
   export LIBS="-lhdf5_hl -lhdf5 -lm -lz -ldl"
@@ -318,11 +323,11 @@ printf '%-.30s ' 'Building netcdf-c ...........................'
               --disable-large-file-tests \
               --enable-parallel-tests
   make -j ${BUILD_JOBS}
-  make check
+  #make check
   make install
   rm -rf ${SRC_PATH:?}/${NETCDF}
 ) > log_netcdf 2>&1
-echo 'done'
+printf 'done [%4d sec]\n' ${SECONDS}
 fi
 
 
@@ -330,6 +335,7 @@ fi
 ### NetCDF Fortran
 ###
 if [ $INSTALL_NETCDF_FORTRAN == on ]; then
+SECONDS=0
 printf '%-.30s ' 'Building netcdf-fortran ...........................'
 (
   set -x
@@ -343,11 +349,11 @@ printf '%-.30s ' 'Building netcdf-fortran ...........................'
   ./configure --prefix=${PREFIX_PATH} \
               --disable-shared
   make
-  make check
+  #make check
   make install
   rm -rf ${SRC_PATH:?}/${NETCDF_FORTRAN}
 ) > log_netcdf_fortran 2>&1
-echo 'done'
+printf 'done [%4d sec]\n' ${SECONDS}
 fi
 
 
@@ -355,6 +361,7 @@ fi
 ### ESMF
 ###
 if [ $INSTALL_ESMF == on ]; then
+SECONDS=0
 printf '%-.30s ' 'Building esmf ...........................'
 (
   set -x
@@ -385,12 +392,15 @@ printf '%-.30s ' 'Building esmf ...........................'
   fi
 
   export ESMF_F90COMPILEOPTS="${FFLAGS:-}"
+  export ESMF_CXXCOMPILEOPTS="${CXXFLAGS:-}"
 
   export ESMF_NFCONFIG=nf-config
   export ESMF_NETCDF_INCLUDE=$NETCDF/include
   export ESMF_NETCDF_LIBPATH=$NETCDF/lib
   export ESMF_NETCDF=split
   export ESMF_NETCDF_LIBS="-lnetcdff -lnetcdf -lhdf5_hl -lhdf5 -lm -lz -ldl"
+  export ESMF_PIO=OFF
+
   export ESMF_SHARED_LIB_BUILD=OFF
 
   export ESMF_INSTALL_PREFIX=${PREFIX_PATH}
@@ -405,7 +415,7 @@ printf '%-.30s ' 'Building esmf ...........................'
   make install > log_install 2>&1
   rm -rf ${SRC_PATH}/esmf
 ) > log_esmf 2>&1
-echo 'done'
+printf 'done [%4d sec]\n' ${SECONDS}
 fi
 
 

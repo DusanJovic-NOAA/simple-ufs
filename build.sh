@@ -129,12 +129,13 @@ export OMPI_FC=${FC}
 # 3rdparty
 #
 if [ $BUILD_3RDPARTY == yes ]; then
+SECONDS=0
 printf '%-.30s ' "Building 3rdparty .........................."
 (
   cd libs/3rdparty
   ./build.sh ${COMPILER}
 ) > log_3rdparty 2>&1
-echo 'done'
+printf 'done [%4d sec]\n' ${SECONDS}
 fi
 
 export NETCDF=${MYDIR}/libs/3rdparty/local
@@ -145,12 +146,13 @@ export ESMFMKFILE=${MYDIR}/libs/3rdparty/local/lib/esmf.mk
 # nceplibs
 #
 if [ $BUILD_NCEPLIBS == yes ]; then
+SECONDS=0
 printf '%-.30s ' "Building nceplibs .........................."
 (
   cd libs/nceplibs
   ./build.sh ${COMPILER}
 ) > log_nceplibs 2>&1
-echo 'done'
+printf 'done [%4d sec]\n' ${SECONDS}
 fi
 
 
@@ -158,6 +160,7 @@ fi
 # preproc
 #
 if [ $BUILD_PREPROC == yes ]; then
+SECONDS=0
 printf '%-.30s ' "Building preproc ..........................."
 (
   cd src/preproc
@@ -176,13 +179,14 @@ printf '%-.30s ' "Building preproc ..........................."
   make install
 
 ) > log_preproc 2>&1
-echo 'done'
+printf 'done [%4d sec]\n' ${SECONDS}
 fi
 
 #
 # model
 #
 if [ $BUILD_MODEL == yes ]; then
+SECONDS=0
 printf '%-.30s ' "Building model ..........................."
 (
   export CMAKE_C_COMPILER=${MPICC}
@@ -205,13 +209,14 @@ printf '%-.30s ' "Building model ..........................."
   cp NEMS.exe ${MYDIR}/bin/ufs_model
 
 ) > log_model 2>&1
-echo 'done'
+printf 'done [%4d sec]\n' ${SECONDS}
 fi
 
 #
 # post
 #
 if [ $BUILD_POST == yes ]; then
+SECONDS=0
 printf '%-.30s ' "Building post ..........................."
 (
   cd src/post
@@ -227,7 +232,7 @@ printf '%-.30s ' "Building post ..........................."
   cp sorc/ncep_post.fd/nceppost.x ${MYDIR}/bin/ufs_post
 
 ) > log_post 2>&1
-echo 'done'
+printf 'done [%4d sec]\n' ${SECONDS}
 fi
 
 echo "Done!"

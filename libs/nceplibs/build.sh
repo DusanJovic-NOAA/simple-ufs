@@ -49,6 +49,16 @@ fi
 
 date
 
+MAX_BUILD_JOBS=${MAX_BUILD_JOBS:-8}
+
+OS=$(uname -s)
+if [[ $OS == Darwin ]]; then
+  NPROC=$(sysctl -n hw.logicalcpu)
+else
+  NPROC=$(nproc --all)
+fi
+BUILD_JOBS=$(( NPROC < MAX_BUILD_JOBS ? NPROC : MAX_BUILD_JOBS ))
+
 if [[ $fetch_only == off ]]; then
   echo
   echo "Building nceplibs libraries using ${COMPILERS} compilers"
@@ -117,6 +127,7 @@ for lib in ${ALL_LIBS[*]}; do
 
   [[ $fetch_only == on ]] && continue
 
+  SECONDS=0
   printf '%-.30s ' "Building ${lib_name} ..........................."
   (
     set -x
@@ -156,11 +167,11 @@ for lib in ${ALL_LIBS[*]}; do
           -DCMAKE_BUILD_TYPE=RELEASE \
           -DCMAKE_PREFIX_PATH="${MYDIR}/../3rdparty/local;${install_root}"
 
-    make VERBOSE=1
+    make -j ${BUILD_JOBS} VERBOSE=1
     make install
 
   ) > ${lib_name}_build.log 2>&1
-  echo 'done'
+  printf 'done [%4d sec]\n' ${SECONDS}
 done
 
 echo
