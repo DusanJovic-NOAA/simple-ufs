@@ -100,7 +100,6 @@ ALL_LIBS=(
 
 " nemsiogfs    : NOAA-EMC/NCEPLIBS-nemsiogfs   : develop "
 " w3emc        : NOAA-EMC/NCEPLIBS-w3emc       : develop "
-" grib_util    : NOAA-EMC/NCEPLIBS-grib_util   : develop "
 
 " wgrib2       : NOAA-EMC/NCEPLIBS-wgrib2      : feature/cmake "
 " nceppost     : NOAA-EMC/EMC_post             : develop "

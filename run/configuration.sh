@@ -2,7 +2,7 @@
 export sufs=$( cd $(pwd)/.. ; pwd -P )
 
 export res=${res:-96}
-#export gtype=regional
+#export gtype=regional_gfdl
 export gtype=uniform
 
 export START_YEAR=${START_YEAR:-$(date --date="1 day ago" --utc +%Y)}

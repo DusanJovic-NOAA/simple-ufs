@@ -161,6 +161,8 @@ sed -i -e "s/_START_YEAR_/${START_YEAR}/g
            s/_START_HOUR_/${START_HOUR}/g
            s/_NHOURS_FCST_/${NHOURS_FCST}/g" diag_table
 
+export OMP_NUM_THREADS=1
+
 #
 # Finally we have all necessary input data.
 # Let's run the model, that's why we are here.

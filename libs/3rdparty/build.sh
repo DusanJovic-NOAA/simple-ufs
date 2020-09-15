@@ -155,9 +155,11 @@ echo
 echo "Building 3rdparty libraries using ${COMPILERS} compilers"
 echo
 
-export CFLAGS=-fPIE
-export CPPFLAGS=-I${PREFIX_PATH}/include
-export LDFLAGS=-L${PREFIX_PATH}/lib
+export CFLAGS+=""
+export CXXFLAGS+=""
+export FFLAGS+=""
+export CPPFLAGS+=" -I${PREFIX_PATH}/include"
+export LDFLAGS+=" -L${PREFIX_PATH}/lib"
 
 #
 # print compiler version
@@ -320,6 +322,7 @@ printf '%-.30s ' 'Building netcdf-c ...........................'
               --enable-netcdf-4 \
               --disable-doxygen \
               --disable-shared \
+              --enable-static \
               --disable-large-file-tests \
               --enable-parallel-tests
   make -j ${BUILD_JOBS}
@@ -347,7 +350,8 @@ printf '%-.30s ' 'Building netcdf-fortran ...........................'
   FC=${MPIF90} \
   LIBS="-lhdf5_hl -lhdf5 -lm -lz -ldl" \
   ./configure --prefix=${PREFIX_PATH} \
-              --disable-shared
+              --disable-shared \
+              --enable-static
   make
   #make check
   make install

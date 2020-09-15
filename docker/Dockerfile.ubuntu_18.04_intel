@@ -1,0 +1,74 @@
+FROM ubuntu:18.04
+
+ARG DEBIAN_FRONTEND=noninteractive
+ARG APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
+
+RUN apt-get update -y && \
+apt-get install -y --no-install-recommends -o=Dpkg::Use-Pty=0 \
+build-essential \
+ca-certificates \
+curl \
+git \
+gnupg \
+m4 \
+pkg-config \
+python \
+vim \
+--
+
+ARG url=https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+ADD $url /
+RUN file=$(basename "$url") && \
+    apt-key add "$file" && \
+    rm "$file"
+
+ARG apt_repo=https://apt.repos.intel.com/oneapi
+RUN echo "deb $apt_repo all main" > /etc/apt/sources.list.d/oneAPI.list
+
+RUN apt-get update -y && \
+apt-get install -y --no-install-recommends -o=Dpkg::Use-Pty=0 \
+intel-oneapi-common-licensing \
+intel-oneapi-common-vars \
+intel-oneapi-dev-utilities \
+intel-oneapi-icc \
+intel-oneapi-ifort \
+intel-oneapi-mkl-devel \
+intel-oneapi-mpi-devel \
+--
+
+ENV I_MPI_THREAD_SPLIT=1
+ENV I_MPI_LIBRARY_KIND='release_mt'
+
+RUN echo "source /opt/intel/oneapi/setvars.sh -i_mpi_library_kind=release_mt" >> /etc/bashrc
+
+RUN cd /tmp && \
+    curl -f -s -S -R -L -O https://github.com/Kitware/CMake/releases/download/v3.16.4/cmake-3.16.4-Linux-x86_64.tar.gz && \
+    mkdir -p /usr/local/cmake && \
+    tar zxf cmake-3.16.4-Linux-x86_64.tar.gz -C /usr/local/cmake --strip-components=1 && \
+    rm cmake-3.16.4-Linux-x86_64.tar.gz && \
+    echo export PATH=/usr/local/cmake/bin:\$PATH >> /etc/bashrc
+
+RUN useradd -ms /bin/bash builder
+WORKDIR /home/builder
+COPY --chown=builder:builder . /home/builder/simple-ufs
+USER builder
+
+SHELL ["/bin/bash", "-c"]
+
+RUN . /etc/bashrc && \
+ cd /home/builder/simple-ufs && \
+ ./get.sh && \
+ ./build.sh intel -3rdparty -nceplibs -preproc -model -post && \
+ cd run && \
+ sed -i -e 's/NHOURS_FCST=24/NHOURS_FCST=3/g' configuration.sh && \
+ sed -i -e 's/NFHMAX_HF=12/NFHMAX_HF=3/g' configuration.sh && \
+ ./fetch_fix_data.sh && \
+ ./fetch_input_data.sh && \
+ ./run_chgres_cube.sh && \
+ ./run_model.sh && \
+ ./run_post.sh && \
+ ls -l chgres_run && \
+ ls -l model_run && \
+ ls -l post_run
+
+CMD ["/bin/bash"]

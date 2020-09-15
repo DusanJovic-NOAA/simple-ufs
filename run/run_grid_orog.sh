@@ -21,9 +21,13 @@ export machine=linux
 export TMPDIR=${MYDIR}/tmp_grid_orog_$$
 export out_dir=${GRID_OROG_DATA}/C${res}
 export home_dir=${sufs}/src/preproc
+export exec_dir=${sufs}/bin
+export EXEC_DIR=${sufs}/bin
 export halo=3
 export APRUN=''
 export APRUN_SFC='mpiexec -np 6'
+export OMP_NUM_THREADS=1
+export NCDUMP=${sufs}/libs/3rdparty/local/bin/ncdump
 
 rm -rf ${out_dir}
 ${sufs}/src/preproc/ush/fv3gfs_driver_grid.sh

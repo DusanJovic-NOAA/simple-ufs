@@ -202,7 +202,7 @@ printf '%-.30s ' "Building model ..........................."
   rm -rf build
   mkdir build
   cd build
-  cmake .. -DCMAKE_INSTALL_PREFIX=install -DNETCDF_DIR=${NETCDF} -DCMAKE_BUILD_TYPE=Debug -DDEBUG=ON
+  cmake .. -DCMAKE_INSTALL_PREFIX=install -DNETCDF_DIR=${NETCDF} # -DCMAKE_BUILD_TYPE=Debug -DDEBUG=ON
   make -j8
   make install
 

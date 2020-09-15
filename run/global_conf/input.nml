@@ -153,7 +153,8 @@
   do_sppt      = .false.
   do_shum      = .false.
   do_skeb      = .false.
-  do_sfcperts  = .false.
+  lndp_type    = 0
+  n_var_lndp   = 0
 /
 
 &gfdl_cloud_microphysics_nml
