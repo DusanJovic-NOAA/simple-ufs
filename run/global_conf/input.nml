@@ -26,6 +26,10 @@
   print_memory_usage = .false.
 /
 
+&fv_grid_nml
+  grid_file = 'INPUT/grid_spec.nc'
+/
+
 &fv_core_nml
   layout = 1,1
   io_layout = 1,1
@@ -137,13 +141,13 @@
   cnvcld       = .true.
   imfshalcnv   = 2
   imfdeepcnv   = 2
-  cdmbgwd      = 3.5,0.25
+  cdmbgwd      = 3.5, 0.25
   prslrd0      = 0.
   ivegsrc      = 1
   isot         = 1
   debug        = .false.
   oz_phys      = .F.
-  oz_phys_2015 = .T.
+  oz_phys_2015 = .true.
   nstf_name    = 0,0,0,0,0
   nst_anl      = .true.
   psautco      = 0.0008,0.0005
@@ -253,32 +257,7 @@
   FABSL    = 99999
 /
 
-&fv_grid_nml
-  grid_file = 'INPUT/grid_spec.nc'
-/
-
 &nam_stochy
-  ntrunc = 766
-  lon_s = 1536
-  lat_s = 768
-  skeb = 0.3
-  iseed_skeb = 2019102712451
-  iseed_shum = 2019102712452
-  iseed_sppt = 2019102712453
-  skeb_tau = 21600.
-  skeb_lscale = 500000.
-  skebnorm = 0
-  skeb_npass = 30
-  skeb_vdof = 5
-  shum = 0.005
-  shum_tau = 21600.
-  shum_lscale = 500000.
-  sppt = 0.5
-  sppt_tau = 21600.
-  sppt_lscale = 500000.
-  sppt_logit = .true.
-  sppt_sfclimit = .true.
-  use_zmtnblck = .true.
 /
 
 &nam_sfcperts

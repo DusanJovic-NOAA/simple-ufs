@@ -18,26 +18,27 @@ MYDIR=$(pwd)
 )
 
 export machine=linux
-export TMPDIR=${MYDIR}/tmp_grid_orog_$$
+export TEMP_DIR=${MYDIR}/tmp_grid_orog_$$
 export out_dir=${GRID_OROG_DATA}/C${res}
 export home_dir=${sufs}/src/preproc
 export exec_dir=${sufs}/bin
-export EXEC_DIR=${sufs}/bin
 export halo=3
 export APRUN=''
-export APRUN_SFC='mpiexec -np 6'
+export APRUN_SFC='mpiexec -n 6'
 export OMP_NUM_THREADS=1
 export NCDUMP=${sufs}/libs/3rdparty/local/bin/ncdump
 
 rm -rf ${out_dir}
 ${sufs}/src/preproc/ush/fv3gfs_driver_grid.sh
 
-if [[ $gtype == "regional" ]]; then
+if [[ $gtype == regional* ]]; then
   HALO=$(( halo + 1 ))
-  cd ${out_dir}
-  ln -sf C${res}_grid.tile7.halo${HALO}.nc C${res}_grid.tile7.nc
+  reg_res=424
+  cd ${out_dir}/C${reg_res}
 
-  cd ${out_dir}/fix_sfc
+  ln -sf C${reg_res}_grid.tile7.halo${HALO}.nc C${reg_res}_grid.tile7.nc
+
+  cd fix_sfc
   for file in *.halo${HALO}.nc; do
     if [[ -f $file ]]; then
       file2=${file%.halo${HALO}.nc}
@@ -46,6 +47,6 @@ if [[ $gtype == "regional" ]]; then
   done
 fi
 
-rm -rf ${TMPDIR}
+rm -rf ${TEMP_DIR}
 
 echo "Done!"

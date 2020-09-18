@@ -27,7 +27,7 @@ cd ${INPUT_MODEL}
 export out_dir=${GRID_OROG_DATA}/C${res}
 export halo=3
 
-if [[ $gtype == "uniform" ]]; then
+if [[ $gtype == uniform ]]; then
 
   cp ${out_dir}/C${res}* .
   mv C${res}_mosaic.nc          grid_spec.nc
@@ -38,18 +38,19 @@ if [[ $gtype == "uniform" ]]; then
   mv C${res}_oro_data.tile5.nc  oro_data.tile5.nc
   mv C${res}_oro_data.tile6.nc  oro_data.tile6.nc
 
-elif [[ $gtype == "regional" ]]; then
+elif [[ $gtype == regional* ]]; then
 
   HALO=$(( halo + 1 ))
 
-  cp ${out_dir}/C${res}* .
-  rm -f  C${res}_grid.tile7.halo0.nc
-  rm -f  C${res}_oro_data.tile7.halo${halo}.nc
-  ln -sf C${res}_mosaic.nc                      grid_spec.nc
-  ln -sf C${res}_grid.tile7.halo${halo}.nc      C${res}_grid.tile7.nc
-  ln -sf C${res}_grid.tile7.halo${HALO}.nc      grid.tile7.halo${HALO}.nc
-  ln -sf C${res}_oro_data.tile7.halo0.nc        oro_data.nc
-  ln -sf C${res}_oro_data.tile7.halo${HALO}.nc  oro_data.tile7.halo${HALO}.nc
+  reg_res=424
+  cp -r ${out_dir}/C${reg_res}/* .
+  rm -f  C${reg_res}_grid.tile7.halo0.nc
+  rm -f  C${reg_res}_oro_data.tile7.halo${halo}.nc
+  ln -sf C${reg_res}_mosaic.nc                      grid_spec.nc
+  ln -sf C${reg_res}_grid.tile7.halo${halo}.nc      C${reg_res}_grid.tile7.nc
+  ln -sf C${reg_res}_grid.tile7.halo${HALO}.nc      grid.tile7.halo${HALO}.nc
+  ln -sf C${reg_res}_oro_data.tile7.halo0.nc        oro_data.nc
+  ln -sf C${reg_res}_oro_data.tile7.halo${HALO}.nc  oro_data.tile7.halo${HALO}.nc
 
 fi
 
@@ -58,11 +59,11 @@ fi
 #
 export DATA=${MYDIR}/chgres_run
 
-if [[ $gtype == "uniform" ]]; then
+if [[ $gtype == uniform ]]; then
     cp ${DATA}/gfs_ctrl.nc       .
     cp ${DATA}/gfs_data.tile?.nc      .
     cp ${DATA}/sfc_data.tile?.nc      .
-elif [[ $gtype == "regional" ]]; then
+elif [[ $gtype == regional* ]]; then
     cp ${DATA}/gfs_ctrl.nc            .
     cp ${DATA}/gfs_data.tile7.nc      .
     cp ${DATA}/sfc_data.tile7.nc      .
@@ -131,9 +132,9 @@ cp ${FIX_DATA}/fix_am/${FNSMCC}                                 .
 cp ${FIX_DATA}/fix_am/${FNSOTC}                                 .
 cp ${FIX_DATA}/fix_am/${FNVETC}                                 .
 
-if [[ $gtype == "uniform" ]]; then
+if [[ $gtype == uniform ]]; then
    cp ${MYDIR}/global_conf/* .
-elif [[ $gtype == "regional" ]]; then
+elif [[ $gtype == regional* ]]; then
    cp ${MYDIR}/regional_conf/* .
 fi
 
@@ -167,6 +168,6 @@ export OMP_NUM_THREADS=1
 # Finally we have all necessary input data.
 # Let's run the model, that's why we are here.
 #
-mpiexec -np 8 ${sufs}/bin/ufs_model 1> stdout 2> stderr
+mpiexec -n 8 ${sufs}/bin/ufs_model 1> stdout 2> stderr
 
 echo "Done!"

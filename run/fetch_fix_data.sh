@@ -48,7 +48,7 @@ FIX_URL="https://ftp.emc.ncep.noaa.gov/EIB/UFS/global/fix"
   mkdir -p ${FIX_DATA}
   cd ${FIX_DATA}
 
-  if false; then
+  if [[ $gtype == regional* ]]; then
 
   OROG_FILES="
   gmted2010.30sec.int

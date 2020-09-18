@@ -75,7 +75,7 @@ EOF
   export OMP_NUM_THREADS=1
   export NUM_TASKS=8
 
-  time mpiexec -np ${NUM_TASKS} ${sufs}/bin/ufs_post 1> stdout.${FHR} 2> stderr.${FHR}
+  time mpiexec -n ${NUM_TASKS} ${sufs}/bin/ufs_post 1> stdout.${FHR} 2> stderr.${FHR}
   rm itag
 
 done
