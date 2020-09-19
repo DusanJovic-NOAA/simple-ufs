@@ -20,8 +20,8 @@ export CDATE=${START_YEAR}${START_MONTH}${START_DAY}${START_HOUR}
 export HOMEufs=${sufs}/src/preproc
 export EXECufs=${sufs}/bin
 export FIXam=${MYDIR}/fix_data/fix_am
-export FIXfv3=${GRID_OROG_DATA}/C${res}/C424
-export CRES=424
+export FIXfv3=${GRID_OROG_DATA}/C${res}
+export CRES=96
 
 export COMIN=${INPUT_DATA}
 #export ATM_FILES_INPUT=gfs.t00z.atmanl.nemsio
@@ -72,12 +72,14 @@ if [[ $gtype == "uniform" ]]; then
 
 elif [[ $gtype == regional* ]]; then
 
-    export REGIONAL=1
     reg_res=424
+    export FIXfv3=${FIXfv3}/C${reg_res}
+    export CRES=${reg_res}
     export OROG_FILES_TARGET_GRID=C${reg_res}_oro_data.tile7.halo4.nc
     export GRIB2_FILE_INPUT=gfs.t00z.pgrb2.0p50.f000
     export VARMAP_FILE=GFSphys_var_map.txt
     export CONVERT_NST=.false.
+    export REGIONAL=1
     export HALO_BNDY=4
 
     cp ${MYDIR}/global_conf/GFSphys_var_map.txt .
