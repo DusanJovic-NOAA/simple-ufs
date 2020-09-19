@@ -9,25 +9,26 @@ source configuration.sh
 
 MYDIR=$(pwd)
 
-export DATA=${MYDIR}/chgres_run
+export DATA=${MYDIR}/preproc_run
 rm -rf ${DATA}
 mkdir ${DATA}
 cd ${DATA}
 
-export APRUN='mpiexec -n 6'
+export APRUN="${MPIEXEC} -n 6"
 export OMP_NUM_THREADS_CH=1
 export CDATE=${START_YEAR}${START_MONTH}${START_DAY}${START_HOUR}
 export HOMEufs=${sufs}/src/preproc
 export EXECufs=${sufs}/bin
 export FIXam=${MYDIR}/fix_data/fix_am
-export FIXfv3=${GRID_OROG_DATA}/C${res}
 export CRES=96
 
 export COMIN=${INPUT_DATA}
 #export ATM_FILES_INPUT=gfs.t00z.atmanl.nemsio
 #export SFC_FILES_INPUT=gfs.t00z.sfcanl.nemsio
 
-if [[ $gtype == "uniform" ]]; then
+if [[ $gtype == uniform ]]; then
+
+    export FIXfv3=${GRID_OROG_DATA}/C${res}
 
     export REGIONAL=0
 
@@ -37,17 +38,13 @@ if [[ $gtype == "uniform" ]]; then
 
     elif [[ $INPUT_TYPE == "grib2" ]]; then
 
-      cp ${MYDIR}/global_conf/GFSphys_var_map.txt .
-      cp ${MYDIR}/global_conf/chgres_cube_grib2.nml.in fort.41
-      sed -i -e "s:__RES__:${res}:g
-                 s:__FIXam__:${FIXam}:g
-                 s:__FIXfv3__:${FIXfv3}:g
-                 s:__INPUT_DATA__:${INPUT_DATA}:g
-                 s:__START_MONTH__:${START_MONTH}:g
-                 s:__START_DAY__:${START_DAY}:g
-                 s:__START_HOUR__:${START_HOUR}:g" fort.41
+      export GRIB2_FILE_INPUT=gfs.t00z.pgrb2.0p50.f000
+      export VARMAP_FILE=GFSphys_var_map.txt
+      export CONVERT_NST=.false.
 
-      ${APRUN} ${EXECufs}/chgres_cube
+      cp ${MYDIR}/global_conf/GFSphys_var_map.txt .
+
+      ${sufs}/src/preproc/ush/chgres_cube.sh
 
     else
 
@@ -73,7 +70,7 @@ if [[ $gtype == "uniform" ]]; then
 elif [[ $gtype == regional* ]]; then
 
     reg_res=424
-    export FIXfv3=${FIXfv3}/C${reg_res}
+    export FIXfv3=${GRID_OROG_DATA}/C${reg_res}
     export CRES=${reg_res}
     export OROG_FILES_TARGET_GRID=C${reg_res}_oro_data.tile7.halo4.nc
     export GRIB2_FILE_INPUT=gfs.t00z.pgrb2.0p50.f000
@@ -82,7 +79,7 @@ elif [[ $gtype == regional* ]]; then
     export REGIONAL=1
     export HALO_BNDY=4
 
-    cp ${MYDIR}/global_conf/GFSphys_var_map.txt .
+    cp ${MYDIR}/regional_conf/GFSphys_var_map.txt .
 
     ${sufs}/src/preproc/ush/chgres_cube.sh
     mv ${DATA}/out.atm.tile1.nc ${DATA}/gfs_data.tile7.nc

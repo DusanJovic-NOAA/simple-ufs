@@ -1,18 +1,18 @@
 print_esmf:              .true.
 
 total_member:            1
-PE_MEMBER01:             8
+PE_MEMBER01:             ${NTASKS}
 
-start_year:              _START_YEAR_
-start_month:             _START_MONTH_
-start_day:               _START_DAY_
-start_hour:              _START_HOUR_
+start_year:              ${START_YEAR}
+start_month:             ${START_MONTH}
+start_day:               ${START_DAY}
+start_hour:              ${START_HOUR}
 start_minute:            0
 start_second:            0
-nhours_fcst:             _NHOURS_FCST_
+nhours_fcst:             ${NHOURS_FCST}
 RUN_CONTINUE:            .false.
 ENS_SPS:                 .false.
-dt_atmos:                _DT_ATMOS_
+dt_atmos:                ${DT_ATMOS}
 calendar:                'julian'
 cpl:                     .false.
 memuse_verbose:          .false.
@@ -24,8 +24,8 @@ restart_interval:        6
 output_1st_tstep_rst:    .false.
 
 quilting:                .true.
-write_groups:            1
-write_tasks_per_group:   2
+write_groups:            ${WRITE_GROUPS}
+write_tasks_per_group:   ${WRITE_TASKS_PER_GROUP}
 output_history:          .true.
 write_dopost:            .false.
 num_files:               2
@@ -35,8 +35,8 @@ write_nemsioflip:        .true.
 write_fsyncflag:         .false.
 
 output_grid:             'gaussian_grid'
-imo:                     _IMO_
-jmo:                     _JMO_
+imo:                     ${IMO}
+jmo:                     ${JMO}
 
 nfhout:                  3
 nfhmax_hf:               12

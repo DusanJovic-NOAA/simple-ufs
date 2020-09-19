@@ -24,12 +24,11 @@ mkdir -p ${MODEL_RUN_DIR}/RESTART
 
 cd ${INPUT_MODEL}
 
-export out_dir=${GRID_OROG_DATA}/C${res}
-export halo=3
+halo=3
 
 if [[ $gtype == uniform ]]; then
 
-  cp ${out_dir}/C${res}* .
+  cp -r ${GRID_OROG_DATA}/C${res}/* .
   mv C${res}_mosaic.nc          grid_spec.nc
   mv C${res}_oro_data.tile1.nc  oro_data.tile1.nc
   mv C${res}_oro_data.tile2.nc  oro_data.tile2.nc
@@ -43,7 +42,7 @@ elif [[ $gtype == regional* ]]; then
   HALO=$(( halo + 1 ))
 
   reg_res=424
-  cp -r ${out_dir}/C${reg_res}/* .
+  cp -r ${GRID_OROG_DATA}/C${reg_res}/* .
   rm -f  C${reg_res}_grid.tile7.halo0.nc
   rm -f  C${reg_res}_oro_data.tile7.halo${halo}.nc
   ln -sf C${reg_res}_mosaic.nc                      grid_spec.nc
@@ -57,7 +56,7 @@ fi
 #
 # Copy input data (created by chgres_cube) to model run directory
 #
-export DATA=${MYDIR}/chgres_run
+export DATA=${MYDIR}/preproc_run
 
 if [[ $gtype == uniform ]]; then
     cp ${DATA}/gfs_ctrl.nc       .
@@ -138,29 +137,9 @@ elif [[ $gtype == regional* ]]; then
    cp ${MYDIR}/regional_conf/* .
 fi
 
-sed -i -e "s/_START_YEAR_/${START_YEAR}/g
-           s/_START_MONTH_/${START_MONTH}/g
-           s/_START_DAY_/${START_DAY}/g
-           s/_START_HOUR_/${START_HOUR}/g
-           s/_NHOURS_FCST_/${NHOURS_FCST}/g
-           s/_DT_ATMOS_/${DT_ATMOS}/g
-           s/_IMO_/${IMO}/g
-           s/_JMO_/${JMO}/g" model_configure
-
-sed -i -e "s/_BC_INT_/${BC_INT}/g
-           s/_NPX_/${NPX}/g
-           s/_NPY_/${NPY}/g
-           s/_FNABSC_/"${FNABSC}"/g
-           s/_FNALBC_/"${FNALBC}"/g
-           s/_FNSMCC_/"${FNSMCC}"/g
-           s/_FNSOTC_/"${FNSOTC}"/g
-           s/_FNVETC_/"${FNVETC}"/g" input.nml
-
-sed -i -e "s/_START_YEAR_/${START_YEAR}/g
-           s/_START_MONTH_/${START_MONTH}/g
-           s/_START_DAY_/${START_DAY}/g
-           s/_START_HOUR_/${START_HOUR}/g
-           s/_NHOURS_FCST_/${NHOURS_FCST}/g" diag_table
+eparse model_configure.in > model_configure
+eparse input.nml.in > input.nml
+eparse diag_table.in > diag_table
 
 export OMP_NUM_THREADS=1
 
@@ -168,6 +147,6 @@ export OMP_NUM_THREADS=1
 # Finally we have all necessary input data.
 # Let's run the model, that's why we are here.
 #
-mpiexec -n 8 ${sufs}/bin/ufs_model 1> stdout 2> stderr
+${MPIEXEC} -n ${NTASKS} ${sufs}/bin/ufs_model 1> stdout 2> stderr
 
 echo "Done!"

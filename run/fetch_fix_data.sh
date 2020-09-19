@@ -3,14 +3,23 @@ set -eux
 
 source configuration.sh
 
-FIX_URL="https://ftp.emc.ncep.noaa.gov/EIB/UFS/global/fix"
+FIX_URL="https://ftp.emc.ncep.noaa.gov/static_files/public/UFS/MRW/fix"
+
+rm -rf ${FIX_DATA}
+mkdir -p ${FIX_DATA}
+cd ${FIX_DATA}
 
 (
-  rm -rf ${GRID_OROG_DATA}
-  mkdir -p ${GRID_OROG_DATA}
-  cd ${GRID_OROG_DATA}
+#  rm -rf ${GRID_OROG_DATA}
+#  mkdir -p ${GRID_OROG_DATA}
+#  cd ${GRID_OROG_DATA}
 
-  for res in 96 192; do
+  rm -rf fix_fv3_gmted2010
+  mkdir fix_fv3_gmted2010
+  cd fix_fv3_gmted2010
+
+  #for res in 96 192; do
+  for res in ${res}; do
   (
     FIX_FV3_FILES="
     C${res}_grid.tile[1-6].nc
@@ -20,7 +29,7 @@ FIX_URL="https://ftp.emc.ncep.noaa.gov/EIB/UFS/global/fix"
     mkdir -p C${res}
     cd C${res}
     for file in ${FIX_FV3_FILES}; do
-        curl -f -s -S -R -L -O ${FIX_URL}/fix_fv3_gmted2010.v20191213/C${res}/${file}
+        curl -f -s -S -R -L -O ${FIX_URL}/fix_fv3_gmted2010/C${res}/${file}
     done
 
     FIX_FV3_FIX_SFC_FILES="
@@ -37,52 +46,18 @@ FIX_URL="https://ftp.emc.ncep.noaa.gov/EIB/UFS/global/fix"
     mkdir -p fix_sfc
     cd fix_sfc
     for file in ${FIX_FV3_FIX_SFC_FILES}; do
-        curl -f -s -S -R -L -O ${FIX_URL}/fix_fv3_gmted2010.v20191213/C${res}/fix_sfc/${file}
+        curl -f -s -S -R -L -O ${FIX_URL}/fix_fv3_gmted2010/C${res}/fix_sfc/${file}
     done
   )
   done # res
 )
 
 (
-  rm -rf ${FIX_DATA}
-  mkdir -p ${FIX_DATA}
-  cd ${FIX_DATA}
-
-  if [[ $gtype == regional* ]]; then
-
-  OROG_FILES="
-  gmted2010.30sec.int
-  landcover30.fixed
-  thirty.second.antarctic.new.bin
-  "
-  rm -rf fix_orog
-  mkdir fix_orog
-  for file in ${OROG_FILES}; do
-      curl -f -s -S -R -L https://ftp.emc.ncep.noaa.gov/static_files/public/UFS/SRW/fv3-lam/fix/fix_am/fix_orog/${file} -o fix_orog/${file}
-  done
-
-  SFC_CLIMO_FILES="
-  facsf.1.0.nc
-  maximum_snow_albedo.0.05.nc
-  slope_type.1.0.nc
-  snowfree_albedo.4comp.0.05.nc
-  soil_type.statsgo.0.05.nc
-  substrate_temperature.2.6x1.5.nc
-  vegetation_greenness.0.144.nc
-  vegetation_type.igbp.0.05.nc
-  "
-  rm -rf fix_sfc_climo
-  mkdir -p fix_sfc_climo
-  for file in ${SFC_CLIMO_FILES}; do
-      curl -f -s -S -R -L https://ftp.emc.ncep.noaa.gov/static_files/public/UFS/SRW/fv3-lam/fix/fix_am/sfc_climo/${file} -o fix_sfc_climo/${file}
-  done
-
-  fi
-
   rm -rf fix_am
   mkdir -p fix_am
 
-  for res in 96 192; do
+  #for res in 96 192; do
+  for res in ${res}; do
 
     # C96   t126.384.190    (t190.384.192)
     # C192  t382.768.384
@@ -149,7 +124,7 @@ FIX_URL="https://ftp.emc.ncep.noaa.gov/EIB/UFS/global/fix"
     global_vegtype.igbp.t${JCAP}.${LONB}.${LATB}.rg.grb
     "
     for file in ${FIX_AM_FILES}; do
-        curl -f -s -S -R -L ${FIX_URL}/fix_am.v20191213/${file} -o fix_am/${file}
+        curl -f -s -S -R -L ${FIX_URL}/fix_am/${file} -o fix_am/${file}
     done
 
     # cd fix_am
@@ -161,3 +136,35 @@ FIX_URL="https://ftp.emc.ncep.noaa.gov/EIB/UFS/global/fix"
 
   done # res
 )
+
+if [[ $gtype == regional* ]]; then
+(
+    OROG_FILES="
+    gmted2010.30sec.int
+    landcover30.fixed
+    thirty.second.antarctic.new.bin
+    "
+    rm -rf fix_orog
+    mkdir fix_orog
+    for file in ${OROG_FILES}; do
+        curl -f -s -S -R -L ${FIX_URL}/fix_orog/${file} -o fix_orog/${file}
+    done
+
+    SFC_CLIMO_FILES="
+    facsf.1.0.nc
+    maximum_snow_albedo.0.05.nc
+    slope_type.1.0.nc
+    snowfree_albedo.4comp.0.05.nc
+    soil_type.statsgo.0.05.nc
+    substrate_temperature.2.6x1.5.nc
+    vegetation_greenness.0.144.nc
+    vegetation_type.igbp.0.05.nc
+    "
+    rm -rf fix_sfc_climo
+    mkdir -p fix_sfc_climo
+    for file in ${SFC_CLIMO_FILES}; do
+        curl -f -s -S -R -L ${FIX_URL}/fix_sfc_climo/${file} -o fix_sfc_climo/${file}
+    done
+)
+fi
+

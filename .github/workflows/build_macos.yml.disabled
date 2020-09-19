@@ -107,14 +107,7 @@ jobs:
         sed -i -e 's/NFHMAX_HF=12/NFHMAX_HF=3/g' configuration.sh
         ./fetch_fix_data.sh
         ./fetch_input_data.sh
-        ./run_chgres_cube.sh
-        ./run_model.sh
-        if ./run_post.sh; then
-          cat post_run/std*
-        else
-          ls -l post_run
-          cat post_run/std*
-        fi
-        ls -l chgres_run
+        ./run.sh
+        ls -l preproc_run
         ls -l model_run
         ls -l post_run

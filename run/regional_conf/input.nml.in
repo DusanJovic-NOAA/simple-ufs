@@ -31,7 +31,7 @@
 /
 
 &fv_core_nml
-  layout =  6,6
+  layout =  ${LAYOUT_1}, ${LAYOUT_2}
   io_layout = 1,1
   npx = 211
   npy = 193
@@ -99,13 +99,13 @@
   read_increment = .false.
   res_latlon_dynamics = "fv3_increment.nc"
   do_schmidt = .true.
-  target_lat = 35.5
-  target_lon = -97.5
+  target_lat = ${target_lat}
+  target_lon = ${target_lon}
   stretch_fac = 1.5
 !!nord_zs_filter = 4
   n_zs_filter = 0
   regional = .true.
-  bc_update_interval = _BC_INT_
+  bc_update_interval = ${BC_INT}
   regional_bcs_from_gsi = .false.
   write_restart_with_bcs = .false.
   nrows_blend = 0
@@ -246,14 +246,14 @@
   FNTSFC   = 'RTGSST.1982.2012.monthly.clim.grb'
   FNSNOC   = 'global_snoclim.1.875.grb'
   FNZORC   = 'igbp'
-  FNALBC   = '_FNALBC_'
+  FNALBC   = '${FNALBC}'
   FNALBC2  = 'global_albedo4.1x1.grb'
   FNAISC   = 'CFSR.SEAICE.1982.2012.monthly.clim.grb'
   FNTG3C   = 'global_tg3clim.2.6x1.5.grb'
   FNVEGC   = 'global_vegfrac.0.144.decpercent.grb'
-  FNVETC   = '_FNVETC_'
-  FNSOTC   = '_FNSOTC_'
-  FNSMCC   = '_FNSMCC_'
+  FNVETC   = '${FNVETC}'
+  FNSOTC   = '${FNSOTC}'
+  FNSMCC   = '${FNSMCC}'
   FNMSKH   = 'seaice_newland.grb'
   FNTSFA   = ''
   FNACNA   = ''
@@ -261,7 +261,7 @@
   FNVMNC   = 'global_shdmin.0.144x0.144.grb'
   FNVMXC   = 'global_shdmax.0.144x0.144.grb'
   FNSLPC   = 'global_slope.1x1.grb'
-  FNABSC   = '_FNABSC_'
+  FNABSC   = '${FNABSC}'
   LDEBUG   = .false.
   FSMCL(2) = 99999
   FSMCL(3) = 99999

@@ -31,10 +31,10 @@
 /
 
 &fv_core_nml
-  layout = 1,1
+  layout =  ${LAYOUT_1}, ${LAYOUT_2}
   io_layout = 1,1
-  npx = _NPX_
-  npy = _NPY_
+  npx = ${NPX}
+  npy = ${NPY}
   ntiles = 6
   npz = 64
   grid_type = -1
@@ -220,14 +220,14 @@
   FNTSFC   = 'RTGSST.1982.2012.monthly.clim.grb'
   FNSNOC   = 'global_snoclim.1.875.grb'
   FNZORC   = 'igbp'
-  FNALBC   = '_FNALBC_'
+  FNALBC   = '${FNALBC}'
   FNALBC2  = 'global_albedo4.1x1.grb'
   FNAISC   = 'CFSR.SEAICE.1982.2012.monthly.clim.grb'
   FNTG3C   = 'global_tg3clim.2.6x1.5.grb'
   FNVEGC   = 'global_vegfrac.0.144.decpercent.grb'
-  FNVETC   = '_FNVETC_'
-  FNSOTC   = '_FNSOTC_'
-  FNSMCC   = '_FNSMCC_'
+  FNVETC   = '${FNVETC}'
+  FNSOTC   = '${FNSOTC}'
+  FNSMCC   = '${FNSMCC}'
   FNMSKH   = 'seaice_newland.grb'
   FNTSFA   = ''
   FNACNA   = ''
@@ -235,7 +235,7 @@
   FNVMNC   = 'global_shdmin.0.144x0.144.grb'
   FNVMXC   = 'global_shdmax.0.144x0.144.grb'
   FNSLPC   = 'global_slope.1x1.grb'
-  FNABSC   = '_FNABSC_'
+  FNABSC   = '${FNABSC}'
   LDEBUG   = .false.
   FSMCL(2) = 99999
   FSMCL(3) = 99999

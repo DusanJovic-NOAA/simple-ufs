@@ -1,5 +1,5 @@
 ufs-weather-model-output
-_START_YEAR_ _START_MONTH_ _START_DAY_ _START_HOUR_ 0 0
+${START_YEAR} ${START_MONTH} ${START_DAY} ${START_HOUR} 0 0
 
 "grid_spec",              -1,  "months",   1, "days",  "time"
 "atmos_static",           -1,  "hours",    1, "hours", "time"

@@ -1,15 +1,15 @@
 print_esmf:              .true.
 
 total_member:            1
-PE_MEMBER01:             8
+PE_MEMBER01:             ${NTASKS}
 
-start_year:              _START_YEAR_
-start_month:             _START_MONTH_
-start_day:               _START_DAY_
-start_hour:              _START_HOUR_
+start_year:              ${START_YEAR}
+start_month:             ${START_MONTH}
+start_day:               ${START_DAY}
+start_hour:              ${START_HOUR}
 start_minute:            0
 start_second:            0
-nhours_fcst:             _NHOURS_FCST_
+nhours_fcst:             ${NHOURS_FCST}
 RUN_CONTINUE:            .false.
 ENS_SPS:                 .false.
 dt_atmos:                225
@@ -24,8 +24,8 @@ restart_interval:        6
 output_1st_tstep_rst:    .false.
 
 quilting:                .true.
-write_groups:            1
-write_tasks_per_group:   2
+write_groups:            ${WRITE_GROUPS}
+write_tasks_per_group:   ${WRITE_TASKS_PER_GROUP}
 output_history:          .true.
 write_dopost:            .false.
 num_files:               2
@@ -47,12 +47,12 @@ write_fsyncflag:         .false.
 # dlat:                    0.2
 
  output_grid:             'rotated_latlon'
- cen_lon:                 -97.5   # central longitude
- cen_lat:                  34.0   # central latitude
- lon1:                    -22.0   # longitude of lower-left point in rotated coordinate system (in degrees)
- lat1:                    -17.0   # latitude of lower-left . . . .
- lon2:                     22.0   # longitude of upper-right . . . .
- lat2:                     17.0   # latitude of upper-right . . . .
+ cen_lon:                 ${target_lon}   # central longitude
+ cen_lat:                 ${target_lat}   # central latitude
+ lon1:                    -30.0   # longitude of lower-left point in rotated coordinate system (in degrees)
+ lat1:                    -25.0   # latitude of lower-left . . . .
+ lon2:                     30.0   # longitude of upper-right . . . .
+ lat2:                     25.0   # latitude of upper-right . . . .
  dlon:                      0.2
  dlat:                      0.2
 

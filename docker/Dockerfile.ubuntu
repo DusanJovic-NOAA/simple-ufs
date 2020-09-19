@@ -34,10 +34,8 @@ RUN cd /home/builder/simple-ufs && \
  sed -i -e 's/NFHMAX_HF=12/NFHMAX_HF=3/g' configuration.sh && \
  ./fetch_fix_data.sh && \
  ./fetch_input_data.sh && \
- ./run_chgres_cube.sh && \
- ./run_model.sh && \
- ./run_post.sh && \
- ls -l chgres_run && \
+ ./run.sh && \
+ ls -l preproc_run && \
  ls -l model_run && \
  ls -l post_run
 
