@@ -206,7 +206,7 @@ printf '%-.30s ' "Building model ..........................."
   make -j8
   make install
 
-  cp NEMS.exe ${MYDIR}/bin/ufs_model
+  cp ufs_model ${MYDIR}/bin/ufs_model
 
 ) > log_model 2>&1
 printf 'done [%4d sec]\n' ${SECONDS}

@@ -87,7 +87,6 @@ ALL_LIBS=(
 " crtm         : NOAA-EMC/EMC_crtm             : develop "
 " g2tmpl       : NOAA-EMC/NCEPLIBS-g2tmpl      : develop "
 " gfsio        : NOAA-EMC/NCEPLIBS-gfsio       : develop "
-" ip           : NOAA-EMC/NCEPLIBS-ip          : develop "
 " landsfcutil  : NOAA-EMC/NCEPLIBS-landsfcutil : develop "
 " sfcio        : NOAA-EMC/NCEPLIBS-sfcio       : develop "
 " sigio        : NOAA-EMC/NCEPLIBS-sigio       : develop "
@@ -95,6 +94,7 @@ ALL_LIBS=(
 " w3nco        : NOAA-EMC/NCEPLIBS-w3nco       : develop "
 
 " g2           : NOAA-EMC/NCEPLIBS-g2          : develop "
+" ip           : NOAA-EMC/NCEPLIBS-ip          : develop "
 " ip2          : NOAA-EMC/NCEPLIBS-ip2         : develop "
 " nemsio       : NOAA-EMC/NCEPLIBS-nemsio      : develop "
 
