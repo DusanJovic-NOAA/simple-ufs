@@ -30,8 +30,8 @@ apt-get install -y --no-install-recommends -o=Dpkg::Use-Pty=0 \
 intel-oneapi-common-licensing \
 intel-oneapi-common-vars \
 intel-oneapi-dev-utilities \
-intel-oneapi-icc \
-intel-oneapi-ifort \
+intel-oneapi-compiler-fortran \
+intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic \
 intel-oneapi-mkl-devel \
 intel-oneapi-mpi-devel \
 --
