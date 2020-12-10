@@ -229,7 +229,7 @@ printf '%-.30s ' "Building post ..........................."
            -DCMAKE_Fortran_COMPILER=${MPIF90}
 
   make -j8
-  cp sorc/ncep_post.fd/nceppost.x ${MYDIR}/bin/ufs_post
+  cp sorc/ncep_post.fd/ncep_post ${MYDIR}/bin/ufs_post
 
 ) > log_post 2>&1
 printf 'done [%4d sec]\n' ${SECONDS}
