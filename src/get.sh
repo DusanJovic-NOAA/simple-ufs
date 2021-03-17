@@ -12,7 +12,6 @@ git clone --recursive --branch develop https://github.com/NOAA-EMC/UFS_UTILS pre
 (
 rm -rf model
 git clone --recursive --branch develop https://github.com/ufs-community/ufs-weather-model model
-#sed -i -e '/affinity.c/d' model/CMakeLists.txt
 )
 
 (

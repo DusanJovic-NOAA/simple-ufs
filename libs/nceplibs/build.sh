@@ -102,7 +102,7 @@ ALL_LIBS=(
 " w3emc        : NOAA-EMC/NCEPLIBS-w3emc       : develop "
 
 " wgrib2       : NOAA-EMC/NCEPLIBS-wgrib2      : feature/cmake "
-" nceppost     : NOAA-EMC/EMC_post             : develop "
+" upp          : NOAA-EMC/EMC_post             : develop "
 )
 
 for lib in ${ALL_LIBS[*]}; do

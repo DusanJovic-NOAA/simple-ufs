@@ -15,7 +15,7 @@ RUN apt-get update && \
             libtool \
             make \
             pkg-config \
-            python \
+            python3 \
             vim
 
 RUN useradd -ms /bin/bash builder

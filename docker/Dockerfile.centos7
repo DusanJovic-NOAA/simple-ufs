@@ -11,7 +11,7 @@ RUN yum -y install \
            git \
            libtool \
            make \
-           python27 \
+           python3 \
            which
 
 RUN echo PATH=/opt/rh/devtoolset-9/root/usr/bin/:\$PATH >> /etc/bashrc

@@ -202,7 +202,7 @@ printf '%-.30s ' "Building model ..........................."
   rm -rf build
   mkdir build
   cd build
-  cmake .. -DCMAKE_INSTALL_PREFIX=install -DNETCDF_DIR=${NETCDF} -D32BIT=ON -DDYN32=ON -DWW3=OFF -DINLINE_POST=OFF -DPARALLEL_NETCDF=ON #-DCMAKE_BUILD_TYPE=Debug -DDEBUG=ON
+  cmake .. -DCMAKE_INSTALL_PREFIX=install -DNETCDF_DIR=${NETCDF} -D32BIT=ON -DDYN32=ON -DWW3=OFF -DINLINE_POST=ON -DPARALLEL_NETCDF=ON #-DCMAKE_BUILD_TYPE=Debug -DDEBUG=ON
   make -j8
   make install
 
@@ -229,7 +229,7 @@ printf '%-.30s ' "Building post ..........................."
            -DCMAKE_Fortran_COMPILER=${MPIF90}
 
   make -j8
-  cp sorc/ncep_post.fd/ncep_post ${MYDIR}/bin/ufs_post
+  cp sorc/ncep_post.fd/upp.x ${MYDIR}/bin/ufs_post
 
 ) > log_post 2>&1
 printf 'done [%4d sec]\n' ${SECONDS}

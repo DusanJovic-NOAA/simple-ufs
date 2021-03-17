@@ -13,7 +13,7 @@ RUN dnf -y install \
            git \
            libtool \
            make \
-           python2 \
+           python3 \
            redhat-rpm-config \
            which
 
