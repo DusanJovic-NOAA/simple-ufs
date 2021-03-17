@@ -1,7 +1,7 @@
 FROM centos:8
 
 RUN dnf -y install 'dnf-command(config-manager)'
-RUN dnf config-manager --enable PowerTools
+RUN dnf config-manager --set-enabled powertools
 RUN dnf -y update
 RUN dnf clean all
 RUN dnf -y install centos-release-stream
@@ -19,7 +19,7 @@ RUN dnf -y install \
 
 RUN echo export PATH=/opt/rh/gcc-toolset-9/root/usr/bin/:\$PATH >> /etc/bashrc
 
-RUN alternatives --set python /usr/bin/python2
+RUN alternatives --set python /usr/bin/python3
 
 RUN cd /tmp && \
     curl -f -s -S -R -L -O https://github.com/Kitware/CMake/releases/download/v3.16.4/cmake-3.16.4-Linux-x86_64.tar.gz && \
