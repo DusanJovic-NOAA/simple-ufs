@@ -12,7 +12,7 @@ cd ${INPUT_DATA}
 YYYYMMDD=${START_YEAR}${START_MONTH}${START_DAY}
 CC=${START_HOUR}
 
-GFS_PROD='https://www.ftp.ncep.noaa.gov/data/nccf/com/gfs/prod'
+GFS_PROD='https://ftp.ncep.noaa.gov/data/nccf/com/gfs/prod'
 
 if [[ $INPUT_TYPE == grib2 ]]; then
 
