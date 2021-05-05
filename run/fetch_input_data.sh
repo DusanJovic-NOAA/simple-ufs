@@ -16,11 +16,11 @@ GFS_PROD='https://www.ftp.ncep.noaa.gov/data/nccf/com/gfs/prod'
 
 if [[ $INPUT_TYPE == grib2 ]]; then
 
-  curl -O ${GFS_PROD}/gfs.${YYYYMMDD}/${CC}/gfs.t${CC}z.pgrb2.0p50.f000
+  curl -O ${GFS_PROD}/gfs.${YYYYMMDD}/${CC}/atmos/gfs.t${CC}z.pgrb2.0p50.f000
 
   if [[ $gtype == regional* ]]; then
     for FHR in $(seq -s ' ' -f %03g $BC_INT $BC_INT $NHOURS_FCST); do
-      curl -O ${GFS_PROD}/gfs.${YYYYMMDD}/${CC}/gfs.t${CC}z.pgrb2.0p50.f${FHR}
+      curl -O ${GFS_PROD}/gfs.${YYYYMMDD}/${CC}/atmos/gfs.t${CC}z.pgrb2.0p50.f${FHR}
     done
   fi
 

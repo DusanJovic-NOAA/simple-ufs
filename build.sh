@@ -194,15 +194,19 @@ printf '%-.30s ' "Building model ..........................."
   export CMAKE_Fortran_COMPILER=${MPIF90}
 
   cd ${MYDIR}/src/model
-  export CCPP_SUITES="FV3_GFS_v15p2,FV3_GFS_v15p2_no_nsst,FV3_GFS_2017_gfdlmp_regional"
-  export CMAKE_FLAGS="-D32BIT=ON -DDYN32=ON -DWW3=OFF -DINLINE_POST=OFF -DPARALLEL_NETCDF=ON"
-  export CMAKE_PREFIX_PATH=${MYDIR}/libs/3rdparty/local:${MYDIR}/libs/nceplibs/local
 
-#  ./build.sh
   rm -rf build
   mkdir build
   cd build
-  cmake .. -DCMAKE_INSTALL_PREFIX=install -DNETCDF_DIR=${NETCDF} -D32BIT=ON -DDYN32=ON -DWW3=OFF -DINLINE_POST=ON -DPARALLEL_NETCDF=ON #-DCMAKE_BUILD_TYPE=Debug -DDEBUG=ON
+  cmake .. -DAPP=ATM \
+		   -DCCPP_SUITES="FV3_GFS_v15p2_no_nsst,FV3_GFS_2017_gfdlmp_regional" \
+		   -D32BIT=ON \
+		   -DINLINE_POST=ON \
+		   -DPARALLEL_NETCDF=ON \
+		   -DNETCDF_DIR=${NETCDF} \
+		   -DCMAKE_PREFIX_PATH="${MYDIR}/libs/3rdparty/local;${MYDIR}/libs/nceplibs/local" \
+		   -DCMAKE_INSTALL_PREFIX=install
+
   make -j8
   make install
 
