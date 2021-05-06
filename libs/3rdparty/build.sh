@@ -79,6 +79,7 @@ INSTALL_NETCDF_FORTRAN=on
 INSTALL_PIO=on
 
 INSTALL_ESMF=on
+INSTALL_FMS=on
 
 MYDIR=$(cd "$(dirname "$(readlink -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
 PREFIX_PATH="${MYDIR}"/local
@@ -141,9 +142,10 @@ NETCDF=netcdf-c-4.7.4
 NETCDF_FORTRAN=netcdf-fortran-4.5.3
 PIO=pio-2.5.3
 ESMF=ESMF_8_1_1
+FMS=FMS-2020.04.03
 
 [ $INSTALL_ZLIB           == on ] && download_and_check_md5sum   0095d2d2d1f3442ce1318336637b695f   https://github.com/madler/zlib/archive/v${ZLIB:5}.tar.gz                       ${ZLIB}.tar.gz
-[ $INSTALL_JPEG           == on ] && download_and_check_md5sum   cbc68018646e09b3fd8091e3de5ea451   http://www.ijg.org/files/jpegsrc.v9c.tar.gz ${JPEG}.tar.gz
+[ $INSTALL_JPEG           == on ] && download_and_check_md5sum   cbc68018646e09b3fd8091e3de5ea451   http://www.ijg.org/files/jpegsrc.v9c.tar.gz                                    ${JPEG}.tar.gz
 [ $INSTALL_JASPER         == on ] && download_and_check_md5sum   165376c403c9ccfd115c23db4e7815ea   https://github.com/jasper-software/jasper/archive/version-${JASPER:7}.tar.gz   ${JASPER}.tar.gz
 [ $INSTALL_LIBPNG         == on ] && download_and_check_md5sum   d703ed4913fcfb40021bd3d4d35e00b6   https://github.com/glennrp/libpng/archive/v${LIBPNG:7}.tar.gz                  ${LIBPNG}.tar.gz
 [ $INSTALL_HDF5           == on ] && download_and_check_md5sum   7181d12d1940b725248046077a849f54   https://github.com/HDFGroup/hdf5/archive/hdf5-${HDF5:5}.tar.gz                 ${HDF5}.tar.gz
@@ -151,6 +153,7 @@ ESMF=ESMF_8_1_1
 [ $INSTALL_NETCDF_FORTRAN == on ] && download_and_check_md5sum   47bf6eed50bd50b23b7e391dc1f8b5c4   https://github.com/Unidata/netcdf-fortran/archive/v${NETCDF_FORTRAN:15}.tar.gz ${NETCDF_FORTRAN}.tar.gz
 [ $INSTALL_PIO            == on ] && download_and_check_md5sum   46ccbf390c54ce1339439c4e4fc360db   https://github.com/NCAR/ParallelIO/releases/download/pio2_5_3/${PIO}.tar.gz    ${PIO}.tar.gz
 [ $INSTALL_ESMF           == on ] && download_and_check_md5sum   f76066364c9f53b921a6e1a7ca76f8f7   https://github.com/esmf-org/esmf/archive/${ESMF}.tar.gz                        ${ESMF}.tar.gz
+[ $INSTALL_FMS            == on ] && download_and_check_md5sum   72e6754ad184edd46c9deda72e47daf0   https://github.com/NOAA-GFDL/FMS/archive/refs/tags/${FMS:4}.tar.gz             ${FMS}.tar.gz
 
 [ $fetch_only == on ] && exit
 
@@ -451,6 +454,35 @@ printf '%-.30s ' 'Building esmf ...........................'
   make install > log_install 2>&1
   rm -rf ${SRC_PATH}/esmf
 ) > log_esmf 2>&1
+printf 'done [%4d sec]\n' ${SECONDS}
+fi
+
+
+
+###
+### FMS
+###
+if [ $INSTALL_FMS == on ]; then
+SECONDS=0
+printf '%-.30s ' 'Building fms ............................'
+(
+  set -x
+  cd ${SRC_PATH}
+  rm -rf ${FMS}
+  tar -zxf ${FMS}.tar.gz
+  cd ${FMS}
+
+  mkdir build
+  cd build
+  cmake .. -DCMAKE_INSTALL_PREFIX=${PREFIX_PATH} \
+           -DCMAKE_PREFIX_PATH=${PREFIX_PATH} \
+           -DGFS_PHYS=ON -D64BIT=ON -DOPENMP=ON
+
+  make -j ${BUILD_JOBS}
+  make install
+
+  rm -rf ${SRC_PATH}/${FMS}
+) > log_fms 2>&1
 printf 'done [%4d sec]\n' ${SECONDS}
 fi
 
