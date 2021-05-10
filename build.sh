@@ -155,6 +155,9 @@ printf '%-.30s ' "Building nceplibs .........................."
 printf 'done [%4d sec]\n' ${SECONDS}
 fi
 
+export CC=${MPICC}
+export CXX=${MPICXX}
+export FC=${MPIF90}
 
 #
 # preproc
@@ -170,8 +173,6 @@ printf '%-.30s ' "Building preproc ..........................."
   cd build
 
   cmake .. -DCMAKE_PREFIX_PATH="${MYDIR}/libs/3rdparty/local;${MYDIR}/libs/nceplibs/local" \
-           -DCMAKE_C_COMPILER=${MPICC} \
-           -DCMAKE_Fortran_COMPILER=${MPIF90} \
            -DNetCDF_PATH="${MYDIR}/libs/3rdparty/local" \
            -DCMAKE_INSTALL_PREFIX="${MYDIR}"
 
@@ -189,10 +190,6 @@ if [ $BUILD_MODEL == yes ]; then
 SECONDS=0
 printf '%-.30s ' "Building model ..........................."
 (
-  export CMAKE_C_COMPILER=${MPICC}
-  export CMAKE_CXX_COMPILER=${MPICXX}
-  export CMAKE_Fortran_COMPILER=${MPIF90}
-
   cd ${MYDIR}/src/model
 
   rm -rf build
@@ -203,7 +200,6 @@ printf '%-.30s ' "Building model ..........................."
            -D32BIT=ON \
            -DINLINE_POST=ON \
            -DPARALLEL_NETCDF=ON \
-           -DNETCDF_DIR=${NETCDF} \
            -DCMAKE_PREFIX_PATH="${MYDIR}/libs/3rdparty/local;${MYDIR}/libs/nceplibs/local" \
            -DCMAKE_INSTALL_PREFIX=install
 
@@ -229,8 +225,7 @@ printf '%-.30s ' "Building post ..........................."
   mkdir build
   cd build
 
-  cmake .. -DCMAKE_PREFIX_PATH="${MYDIR}/libs/3rdparty/local;${MYDIR}/libs/nceplibs/local" \
-           -DCMAKE_Fortran_COMPILER=${MPIF90}
+  cmake .. -DCMAKE_PREFIX_PATH="${MYDIR}/libs/3rdparty/local;${MYDIR}/libs/nceplibs/local"
 
   make -j8
   cp sorc/ncep_post.fd/upp.x ${MYDIR}/bin/ufs_post
