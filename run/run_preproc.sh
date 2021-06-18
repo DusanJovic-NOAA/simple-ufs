@@ -20,7 +20,7 @@ export CDATE=${START_YEAR}${START_MONTH}${START_DAY}${START_HOUR}
 export HOMEufs=${sufs}/src/preproc
 export EXECufs=${sufs}/bin
 export FIXam=${MYDIR}/fix_data/fix_am
-export CRES=96
+export CRES=${res}
 
 export COMIN=${INPUT_DATA}
 #export ATM_FILES_INPUT=gfs.t00z.atmanl.nemsio

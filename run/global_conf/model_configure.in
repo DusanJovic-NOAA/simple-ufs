@@ -10,16 +10,9 @@ start_hour:              ${START_HOUR}
 start_minute:            0
 start_second:            0
 nhours_fcst:             ${NHOURS_FCST}
-RUN_CONTINUE:            .false.
-ENS_SPS:                 .false.
+
 dt_atmos:                ${DT_ATMOS}
 calendar:                'julian'
-cpl:                     .false.
-memuse_verbose:          .false.
-atmos_nthreads:          1
-use_hyper_thread:        .false.
-ncores_per_node:         24
-debug_affinity:          .true.
 restart_interval:        6
 output_1st_tstep_rst:    .false.
 
@@ -27,7 +20,7 @@ quilting:                .true.
 write_groups:            ${WRITE_GROUPS}
 write_tasks_per_group:   ${WRITE_TASKS_PER_GROUP}
 output_history:          .true.
-write_dopost:            .false.
+write_dopost:            .true.
 num_files:               2
 filename_base:           'dyn' 'phy'
 output_file:             'netcdf'
@@ -37,6 +30,8 @@ write_fsyncflag:         .false.
 output_grid:             'gaussian_grid'
 imo:                     ${IMO}
 jmo:                     ${JMO}
+
+write_dopost:            .true.
 
 nfhout:                  3
 nfhmax_hf:               12

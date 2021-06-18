@@ -2,12 +2,8 @@
   blocksize = 32
   chksum_debug = .false.
   dycore_only = .false.
-  fdiag = 1
-  fhmax = 384
-  fhout = 3
-  fhmaxhf = 120
-  fhouthf = 1
-  ccpp_suite = 'FV3_GFS_v15p2_no_nsst'
+  fdiag = 0,1,2,3,4,5,6,7,8,9,10,11,12,15,18,21,24,27,30,33,36,39,42,45,48
+  ccpp_suite = 'FV3_GFS_v16_no_nsst'
 /
 
 &diag_manager_nml
@@ -42,13 +38,13 @@
   fv_debug = .false.
   range_warn = .false.
   reset_eta = .false.
-  n_sponge = 10
+  n_sponge = 42
   nudge_qv = .true.
   nudge_dz = .false.
   tau = 10.
   rf_cutoff = 7.5e2
-  d2_bg_k1 = 0.15
-  d2_bg_k2 = 0.02
+  d2_bg_k1 = 0.20
+  d2_bg_k2 = 0.0
   kord_tm = -9
   kord_mt = 9
   kord_wz = 9
@@ -123,7 +119,9 @@
   fhlwr        = 3600.
   ialb         = 1
   iems         = 1
-  iaer         = 111
+  iaer         = 5111
+  icliq_sw     = 2
+  iovr         = 3
   ico2         = 2
   isubc_sw     = 2
   isubc_lw     = 2
@@ -135,16 +133,33 @@
   cal_pre      = .false.
   redrag       = .true.
   dspheat      = .true.
-  hybedmf      = .true.
+  hybedmf      = .false.
+  satmedmf     = .true.
+  isatmedmf    = 1
+  lheatstrg    = .false.
   random_clds  = .false.
   trans_trac   = .true.
   cnvcld       = .true.
   imfshalcnv   = 2
   imfdeepcnv   = 2
-  cdmbgwd      = 3.5, 0.25
+  cdmbgwd      = 0.14,1.8,1.0,1.0
   prslrd0      = 0.
   ivegsrc      = 1
   isot         = 1
+  lsoil        = 4
+  lsm          = 1
+  iopt_dveg    = 1
+  iopt_crs     = 1
+  iopt_btr     = 1
+  iopt_run     = 1
+  iopt_sfc     = 1
+  iopt_frz     = 1
+  iopt_inf     = 1
+  iopt_rad     = 1
+  iopt_alb     = 2
+  iopt_snf     = 4
+  iopt_tbot    = 2
+  iopt_stc     = 1
   debug        = .false.
   oz_phys      = .F.
   oz_phys_2015 = .true.
@@ -153,7 +168,12 @@
   psautco      = 0.0008,0.0005
   prautco      = 0.00015,0.00015
   lgfdlmprad   = .true.
+  cplwav       = .false.
+  cplwav2atm   = .false.
   effr_in      = .true.
+  ldiag_ugwp   = .false.
+  do_ugwp      = .false.
+  do_tofd      = .true.
   do_sppt      = .false.
   do_shum      = .false.
   do_skeb      = .false.
@@ -208,6 +228,7 @@
   fix_negative = .true.
   icloud_f = 1
   mp_time = 150.
+  reiflag = 2
 /
 
 &interpolator_nml
@@ -275,6 +296,6 @@
   knob_ugwp_dokdis  = 1
   knob_ugwp_ndx4lh  = 1
   knob_ugwp_version = 0
-  launch_level      = 25
+  launch_level      = 54
 /
 

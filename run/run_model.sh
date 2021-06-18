@@ -77,6 +77,12 @@ NPX=$(( $res + 1 ))
 NPY=$(( $res + 1 ))
 
 case $res in
+  48)
+    JCAP=92
+    LONB=192
+    LATB=94
+    DT_ATMOS=1800
+    ;;
   96)
     JCAP=126
     LONB=384

@@ -65,6 +65,11 @@ cd ${FIX_DATA}
     # C768  t1534.3072.1536
 
     case $res in
+      48)
+        JCAP=92
+        LONB=192
+        LATB=94
+        ;;
       96)
         JCAP=126
         LONB=384
