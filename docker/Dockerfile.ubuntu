@@ -5,7 +5,6 @@ RUN apt-get update && \
     apt-get install -y \
             autoconf \
             automake \
-            cmake \
             curl \
             g++ \
             gcc \
@@ -18,6 +17,13 @@ RUN apt-get update && \
             python3 \
             vim
 
+RUN cd /tmp && \
+    curl -f -s -S -R -L -O https://github.com/Kitware/CMake/releases/download/v3.20.4/cmake-3.20.4-Linux-x86_64.tar.gz && \
+    mkdir -p /usr/local/cmake && \
+    tar zxvf cmake-3.20.4-Linux-x86_64.tar.gz -C /usr/local/cmake --strip-components=1 && \
+    rm cmake-3.20.4-Linux-x86_64.tar.gz && \
+    echo export PATH=/usr/local/cmake/bin:\$PATH >> /etc/bashrc
+
 RUN useradd -ms /bin/bash builder
 WORKDIR /home/builder
 RUN mkdir /home/builder/simple-ufs
@@ -26,7 +32,8 @@ RUN chown -R builder:builder /home/builder/simple-ufs
 
 USER builder
 
-RUN cd /home/builder/simple-ufs && \
+RUN . /etc/bashrc && \
+ cd /home/builder/simple-ufs && \
  ./get.sh && \
  ./build.sh gnu -3rdparty -nceplibs -preproc -model -post && \
  cd run && \

@@ -17,10 +17,10 @@ RUN yum -y install \
 RUN echo PATH=/opt/rh/devtoolset-9/root/usr/bin/:\$PATH >> /etc/bashrc
 
 RUN cd /tmp && \
-    curl -f -s -S -R -L -O https://github.com/Kitware/CMake/releases/download/v3.16.4/cmake-3.16.4-Linux-x86_64.tar.gz && \
+    curl -f -s -S -R -L -O https://github.com/Kitware/CMake/releases/download/v3.20.4/cmake-3.20.4-Linux-x86_64.tar.gz && \
     mkdir -p /usr/local/cmake && \
-    tar zxvf cmake-3.16.4-Linux-x86_64.tar.gz -C /usr/local/cmake --strip-components=1 && \
-    rm cmake-3.16.4-Linux-x86_64.tar.gz && \
+    tar zxvf cmake-3.20.4-Linux-x86_64.tar.gz -C /usr/local/cmake --strip-components=1 && \
+    rm cmake-3.20.4-Linux-x86_64.tar.gz && \
     echo export PATH=/usr/local/cmake/bin:\$PATH >> /etc/bashrc
 
 RUN useradd -ms /bin/bash builder
