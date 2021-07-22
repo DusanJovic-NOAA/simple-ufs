@@ -23,20 +23,20 @@ export FIXam=${MYDIR}/fix_data/fix_am
 export CRES=${res}
 
 export COMIN=${INPUT_DATA}
-#export ATM_FILES_INPUT=gfs.t00z.atmanl.nemsio
-#export SFC_FILES_INPUT=gfs.t00z.sfcanl.nemsio
 
-if [[ $gtype == uniform ]]; then
+if [[ $gtype == 'uniform' ]]; then
 
     export FIXfv3=${GRID_OROG_DATA}/C${res}
 
     export REGIONAL=0
 
-    if [[ $INPUT_TYPE == "nemsio" ]]; then
+    if [[ $INPUT_TYPE == 'nemsio' ]]; then
 
-      ${sufs}/src/preproc/ush/chgres_cube.sh
+      #export ATM_FILES_INPUT=gfs.t00z.atmanl.nemsio
+      #export SFC_FILES_INPUT=gfs.t00z.sfcanl.nemsio
+      :
 
-    elif [[ $INPUT_TYPE == "grib2" ]]; then
+    elif [[ $INPUT_TYPE == 'grib2' ]]; then
 
       export GRIB2_FILE_INPUT=gfs.t00z.pgrb2.0p50.f000
       export VARMAP_FILE=GFSphys_var_map.txt
@@ -44,7 +44,14 @@ if [[ $gtype == uniform ]]; then
 
       cp ${MYDIR}/global_conf/GFSphys_var_map.txt .
 
-      ${sufs}/src/preproc/ush/chgres_cube.sh
+    elif [[ $INPUT_TYPE == 'gaussian_netcdf' ]]; then
+
+      export ATM_FILES_INPUT=gfs.t00z.atmf000.nc
+      export SFC_FILES_INPUT=gfs.t00z.sfcanl.nc
+      export VARMAP_FILE=GFSphys_var_map.txt
+      export CONVERT_NST=.true.
+
+      cp ${MYDIR}/global_conf/GFSphys_var_map.txt .
 
     else
 
@@ -52,6 +59,8 @@ if [[ $gtype == uniform ]]; then
       exit 1
 
     fi
+
+    ${sufs}/src/preproc/ush/chgres_cube.sh
 
     mv ${DATA}/out.atm.tile1.nc  ${DATA}/gfs_data.tile1.nc
     mv ${DATA}/out.atm.tile2.nc  ${DATA}/gfs_data.tile2.nc
@@ -99,4 +108,4 @@ fi
 rm -f ${DATA}/fort.41
 rm -f ${DATA}/PET*
 
-echo "Done!"
+echo 'Done!'

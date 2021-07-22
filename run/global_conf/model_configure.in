@@ -1,8 +1,5 @@
 print_esmf:              .true.
 
-total_member:            1
-PE_MEMBER01:             ${NTASKS}
-
 start_year:              ${START_YEAR}
 start_month:             ${START_MONTH}
 start_day:               ${START_DAY}
@@ -30,8 +27,6 @@ write_fsyncflag:         .false.
 output_grid:             'gaussian_grid'
 imo:                     ${IMO}
 jmo:                     ${JMO}
-
-write_dopost:            .true.
 
 nfhout:                  3
 nfhmax_hf:               12

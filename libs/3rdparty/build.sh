@@ -135,7 +135,7 @@ download_and_check_md5sum()
 
 ZLIB=zlib-1.2.11
 JPEG=jpeg-9c
-JASPER=jasper-2.0.19
+JASPER=jasper-2.0.25
 LIBPNG=libpng-1.6.35
 HDF5=hdf5-1_12_0
 NETCDF=netcdf-c-4.7.4
@@ -146,7 +146,7 @@ FMS=FMS-2020.04.03
 
 [ $INSTALL_ZLIB           == on ] && download_and_check_md5sum   0095d2d2d1f3442ce1318336637b695f   https://github.com/madler/zlib/archive/v${ZLIB:5}.tar.gz                       ${ZLIB}.tar.gz
 [ $INSTALL_JPEG           == on ] && download_and_check_md5sum   cbc68018646e09b3fd8091e3de5ea451   http://www.ijg.org/files/jpegsrc.v9c.tar.gz                                    ${JPEG}.tar.gz
-[ $INSTALL_JASPER         == on ] && download_and_check_md5sum   165376c403c9ccfd115c23db4e7815ea   https://github.com/jasper-software/jasper/archive/version-${JASPER:7}.tar.gz   ${JASPER}.tar.gz
+[ $INSTALL_JASPER         == on ] && download_and_check_md5sum   afbdd817fcdd0dcfbd6bec79825b944a   https://github.com/jasper-software/jasper/archive/version-${JASPER:7}.tar.gz   ${JASPER}.tar.gz
 [ $INSTALL_LIBPNG         == on ] && download_and_check_md5sum   d703ed4913fcfb40021bd3d4d35e00b6   https://github.com/glennrp/libpng/archive/v${LIBPNG:7}.tar.gz                  ${LIBPNG}.tar.gz
 [ $INSTALL_HDF5           == on ] && download_and_check_md5sum   7181d12d1940b725248046077a849f54   https://github.com/HDFGroup/hdf5/archive/hdf5-${HDF5:5}.tar.gz                 ${HDF5}.tar.gz
 [ $INSTALL_NETCDF_C       == on ] && download_and_check_md5sum   33979e8f0cf4ee31323fc0934282111b   https://github.com/Unidata/netcdf-c/archive/v${NETCDF:9}.tar.gz                ${NETCDF}.tar.gz
