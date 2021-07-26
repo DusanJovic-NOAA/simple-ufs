@@ -94,7 +94,7 @@ ALL_LIBS=(
 " w3nco        : NOAA-EMC/NCEPLIBS-w3nco       : develop "
 
 " g2           : NOAA-EMC/NCEPLIBS-g2          : develop "
-" ip           : NOAA-EMC/NCEPLIBS-ip          : develop "
+" ip           : NOAA-EMC/NCEPLIBS-ip          : v3.3.3  "
 " ip2          : NOAA-EMC/NCEPLIBS-ip2         : develop "
 " nemsio       : NOAA-EMC/NCEPLIBS-nemsio      : develop "
 
