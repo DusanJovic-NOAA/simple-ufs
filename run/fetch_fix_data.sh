@@ -106,6 +106,8 @@ cd ${FIX_DATA}
     global_co2historicaldata_glob.txt
     global_glacier.2x2.grb
     global_h2o_pltc.f77
+    global_hyblev.l28.txt
+    global_hyblev.l42.txt
     global_hyblev.l65.txt
     global_maxice.2x2.grb
     global_sfc_emissivity_idx.txt

@@ -7,10 +7,11 @@ start_hour:              ${START_HOUR}
 start_minute:            0
 start_second:            0
 nhours_fcst:             ${NHOURS_FCST}
+fhrot:                   0
 
 dt_atmos:                ${DT_ATMOS}
 calendar:                'julian'
-restart_interval:        6
+restart_interval:        12 -1
 output_1st_tstep_rst:    .false.
 
 quilting:                .true.
@@ -19,16 +20,12 @@ write_tasks_per_group:   ${WRITE_TASKS_PER_GROUP}
 output_history:          .true.
 write_dopost:            .true.
 num_files:               2
-filename_base:           'dyn' 'phy'
+filename_base:           'atm' 'sfc'
 output_file:             'netcdf'
-write_nemsioflip:        .true.
-write_fsyncflag:         .false.
 
 output_grid:             'gaussian_grid'
 imo:                     ${IMO}
 jmo:                     ${JMO}
 
-nfhout:                  3
-nfhmax_hf:               12
-nfhout_hf:               1
-nsout:                   -1
+output_fh:               0 1 2 3 4 5 6 7 8 9 10 11 12 15 18 21 24 27 30 33 36 39 42 45 48
+iau_offset:              0

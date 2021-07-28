@@ -150,8 +150,7 @@ for lib in ${ALL_LIBS[*]}; do
 
     # for backward compatibility with WW3
     if [[ ${lib_name} == bacio || ${lib_name} == g2 || ${lib_name} == w3nco ]]; then
-      lib_name_uc=$( echo "${lib_name}" | tr '/a-z/' '/A-Z/' )
-      echo "setenv ${lib_name_uc}_LIB4 ${install_prefix}/lib/lib${lib_name}_v${version}_4.a" >> ${modulefile}
+      echo "setenv ${lib_name^^}_LIB4 ${install_prefix}/lib/lib${lib_name}_v${version}_4.a" >> ${modulefile}
     fi
 
     rm -rf build
@@ -159,12 +158,29 @@ for lib in ${ALL_LIBS[*]}; do
     cd build
     rm -rf ${MYDIR}/local/${install_name}
 
+    CMAKE_C_COMPILER=${CC}
+    CMAKE_Fortran_COMPILER=${FC}
+    if [[ ${lib_name} == nemsio || ${lib_name} == nemsiogfs || ${lib_name} == upp ]]; then
+      CMAKE_C_COMPILER=${MPICC}
+      CMAKE_Fortran_COMPILER=${MPIF90}
+    fi
+
     cmake .. \
           -DCMAKE_INSTALL_PREFIX=${install_prefix} \
-          -DCMAKE_C_COMPILER=${MPICC} \
-          -DCMAKE_Fortran_COMPILER=${MPIF90} \
-          -DCMAKE_BUILD_TYPE=RELEASE \
+          -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} \
+          -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER} \
+          -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_PREFIX_PATH="${MYDIR}/../3rdparty/local;${install_root}"
+
+    # for wgrib2
+    # cmake .. \
+    #       -DCMAKE_INSTALL_PREFIX=${install_prefix} \
+    #       -DCMAKE_C_COMPILER=${CC} \
+    #       -DCMAKE_C_FLAGS='-static' \
+    #       -DCMAKE_Fortran_COMPILER=${FC} -DCMAKE_Fortran_FLAGS='-static' \
+    #       -DMAKE_FTN_API=OFF -DUSE_IPOLATES=3 \
+    #       -DCMAKE_BUILD_TYPE=Release \
+    #       -DCMAKE_PREFIX_PATH="${MYDIR}/../3rdparty/local;${install_root}"
 
     make -j ${BUILD_JOBS} VERBOSE=1
     make install

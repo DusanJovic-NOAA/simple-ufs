@@ -2,6 +2,7 @@
 export sufs=$( cd $(pwd)/.. ; pwd -P )
 
 export res=${res:-96}
+export levp=${levp:-65}   # 28, 42 or 65
 
 export gtype=uniform
 # export gtype=regional_gfdl

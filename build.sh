@@ -203,6 +203,11 @@ printf '%-.30s ' "Building model ..........................."
            -DCMAKE_PREFIX_PATH="${MYDIR}/libs/3rdparty/local;${MYDIR}/libs/nceplibs/local" \
            -DCMAKE_INSTALL_PREFIX=install
 
+  # cmake .. -DAPP=S2S \
+  #          -DCCPP_SUITES="FV3_GFS_v16_coupled" \
+  #          -DCMAKE_PREFIX_PATH="${MYDIR}/libs/3rdparty/local;${MYDIR}/libs/nceplibs/local" \
+  #          -DCMAKE_INSTALL_PREFIX=install
+
   make -j8
   make install
 
