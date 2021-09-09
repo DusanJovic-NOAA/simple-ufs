@@ -30,8 +30,9 @@ if [[ $COMPILERS == gnu ]]; then
   export MPICXX=${MPICXX:-mpicxx}
   export MPIF90=${MPIF90:-mpif90}
   gcc_ver=$( gcc -dumpfullversion )
-  if [[ $(ver $gcc_ver ) -ge $(ver 10.0) ]]; then
-    export FFLAGS="-fallow-argument-mismatch" # for gcc 10
+  if [[ $(ver $gcc_ver ) -ge $(ver 10.0.0) ]]; then
+    export FFLAGS="-fallow-argument-mismatch " # for gcc 10
+    export FCFLAGS="-fallow-argument-mismatch " # for gcc 10
   fi
 elif [[ $COMPILERS == intel ]]; then
   if [[ $(command -v ftn) ]]; then
@@ -142,7 +143,7 @@ NETCDF=netcdf-c-4.7.4
 NETCDF_FORTRAN=netcdf-fortran-4.5.3
 PIO=pio-2.5.3
 ESMF=ESMF_8_1_1
-FMS=FMS-2020.04.03
+FMS=FMS-2021.03
 
 [ $INSTALL_ZLIB           == on ] && download_and_check_md5sum   0095d2d2d1f3442ce1318336637b695f   https://github.com/madler/zlib/archive/v${ZLIB:5}.tar.gz                       ${ZLIB}.tar.gz
 [ $INSTALL_JPEG           == on ] && download_and_check_md5sum   cbc68018646e09b3fd8091e3de5ea451   http://www.ijg.org/files/jpegsrc.v9c.tar.gz                                    ${JPEG}.tar.gz
@@ -153,7 +154,7 @@ FMS=FMS-2020.04.03
 [ $INSTALL_NETCDF_FORTRAN == on ] && download_and_check_md5sum   47bf6eed50bd50b23b7e391dc1f8b5c4   https://github.com/Unidata/netcdf-fortran/archive/v${NETCDF_FORTRAN:15}.tar.gz ${NETCDF_FORTRAN}.tar.gz
 [ $INSTALL_PIO            == on ] && download_and_check_md5sum   46ccbf390c54ce1339439c4e4fc360db   https://github.com/NCAR/ParallelIO/releases/download/pio2_5_3/${PIO}.tar.gz    ${PIO}.tar.gz
 [ $INSTALL_ESMF           == on ] && download_and_check_md5sum   f76066364c9f53b921a6e1a7ca76f8f7   https://github.com/esmf-org/esmf/archive/${ESMF}.tar.gz                        ${ESMF}.tar.gz
-[ $INSTALL_FMS            == on ] && download_and_check_md5sum   72e6754ad184edd46c9deda72e47daf0   https://github.com/NOAA-GFDL/FMS/archive/refs/tags/${FMS:4}.tar.gz             ${FMS}.tar.gz
+[ $INSTALL_FMS            == on ] && download_and_check_md5sum   268fca73f451b19026ca6f5072af5683   https://github.com/NOAA-GFDL/FMS/archive/refs/tags/${FMS:4}.tar.gz             ${FMS}.tar.gz
 
 [ $fetch_only == on ] && exit
 
@@ -161,9 +162,9 @@ echo
 echo "Building 3rdparty libraries using ${COMPILERS} compilers"
 echo
 
-export CFLAGS+=""
-export CXXFLAGS+=""
-export FFLAGS+=""
+export CFLAGS+="-g"
+export CXXFLAGS+="-g"
+export FFLAGS+="-g"
 export CPPFLAGS+=" -I${PREFIX_PATH}/include"
 export LDFLAGS+=" -L${PREFIX_PATH}/lib"
 

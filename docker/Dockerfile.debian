@@ -1,10 +1,11 @@
-FROM debian:buster
+FROM debian:bullseye
 
 RUN apt-get update && \
     apt-get install -y \
             autoconf \
             automake \
             curl \
+            cmake \
             g++ \
             gcc \
             gfortran \
@@ -16,10 +17,10 @@ RUN apt-get update && \
             python3 \
             vim
 
-RUN cd /tmp && \
-    curl -f -s -S -R -L -O https://github.com/Kitware/CMake/releases/download/v3.20.4/cmake-3.20.4-Linux-x86_64.tar.gz && \
-    tar zxvf cmake-3.20.4-Linux-x86_64.tar.gz -C / --strip-components=1 && \
-    rm cmake-3.20.4-Linux-x86_64.tar.gz
+#RUN cd /tmp && \
+#    curl -f -s -S -R -L -O https://github.com/Kitware/CMake/releases/download/v3.21.2/cmake-3.21.2-Linux-x86_64.tar.gz && \
+#    tar zxvf cmake-3.21.2-Linux-x86_64.tar.gz -C / --strip-components=1 && \
+#    rm cmake-3.21.2-Linux-x86_64.tar.gz
 
 RUN useradd -ms /bin/bash builder
 WORKDIR /home/builder
@@ -29,7 +30,8 @@ RUN chown -R builder:builder /home/builder/simple-ufs
 
 USER builder
 
-RUN cd /home/builder/simple-ufs && \
+RUN \
+ cd /home/builder/simple-ufs && \
  ./get.sh && \
  ./build.sh gnu -3rdparty -nceplibs -preproc -model -post && \
  cd run && \

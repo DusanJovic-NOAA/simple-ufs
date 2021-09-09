@@ -1,4 +1,4 @@
-name: Build CentOS 8
+name: Build Debian
 
 on: [push, pull_request]
 
@@ -13,4 +13,4 @@ jobs:
 
     - name: Build docker image
       run: |
-        docker build -t sufs_centos8 -f docker/Dockerfile.centos8 .
+        docker build -t sufs_debian -f docker/Dockerfile.debian .

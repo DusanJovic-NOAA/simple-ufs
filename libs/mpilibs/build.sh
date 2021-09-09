@@ -99,10 +99,10 @@ download_and_check_md5sum()
   fi
 }
 
-MPICH=mpich-3.3.2
+MPICH=mpich-3.4.2
 OPENMPI=openmpi-4.0.2
 
-[ $INSTALL_MPICH          == on ] && download_and_check_md5sum   2d680f620583beadd7a08acdcfe355e6   https://www.mpich.org/static/downloads/${MPICH:6:12}/${MPICH}.tar.gz
+[ $INSTALL_MPICH          == on ] && download_and_check_md5sum   6ee1cfff98728e5160c6e78bdb1986ca   https://www.mpich.org/static/downloads/${MPICH:6:12}/${MPICH}.tar.gz
 [ $INSTALL_OPENMPI        == on ] && download_and_check_md5sum   d712bcc68a5a0bcce76b39843ed48158   https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.2.tar.gz
 
 #

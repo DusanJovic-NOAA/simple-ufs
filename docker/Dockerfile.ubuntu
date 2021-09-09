@@ -18,11 +18,12 @@ RUN apt-get update && \
             vim
 
 RUN cd /tmp && \
-    curl -f -s -S -R -L -O https://github.com/Kitware/CMake/releases/download/v3.20.4/cmake-3.20.4-Linux-x86_64.tar.gz && \
+    curl -f -s -S -R -L -O https://github.com/Kitware/CMake/releases/download/v3.21.2/cmake-3.21.2-Linux-x86_64.tar.gz && \
     mkdir -p /usr/local/cmake && \
-    tar zxvf cmake-3.20.4-Linux-x86_64.tar.gz -C /usr/local/cmake --strip-components=1 && \
-    rm cmake-3.20.4-Linux-x86_64.tar.gz && \
-    echo export PATH=/usr/local/cmake/bin:\$PATH >> /etc/bashrc
+    tar zxvf cmake-3.21.2-Linux-x86_64.tar.gz -C /usr/local/cmake --strip-components=1 && \
+    rm cmake-3.21.2-Linux-x86_64.tar.gz
+
+ENV PATH=/usr/local/cmake/bin:$PATH
 
 RUN useradd -ms /bin/bash builder
 WORKDIR /home/builder
@@ -32,7 +33,7 @@ RUN chown -R builder:builder /home/builder/simple-ufs
 
 USER builder
 
-RUN . /etc/bashrc && \
+RUN \
  cd /home/builder/simple-ufs && \
  ./get.sh && \
  ./build.sh gnu -3rdparty -nceplibs -preproc -model -post && \

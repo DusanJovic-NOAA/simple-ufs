@@ -4,7 +4,7 @@
 <a href="https://github.com/DusanJovic-NOAA/simple-ufs/actions"><img alt="GitHub Actions status" src="https://github.com/DusanJovic-NOAA/simple-ufs/workflows/Build%20macOS/badge.svg"></a>
 
 <a href="https://github.com/DusanJovic-NOAA/simple-ufs/actions"><img alt="GitHub Actions status" src="https://github.com/DusanJovic-NOAA/simple-ufs/workflows/Build%20CentOS%207/badge.svg"></a>
-<a href="https://github.com/DusanJovic-NOAA/simple-ufs/actions"><img alt="GitHub Actions status" src="https://github.com/DusanJovic-NOAA/simple-ufs/workflows/Build%20CentOS%208/badge.svg"></a>
+<a href="https://github.com/DusanJovic-NOAA/simple-ufs/actions"><img alt="GitHub Actions status" src="https://github.com/DusanJovic-NOAA/simple-ufs/workflows/Build%20Debian/badge.svg"></a>
 <a href="https://github.com/DusanJovic-NOAA/simple-ufs/actions"><img alt="GitHub Actions status" src="https://github.com/DusanJovic-NOAA/simple-ufs/workflows/Build%20Ubuntu/badge.svg"></a>
 
 Let's start with a disclaimer.
@@ -19,12 +19,12 @@ By cloning, forking or downloading anything from this repository I assume you kn
 
 ## What is in this repository
 
-The purpose of this repository is to store my personal scripts I use to build UFS 
+The purpose of this repository is to store my personal scripts I use to build UFS
 Weather model in a simple and portable way. Emphasis is on providing fairly simple
 building of all dependencies and model itself on a workstation type of computer
 (desktop/laptop) using GNU compilers.
 
-That's all. 
+That's all.
 
 ## Quick start
 
