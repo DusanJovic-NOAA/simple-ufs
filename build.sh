@@ -3,7 +3,7 @@ set -eu
 set -o pipefail
 
 usage() {
-  echo "Usage: $0 gnu | intel [-all] [-3rdparty] [-nceplibs] [-preproc] [-model] [-post]"
+  echo "Usage: $0 gnu | intel [-all] [-ufslibs] [-preproc] [-model] [-post]"
   exit 1
 }
 
@@ -28,7 +28,6 @@ elif [[ $COMPILER == intel ]]; then
     export MPICC=${MPICC:-cc}
     export MPICXX=${MPICXX:-CC}
     export MPIF90=${MPIF90:-ftn}
-    MPI_IMPLEMENTATION=mpi
   else
     export CC=${CC:-icc}
     export CXX=${CXX:-icpc}
@@ -41,8 +40,7 @@ else
   usage
 fi
 
-BUILD_3RDPARTY=no
-BUILD_NCEPLIBS=no
+BUILD_UFSLIBS=no
 BUILD_PREPROC=no
 BUILD_MODEL=no
 BUILD_POST=no
@@ -52,19 +50,14 @@ opt=$1
 
 case $opt in
   -all)
-    BUILD_3RDPARTY=yes
-    BUILD_NCEPLIBS=yes
+    BUILD_UFSLIBS=yes
     BUILD_PREPROC=yes
     BUILD_MODEL=yes
     BUILD_POST=yes
     shift
     ;;
-  -3rdparty)
-    BUILD_3RDPARTY=yes
-    shift
-    ;;
-  -nceplibs)
-    BUILD_NCEPLIBS=yes
+  -ufslibs)
+    BUILD_UFSLIBS=yes
     shift
     ;;
   -preproc)
@@ -85,14 +78,13 @@ case $opt in
 esac
 done
 
-echo "BUILD_3RDPARTY = ${BUILD_3RDPARTY}"
-echo "BUILD_NCEPLIBS = ${BUILD_NCEPLIBS}"
-echo "BUILD_PREPROC  = ${BUILD_PREPROC}"
-echo "BUILD_MODEL    = ${BUILD_MODEL}"
-echo "BUILD_POST     = ${BUILD_POST}"
+echo "BUILD_UFSLIBS = ${BUILD_UFSLIBS}"
+echo "BUILD_PREPROC = ${BUILD_PREPROC}"
+echo "BUILD_MODEL   = ${BUILD_MODEL}"
+echo "BUILD_POST    = ${BUILD_POST}"
 
 
-MYDIR=$(cd "$(dirname "$(readlink -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
+readonly MYDIR=$(cd "$(dirname "$(readlink -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
 
 # print compiler version
 echo
@@ -102,18 +94,6 @@ ${FC} --version | head -1
 cmake --version | head -1
 echo
 
-MPI_IMPLEMENTATION=${MPI_IMPLEMENTATION:-mpich3}
-if ! command -v mpiexec > /dev/null ; then
-  if [[ -f ${MYDIR}/mpilibs/local/${MPI_IMPLEMENTATION}/bin/mpiexec ]]; then
-    export PATH=${MYDIR}/mpilibs/local/${MPI_IMPLEMENTATION}/bin:$PATH
-  else
-    echo "Missing mpiexec for ${MPI_IMPLEMENTATION}"
-    exit 1
-  fi
-fi
-
-mpiexec --version | grep OpenRTE 2> /dev/null && MPI_IMPLEMENTATION=openmpi
-mpiexec --version | grep Intel 2> /dev/null && MPI_IMPLEMENTATION=intelmpi
 mpiexec --version
 echo
 
@@ -126,34 +106,29 @@ export OMPI_CXX=${CXX}
 export OMPI_FC=${FC}
 
 #
-# 3rdparty
+# ufslibs
 #
-if [ $BUILD_3RDPARTY == yes ]; then
+if [ $BUILD_UFSLIBS == yes ]; then
 SECONDS=0
-printf '%-.30s ' "Building 3rdparty .........................."
+printf '%-.30s ' "Building ufslibs .........................."
 (
-  cd libs/3rdparty
-  ./build.sh ${COMPILER}
-) > log_3rdparty 2>&1
+  cd libs/ufslibs
+
+  rm -rf build install
+  mkdir build
+  cd build
+
+  cmake .. -DCMAKE_INSTALL_PREFIX=../install
+
+  make -j 8
+
+) > log_ufslibs 2>&1
 printf 'done [%4d sec]\n' ${SECONDS}
 fi
 
-export NETCDF=${MYDIR}/libs/3rdparty/local
-export PATH=${NETCDF}/bin:${PATH} # for nc-config for WW3
-export ESMFMKFILE=${MYDIR}/libs/3rdparty/local/lib/esmf.mk
+CMAKE_PREFIX_PATH="${MYDIR}/libs/ufslibs/install"
 
-#
-# nceplibs
-#
-if [ $BUILD_NCEPLIBS == yes ]; then
-SECONDS=0
-printf '%-.30s ' "Building nceplibs .........................."
-(
-  cd libs/nceplibs
-  ./build.sh ${COMPILER}
-) > log_nceplibs 2>&1
-printf 'done [%4d sec]\n' ${SECONDS}
-fi
+export ESMFMKFILE=${CMAKE_PREFIX_PATH}/lib/esmf.mk
 
 export CC=${MPICC}
 export CXX=${MPICXX}
@@ -172,8 +147,7 @@ printf '%-.30s ' "Building preproc ..........................."
   mkdir build
   cd build
 
-  cmake .. -DCMAKE_PREFIX_PATH="${MYDIR}/libs/3rdparty/local;${MYDIR}/libs/nceplibs/local" \
-           -DNetCDF_PATH="${MYDIR}/libs/3rdparty/local" \
+  cmake .. -DCMAKE_PREFIX_PATH="${CMAKE_PREFIX_PATH}" \
            -DCMAKE_INSTALL_PREFIX="${MYDIR}"
 
   make -j 8
@@ -190,22 +164,23 @@ if [ $BUILD_MODEL == yes ]; then
 SECONDS=0
 printf '%-.30s ' "Building model ..........................."
 (
-  cd ${MYDIR}/src/model
+  cd src/model
 
   rm -rf build
   mkdir build
   cd build
+
   cmake .. -DAPP=ATM \
            -DCCPP_SUITES="FV3_GFS_v16,FV3_GFS_2017_gfdlmp_regional" \
            -D32BIT=ON \
            -DINLINE_POST=ON \
            -DPARALLEL_NETCDF=ON \
-           -DCMAKE_PREFIX_PATH="${MYDIR}/libs/3rdparty/local;${MYDIR}/libs/nceplibs/local" \
+           -DCMAKE_PREFIX_PATH="${CMAKE_PREFIX_PATH}" \
            -DCMAKE_INSTALL_PREFIX=install
 
   # cmake .. -DAPP=S2S \
   #          -DCCPP_SUITES="FV3_GFS_v16_coupled" \
-  #          -DCMAKE_PREFIX_PATH="${MYDIR}/libs/3rdparty/local;${MYDIR}/libs/nceplibs/local" \
+  #          -DCMAKE_PREFIX_PATH="${CMAKE_PREFIX_PATH}" \
   #          -DCMAKE_INSTALL_PREFIX=install
 
   make -j8
@@ -230,9 +205,10 @@ printf '%-.30s ' "Building post ..........................."
   mkdir build
   cd build
 
-  cmake .. -DCMAKE_PREFIX_PATH="${MYDIR}/libs/3rdparty/local;${MYDIR}/libs/nceplibs/local"
+  cmake .. -DCMAKE_PREFIX_PATH="${CMAKE_PREFIX_PATH}"
 
   make -j8
+
   cp sorc/ncep_post.fd/upp.x ${MYDIR}/bin/ufs_post
 
 ) > log_post 2>&1

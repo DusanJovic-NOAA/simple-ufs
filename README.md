@@ -6,6 +6,7 @@
 <a href="https://github.com/DusanJovic-NOAA/simple-ufs/actions"><img alt="GitHub Actions status" src="https://github.com/DusanJovic-NOAA/simple-ufs/workflows/Build%20CentOS%207/badge.svg"></a>
 <a href="https://github.com/DusanJovic-NOAA/simple-ufs/actions"><img alt="GitHub Actions status" src="https://github.com/DusanJovic-NOAA/simple-ufs/workflows/Build%20Debian/badge.svg"></a>
 <a href="https://github.com/DusanJovic-NOAA/simple-ufs/actions"><img alt="GitHub Actions status" src="https://github.com/DusanJovic-NOAA/simple-ufs/workflows/Build%20Ubuntu/badge.svg"></a>
+<a href="https://github.com/DusanJovic-NOAA/simple-ufs/actions"><img alt="GitHub Actions status" src="https://github.com/DusanJovic-NOAA/simple-ufs/workflows/Build%20Fedora/badge.svg"></a>
 
 Let's start with a disclaimer.
 

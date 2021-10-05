@@ -7,8 +7,6 @@ cd ${MYDIR}
 (
 rm -rf preproc
 git clone --recursive --branch develop https://github.com/NOAA-EMC/UFS_UTILS preproc
-cd preproc
-git apply < ../preproc.patch
 )
 
 (

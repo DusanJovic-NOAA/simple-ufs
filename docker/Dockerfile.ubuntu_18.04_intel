@@ -41,12 +41,7 @@ ENV I_MPI_LIBRARY_KIND='release_mt'
 
 RUN echo "source /opt/intel/oneapi/setvars.sh -i_mpi_library_kind=release_mt" >> /etc/bashrc
 
-RUN cd /tmp && \
-    curl -f -s -S -R -L -O https://github.com/Kitware/CMake/releases/download/v3.20.4/cmake-3.20.4-Linux-x86_64.tar.gz && \
-    mkdir -p /usr/local/cmake && \
-    tar zxf cmake-3.20.4-Linux-x86_64.tar.gz -C /usr/local/cmake --strip-components=1 && \
-    rm cmake-3.20.4-Linux-x86_64.tar.gz && \
-    echo export PATH=/usr/local/cmake/bin:\$PATH >> /etc/bashrc
+RUN curl -f -s -S -R -L https://github.com/Kitware/CMake/releases/download/v3.21.3/cmake-3.21.3-Linux-x86_64.tar.gz | tar -zx -C /usr --strip-components=1
 
 RUN useradd -ms /bin/bash builder
 WORKDIR /home/builder
@@ -58,7 +53,7 @@ SHELL ["/bin/bash", "-c"]
 RUN . /etc/bashrc && \
  cd /home/builder/simple-ufs && \
  ./get.sh && \
- ./build.sh intel -3rdparty -nceplibs -preproc -model -post && \
+ ./build.sh intel -ufslibs -preproc -model -post && \
  cd run && \
  sed -i -e 's/NHOURS_FCST=24/NHOURS_FCST=3/g' configuration.sh && \
  sed -i -e 's/NFHMAX_HF=12/NFHMAX_HF=3/g' configuration.sh && \

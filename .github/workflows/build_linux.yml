@@ -19,33 +19,13 @@ jobs:
     - name: Fetch dependencies
       run: ./get.sh
 
-# libs/3rdparty
-    - name: Build libs/3rdparty
+# libs/ufslibs
+    - name: Build libs/ufslibs
       run: |
-        if ./build.sh gnu -3rdparty; then
-          cat log_3rdparty
-          cat libs/3rdparty/src/log_*
-          ls -lR libs/3rdparty/local
+        if ./build.sh gnu -ufslibs; then
+          cat log_ufslibs
         else
-          cat log_3rdparty
-          for log in libs/3rdparty/src/log_*; do
-            if [ -f "$log" ]; then cat $log; fi
-          done
-          exit 1
-        fi
-
-# libs/nceplibs
-    - name: Build libs/nceplibs
-      run: |
-        if ./build.sh gnu -nceplibs; then
-          cat log_nceplibs
-          cat libs/nceplibs/*.log
-          ls -lR libs/nceplibs/local
-        else
-          cat log_nceplibs
-          for log in libs/nceplibs/*.log; do
-            if [ -f "$log" ]; then cat $log; fi
-          done
+          cat log_ufslibs
           exit 1
         fi
 

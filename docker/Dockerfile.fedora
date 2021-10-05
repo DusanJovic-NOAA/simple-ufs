@@ -1,0 +1,43 @@
+FROM fedora:34
+
+RUN dnf -y install 'dnf-command(config-manager)'
+RUN dnf -y update
+RUN dnf clean all
+RUN dnf -y install \
+           cmake \
+           g++ \
+           gfortran \
+           git \
+           libjpeg-devel \
+           libtool \
+           m4 \
+           make \
+           mpich \
+           mpich-devel
+
+ENV PATH=/usr/lib64/mpich/bin:$PATH
+
+RUN useradd -ms /bin/bash builder
+WORKDIR /home/builder
+RUN mkdir /home/builder/simple-ufs
+COPY . /home/builder/simple-ufs
+RUN chown -R builder:builder /home/builder/simple-ufs
+WORKDIR /home/builder/simple-ufs
+
+USER builder
+
+RUN ./build.sh gnu -ufslibs
+
+RUN ./get.sh && ./build.sh gnu -preproc -model -post
+
+RUN cd run && \
+ sed -i -e 's/NHOURS_FCST=24/NHOURS_FCST=3/g' configuration.sh && \
+ sed -i -e 's/NFHMAX_HF=12/NFHMAX_HF=3/g' configuration.sh && \
+ ./fetch_fix_data.sh && \
+ ./fetch_input_data.sh && \
+ ./run.sh && \
+ ls -l preproc_run && \
+ ls -l model_run && \
+ ls -l post_run
+
+CMD ["/bin/bash"]

@@ -1,0 +1,3 @@
+log_*
+libs/ufslibs/build
+bin/*
