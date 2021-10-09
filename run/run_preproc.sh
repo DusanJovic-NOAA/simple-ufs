@@ -25,19 +25,19 @@ export VCOORD_FILE=${FIXam}/global_hyblev.l${levp}.txt
 
 export COMIN=${INPUT_DATA}
 
-if [[ $gtype == 'uniform' ]]; then
+if [[ $gtype == uniform ]]; then
 
     export FIXfv3=${GRID_OROG_DATA}/C${res}
 
     export REGIONAL=0
 
-    if [[ $INPUT_TYPE == 'nemsio' ]]; then
+    if [[ $INPUT_TYPE == nemsio ]]; then
 
       #export ATM_FILES_INPUT=gfs.t00z.atmanl.nemsio
       #export SFC_FILES_INPUT=gfs.t00z.sfcanl.nemsio
       :
 
-    elif [[ $INPUT_TYPE == 'grib2' ]]; then
+    elif [[ $INPUT_TYPE == grib2 ]]; then
 
       export GRIB2_FILE_INPUT=gfs.t00z.pgrb2.0p50.f000
       export VARMAP_FILE=GFSphys_var_map.txt
@@ -45,7 +45,7 @@ if [[ $gtype == 'uniform' ]]; then
 
       cp ${MYDIR}/global_conf/GFSphys_var_map.txt .
 
-    elif [[ $INPUT_TYPE == 'gaussian_netcdf' ]]; then
+    elif [[ $INPUT_TYPE == gaussian_netcdf ]]; then
 
       export ATM_FILES_INPUT=gfs.t00z.atmf000.nc
       export SFC_FILES_INPUT=gfs.t00z.sfcanl.nc
@@ -92,13 +92,14 @@ elif [[ $gtype == regional* ]]; then
     cp ${MYDIR}/regional_conf/GFSphys_var_map.txt .
 
     ${sufs}/src/preproc/ush/chgres_cube.sh
-    mv ${DATA}/out.atm.tile1.nc ${DATA}/gfs_data.tile7.nc
-    mv ${DATA}/out.sfc.tile1.nc ${DATA}/sfc_data.tile7.nc
+
+    mv ${DATA}/out.atm.tile7.nc ${DATA}/gfs_data.tile7.nc
+    mv ${DATA}/out.sfc.tile7.nc ${DATA}/sfc_data.tile7.nc
     mv ${DATA}/gfs.bndy.nc      ${DATA}/gfs_bndy.tile7.000.nc
 
     for FHR in $(seq -s ' ' -f %03g $BC_INT $BC_INT $NHOURS_FCST); do
         export REGIONAL=2
-        export ATM_FILES_INPUT=gfs.t00z.atmf${FHR}.nemsio
+        export GRIB2_FILE_INPUT=gfs.t00z.pgrb2.0p50.f${FHR}
         export CONVERT_SFC=.false.
         ${sufs}/src/preproc/ush/chgres_cube.sh
         mv ${DATA}/gfs.bndy.nc ${DATA}/gfs_bndy.tile7.${FHR}.nc

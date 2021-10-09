@@ -40,12 +40,12 @@ for FHR in ${FHRS[@]}; do
   HH=${NEWDATE:8:2}
 
   cat > itag.${FHR} <<EOF
-../model_run/dynf${FHR}.nc
+../model_run/atmf${FHR}.nc
 netcdf
 grib2
 ${YY}-${MM}-${DD}_${HH}:00:00
 GFS
-../model_run/phyf${FHR}.nc
+../model_run/sfcf${FHR}.nc
 
 &NAMPGB
  KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,

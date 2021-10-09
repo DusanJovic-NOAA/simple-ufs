@@ -97,10 +97,6 @@ echo
 mpiexec --version
 echo
 
-export MPICH_CC=${CC}
-export MPICH_CXX=${CXX}
-export MPICH_F90=${FC}
-export MPICH_FC=${FC}
 export OMPI_CC=${CC}
 export OMPI_CXX=${CXX}
 export OMPI_FC=${FC}
