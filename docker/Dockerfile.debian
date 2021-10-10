@@ -23,14 +23,15 @@ WORKDIR /home/builder
 RUN mkdir /home/builder/simple-ufs
 COPY . /home/builder/simple-ufs
 RUN chown -R builder:builder /home/builder/simple-ufs
+WORKDIR /home/builder/simple-ufs
 
 USER builder
 
-RUN \
- cd /home/builder/simple-ufs && \
- ./get.sh && \
- ./build.sh gnu -ufslibs -preproc -model -post && \
- cd run && \
+RUN ./build.sh gnu -ufslibs
+
+RUN ./get.sh && ./build.sh gnu -preproc -model -post
+
+RUN cd run && \
  sed -i -e 's/NHOURS_FCST=24/NHOURS_FCST=3/g' configuration.sh && \
  sed -i -e 's/NFHMAX_HF=12/NFHMAX_HF=3/g' configuration.sh && \
  ./fetch_fix_data.sh && \

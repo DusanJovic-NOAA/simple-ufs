@@ -1,0 +1,13 @@
+diff --git a/sorc/chgres_cube.fd/input_data.F90 b/sorc/chgres_cube.fd/input_data.F90
+index e3f4b12d..ecb65f42 100644
+--- a/sorc/chgres_cube.fd/input_data.F90
++++ b/sorc/chgres_cube.fd/input_data.F90
+@@ -4797,7 +4797,7 @@ else
+    allocate(dummy2d_8(0,0))
+    allocate(dummy2d_82(0,0))
+    allocate(dummy2d(0,0))
+-
++   allocate(slmsk_save(0,0))
+  endif
+  
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

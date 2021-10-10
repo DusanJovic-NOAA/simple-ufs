@@ -3,7 +3,7 @@ FROM centos:7
 RUN yum -y update
 RUN yum clean all
 RUN yum -y install centos-release-scl
-RUN yum -y install devtoolset-9-gcc-c++ devtoolset-9-gcc-gfortran
+RUN yum -y install devtoolset-10-gcc-c++ devtoolset-10-gcc-gfortran
 RUN yum -y install \
            autoconf \
            automake \
@@ -15,7 +15,7 @@ RUN yum -y install \
            python3 \
            which
 
-ENV PATH=/opt/rh/devtoolset-9/root/usr/bin:$PATH
+ENV PATH=/opt/rh/devtoolset-10/root/usr/bin:$PATH
 
 RUN curl -f -s -S -R -L https://github.com/Kitware/CMake/releases/download/v3.21.3/cmake-3.21.3-Linux-x86_64.tar.gz | tar -zx -C /usr --strip-components=1
 
@@ -29,7 +29,7 @@ WORKDIR /home/builder/simple-ufs
 USER builder
 
 RUN \
- cd /home/builder/simple-ufs/libs/mpilibs && \
+ cd libs/mpilibs && \
  ./build.sh gnu
 
 ENV PATH=/home/builder/simple-ufs/libs/mpilibs/local/mpich3/bin:$PATH
