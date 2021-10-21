@@ -316,8 +316,8 @@ if(${CMAKE_C_COMPILER_ID} STREQUAL "Intel")
     set(FC_wgrib2 "ifort")
     set(COMP_SYS_wgrib2 "intel_linux")
 elseif(${CMAKE_C_COMPILER_ID} STREQUAL "GNU")
-    set(CC_wgrib2 "gcc")
-    set(FC_wgrib2 "gfortran")
+    set(CC_wgrib2 ${CMAKE_C_COMPILER})
+    set(FC_wgrib2 ${CMAKE_Fortran_COMPILER})
     set(COMP_SYS_wgrib2 "gnu_linux")
 else()
     message(FATAL_ERROR "Unknown compiler ${CMAKE_C_COMPILER_ID}")
@@ -328,10 +328,10 @@ ExternalProject_Add(wgrib2
     DOWNLOAD_NAME wgrib2.tar.gz
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND
-        COMMAND sed -i "s/^USE_NETCDF3=.*/USE_NETCDF3=0/" makefile
-        COMMAND sed -i "s/^USE_IPOLATES=.*/USE_IPOLATES=0/" makefile
-        COMMAND sed -i "s/^USE_SPECTRAL=.*/USE_SPECTRAL=0/" makefile
-        COMMAND sed -i "s/^USE_AEC=.*/USE_AEC=0/" makefile
+        COMMAND sed -i -e "s/^USE_NETCDF3=.*/USE_NETCDF3=0/" makefile
+        COMMAND sed -i -e "s/^USE_IPOLATES=.*/USE_IPOLATES=0/" makefile
+        COMMAND sed -i -e "s/^USE_SPECTRAL=.*/USE_SPECTRAL=0/" makefile
+        COMMAND sed -i -e "s/^USE_AEC=.*/USE_AEC=0/" makefile
     BUILD_COMMAND
         COMMAND env CC=${CC_wgrib2} FC=${FC_wgrib2} COMP_SYS=${COMP_SYS_wgrib2} make
         COMMAND env CC=${CC_wgrib2} FC=${FC_wgrib2} COMP_SYS=${COMP_SYS_wgrib2} make lib
