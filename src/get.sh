@@ -6,7 +6,7 @@ cd ${MYDIR}
 
 (
 rm -rf preproc
-git clone --recursive --branch develop https://github.com/NOAA-EMC/UFS_UTILS preproc
+git clone --recursive --branch develop https://github.com/ufs-community/UFS_UTILS preproc
 )
 
 (

@@ -122,13 +122,32 @@ printf '%-.30s ' "Building ufslibs .........................."
 printf 'done [%4d sec]\n' ${SECONDS}
 fi
 
-CMAKE_PREFIX_PATH="${MYDIR}/libs/ufslibs/install"
-
-export ESMFMKFILE=${CMAKE_PREFIX_PATH}/lib/esmf.mk
-
 export CC=${MPICC}
 export CXX=${MPICXX}
 export FC=${MPIF90}
+
+ufslibs_install_prefix=${MYDIR}/libs/ufslibs/install
+
+export ZLIB_ROOT=${ufslibs_install_prefix}/zlib
+export PNG_ROOT=${ufslibs_install_prefix}/libpng
+export NetCDF_ROOT=${ufslibs_install_prefix}/netcdf
+
+export ESMFMKFILE=${ufslibs_install_prefix}/esmf/lib/esmf.mk
+export FMS_ROOT=${ufslibs_install_prefix}/fms
+
+export bacio_ROOT=${ufslibs_install_prefix}/NCEPLIBS-bacio
+export crtm_ROOT=${ufslibs_install_prefix}/EMC_crtm
+export g2_ROOT=${ufslibs_install_prefix}/NCEPLIBS-g2
+export g2tmpl_ROOT=${ufslibs_install_prefix}/NCEPLIBS-g2tmpl
+export gfsio_ROOT=${ufslibs_install_prefix}/NCEPLIBS-gfsio
+export ip_ROOT=${ufslibs_install_prefix}/NCEPLIBS-ip
+export nemsio_ROOT=${ufslibs_install_prefix}/NCEPLIBS-nemsio
+export sfcio_ROOT=${ufslibs_install_prefix}/NCEPLIBS-sfcio
+export sigio_ROOT=${ufslibs_install_prefix}/NCEPLIBS-sigio
+export sp_ROOT=${ufslibs_install_prefix}/NCEPLIBS-sp
+export upp_ROOT=${ufslibs_install_prefix}/UPP
+export w3nco_ROOT=${ufslibs_install_prefix}/NCEPLIBS-w3nco
+export wgrib2_ROOT=${ufslibs_install_prefix}/wgrib2
 
 #
 # preproc
@@ -143,8 +162,7 @@ printf '%-.30s ' "Building preproc ..........................."
   mkdir build
   cd build
 
-  cmake .. -DCMAKE_PREFIX_PATH="${CMAKE_PREFIX_PATH}" \
-           -DCMAKE_INSTALL_PREFIX="${MYDIR}"
+  cmake .. -DCMAKE_INSTALL_PREFIX="${MYDIR}"
 
   make -j 8
   make install
@@ -171,15 +189,13 @@ printf '%-.30s ' "Building model ..........................."
            -D32BIT=ON \
            -DINLINE_POST=ON \
            -DPARALLEL_NETCDF=ON \
-           -DCMAKE_PREFIX_PATH="${CMAKE_PREFIX_PATH}" \
            -DCMAKE_INSTALL_PREFIX=install
 
   # cmake .. -DAPP=S2S \
   #          -DCCPP_SUITES="FV3_GFS_v16_coupled" \
-  #          -DCMAKE_PREFIX_PATH="${CMAKE_PREFIX_PATH}" \
   #          -DCMAKE_INSTALL_PREFIX=install
 
-  make -j8
+  make -j 8
   make install
 
   cp ufs_model ${MYDIR}/bin/ufs_model
@@ -201,9 +217,9 @@ printf '%-.30s ' "Building post ..........................."
   mkdir build
   cd build
 
-  cmake .. -DCMAKE_PREFIX_PATH="${CMAKE_PREFIX_PATH}"
+  cmake ..
 
-  make -j8
+  make -j 8
 
   cp sorc/ncep_post.fd/upp.x ${MYDIR}/bin/ufs_post
 
