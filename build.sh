@@ -131,6 +131,7 @@ ufslibs_install_prefix=${MYDIR}/libs/ufslibs/install
 export ZLIB_ROOT=${ufslibs_install_prefix}/zlib
 export PNG_ROOT=${ufslibs_install_prefix}/libpng
 export NetCDF_ROOT=${ufslibs_install_prefix}/netcdf
+export PIO_ROOT=${ufslibs_install_prefix}/pio
 
 export ESMFMKFILE=${ufslibs_install_prefix}/esmf/lib/esmf.mk
 export FMS_ROOT=${ufslibs_install_prefix}/fms
@@ -149,6 +150,10 @@ export upp_ROOT=${ufslibs_install_prefix}/UPP
 export w3nco_ROOT=${ufslibs_install_prefix}/NCEPLIBS-w3nco
 export wgrib2_ROOT=${ufslibs_install_prefix}/wgrib2
 
+export GFTL_ROOT=${ufslibs_install_prefix}/gftl_shared
+export GFTL_SHARED_ROOT=${ufslibs_install_prefix}/gftl_shared
+export YAFYAML_ROOT=${ufslibs_install_prefix}/yafyaml
+export MAPL_ROOT=${ufslibs_install_prefix}/mapl
 #
 # preproc
 #
@@ -193,6 +198,10 @@ printf '%-.30s ' "Building model ..........................."
 
   # cmake .. -DAPP=S2S \
   #          -DCCPP_SUITES="FV3_GFS_v16_coupled" \
+  #          -DCMAKE_INSTALL_PREFIX=install
+
+  # cmake .. -DAPP=ATMAERO \
+  #          -DCCPP_SUITES="FV3_GFS_v16" \
   #          -DCMAKE_INSTALL_PREFIX=install
 
   make -j 8
