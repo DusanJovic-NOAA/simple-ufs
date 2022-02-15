@@ -34,7 +34,7 @@ else # run fv3gfs_driver_grid.sh
   export APRUN=''
   export APRUN_SFC="${MPIEXEC} -n 6"
   export OMP_NUM_THREADS=1
-  export NCDUMP=${sufs}/libs/ufslibs/install/bin/ncdump
+  export NCDUMP=${sufs}/libs/ufslibs/install/netcdf/bin/ncdump
 
   ${sufs}/src/preproc/ush/fv3gfs_driver_grid.sh
 

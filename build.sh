@@ -3,7 +3,7 @@ set -eu
 set -o pipefail
 
 usage() {
-  echo "Usage: $0 gnu | intel [-all] [-ufslibs] [-preproc] [-model] [-post]"
+  echo "Usage: $0 gnu | intel | intel_llvm [-all] [-ufslibs] [-preproc] [-model] [-post]"
   exit 1
 }
 
@@ -32,10 +32,20 @@ elif [[ $COMPILER == intel ]]; then
     export CC=${CC:-icc}
     export CXX=${CXX:-icpc}
     export FC=${FC:-ifort}
-    export MPICC=${MPICC:-mpicc}
-    export MPICXX=${MPICXX:-mpicxx}
-    export MPIF90=${MPIF90:-mpif90}
+    export MPICC=${MPICC:-mpiicc}
+    export MPICXX=${MPICXX:-mpiicpc}
+    export MPIF90=${MPIF90:-mpiifort}
   fi
+elif [[ $COMPILER == intel_llvm ]]; then
+  export CC=${CC:-icx}
+  export CXX=${CXX:-icpx}
+  export FC=${FC:-ifx}
+  export MPICC=${MPICC:-mpiicc}
+  export MPICXX=${MPICXX:-mpiicpc}
+  export MPIF90=${MPIF90:-mpiifort}
+  export I_MPI_CC=${CC}
+  export I_MPI_CXX=${CXX}
+  export I_MPI_F90=${FC}
 else
   usage
 fi

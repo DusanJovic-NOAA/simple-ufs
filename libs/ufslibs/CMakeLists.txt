@@ -81,7 +81,8 @@ ExternalProject_Add(hdf5
     URL_HASH MD5=abbf353b2d8a1d5a062bdbba1c365171
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND env "CC=${MPI_C_COMPILER}"
-                      env "CFLAGS=-pthread"
+                      env "CFLAGS=-fPIE -pthread"
+                      env "LDFLAGS=-pie"
                       ./configure --prefix=${install_prefix}/hdf5
                                   --disable-shared
                                   --enable-static
@@ -200,10 +201,12 @@ list(APPEND esmf_env ESMF_DIR=${CMAKE_CURRENT_BINARY_DIR}/esmf-prefix/src/esmf)
 
 if(${CMAKE_C_COMPILER_ID} STREQUAL "Intel")
   list(APPEND esmf_env ESMF_COMPILER=intel)
+elseif(${CMAKE_C_COMPILER_ID} MATCHES "IntelLLVM")
+  list(APPEND esmf_env ESMF_COMPILER=intel)
 elseif(${CMAKE_C_COMPILER_ID} MATCHES "^(GNU|Clang|AppleClang)$")
   list(APPEND esmf_env ESMF_COMPILER=gfortran)
 else()
-  message(FATAL "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
+  message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
 endif()
 
 if(NOT MPITYPE)
@@ -242,8 +245,8 @@ list(APPEND esmf_env ESMF_INSTALL_LIBDIR=lib)
 list(APPEND esmf_env ESMF_INSTALL_BINDIR=bin)
 
 ExternalProject_Add(esmf
-    URL https://github.com/esmf-org/esmf/archive/refs/tags/ESMF_8_2_0.tar.gz
-    URL_HASH MD5=bd9493e4d737021ac510066e2b275e25
+    URL https://github.com/esmf-org/esmf/archive/refs/tags/v8.2.1b04.tar.gz
+    URL_HASH MD5=7d7459d5ad508a49db75212f7c0c8553
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND ""
     BUILD_COMMAND   env ${esmf_env} make -j 8
@@ -326,6 +329,10 @@ ExternalProject_Add_StepDependencies(UPP             build NCEPLIBS-bacio EMC_cr
 if(${CMAKE_C_COMPILER_ID} STREQUAL "Intel")
     set(CC_wgrib2 "icc")
     set(FC_wgrib2 "ifort")
+    set(COMP_SYS_wgrib2 "intel_linux")
+elseif(${CMAKE_C_COMPILER_ID} STREQUAL "IntelLLVM")
+    set(CC_wgrib2 "icx")
+    set(FC_wgrib2 "ifx")
     set(COMP_SYS_wgrib2 "intel_linux")
 elseif(${CMAKE_C_COMPILER_ID} STREQUAL "GNU")
     set(CC_wgrib2 ${CMAKE_C_COMPILER})

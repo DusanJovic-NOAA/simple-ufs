@@ -89,7 +89,7 @@ cd ${FIX_DATA}
     global_vegtype.igbp.t${JCAP}.${LONB}.${LATB}.rg.grb
     "
     for file in ${FIX_AM_FILES}; do
-        curl -f -s -S -R -L -O ${FIX_URL}/fix_am/${file}
+        curl -f -s -S -R -L -C - -O ${FIX_URL}/fix_am/${file}
     done
 
     # ln -s global_mxsnoalb.uariz.t126.384.190.rg.grb        global_mxsnoalb.uariz.t190.384.192.rg.grb
@@ -118,7 +118,7 @@ if [[ $gtype == uniform ]]; then
     mkdir -p C${res}
     cd C${res}
     for file in ${FIX_FV3_FILES}; do
-        curl -f -s -S -R -L -O ${FIX_URL}/fix_fv3_gmted2010/C${res}/${file}
+        curl -f -s -S -R -L -C - -O ${FIX_URL}/fix_fv3_gmted2010/C${res}/${file}
     done
 
     FIX_FV3_FIX_SFC_FILES="
@@ -128,14 +128,14 @@ if [[ $gtype == uniform ]]; then
     C${res}.snowfree_albedo.tile[1-6].nc
     C${res}.soil_type.tile[1-6].nc
     C${res}.substrate_temperature.tile[1-6].nc
-    C${res}.substrate_temperature.tile[1-6].nc
     C${res}.vegetation_greenness.tile[1-6].nc
     C${res}.vegetation_type.tile[1-6].nc
     "
     mkdir -p fix_sfc
     cd fix_sfc
     for file in ${FIX_FV3_FIX_SFC_FILES}; do
-        curl -f -s -S -R -L -O ${FIX_URL}/fix_fv3_gmted2010/C${res}/fix_sfc/${file}
+        sleep 5
+        curl -f -s -S -R -L -C - -O ${FIX_URL}/fix_fv3_gmted2010/C${res}/fix_sfc/${file}
     done
   )
   done # res
@@ -151,7 +151,7 @@ elif [[ $gtype == regional* ]]; then
     mkdir fix_orog
     cd fix_orog
     for file in ${OROG_FILES}; do
-        curl -f -s -S -R -L -O ${FIX_URL}/fix_orog/${file}
+        curl -f -s -S -R -L -C - -O ${FIX_URL}/fix_orog/${file}
     done
     cd ..
 
@@ -169,7 +169,7 @@ elif [[ $gtype == regional* ]]; then
     mkdir -p fix_sfc_climo
     cd fix_sfc_climo
     for file in ${SFC_CLIMO_FILES}; do
-        curl -f -s -S -R -L -O ${FIX_URL}/fix_sfc_climo/${file}
+        curl -f -s -S -R -L -C - -O ${FIX_URL}/fix_sfc_climo/${file}
     done
     cd ..
 )

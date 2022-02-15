@@ -1,0 +1,37 @@
+FROM intel/oneapi-hpckit
+
+RUN apt-get update -y && \
+apt-get install -y --no-install-recommends -o=Dpkg::Use-Pty=0 \
+git \
+gnupg \
+libjpeg-dev \
+m4 \
+pkg-config \
+python3 \
+vim \
+--
+
+RUN curl -f -s -S -R -L https://github.com/Kitware/CMake/releases/download/v3.22.2/cmake-3.22.2-Linux-x86_64.tar.gz | tar -zx -C /usr --strip-components=1
+
+RUN useradd -ms /bin/bash builder
+WORKDIR /home/builder
+COPY --chown=builder:builder . /home/builder/simple-ufs
+WORKDIR /home/builder/simple-ufs
+
+USER builder
+
+RUN ./build.sh intel -ufslibs
+
+RUN ./get.sh && ./build.sh intel -preproc -model -post
+
+RUN cd run && \
+ sed -i -e 's/NHOURS_FCST=24/NHOURS_FCST=3/g' configuration.sh && \
+ sed -i -e 's/NFHMAX_HF=12/NFHMAX_HF=3/g' configuration.sh && \
+ ./fetch_fix_data.sh && \
+ ./fetch_input_data.sh && \
+ ./run.sh && \
+ ls -l preproc_run && \
+ ls -l model_run && \
+ ls -l post_run
+
+CMD ["/bin/bash"]
