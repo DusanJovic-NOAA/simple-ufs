@@ -37,25 +37,39 @@ write_fsyncflag:         .false.
 # dlon:                    0.2
 # dlat:                    0.2
 
- output_grid:             'rotated_latlon'
- cen_lon:                 ${target_lon}   # central longitude
- cen_lat:                 ${target_lat}   # central latitude
- lon1:                    -30.0   # longitude of lower-left point in rotated coordinate system (in degrees)
- lat1:                    -25.0   # latitude of lower-left . . . .
- lon2:                     30.0   # longitude of upper-right . . . .
- lat2:                     25.0   # latitude of upper-right . . . .
- dlon:                      0.2
- dlat:                      0.2
+# output_grid:             'rotated_latlon'
+# cen_lon:                 ${target_lon}   # central longitude
+# cen_lat:                 ${target_lat}   # central latitude
+# lon1:                    -30.0   # longitude of lower-left point in rotated coordinate system (in degrees)
+# lat1:                    -25.0   # latitude of lower-left . . . .
+# lon2:                     30.0   # longitude of upper-right . . . .
+# lat2:                     25.0   # latitude of upper-right . . . .
+# dlon:                      0.2
+# dlat:                      0.2
 
+# Europe
+ output_grid:             'lambert_conformal'
+ cen_lon:                  15.5   # central longitude
+ cen_lat:                  45.0   # central latitude
+ stdlat1:                  30.0
+ stdlat2:                  60.0
+ nx:                       561     # Number of points along x-axis.
+ ny:                       521     # Number of points along y-axis.
+ lon1:                    -10.00   # longitude of first grid point (lower-left) (in degrees)
+ lat1:                     17.0    # latitude of first grid point (lower-left) (in degrees)
+ dx:                       10000.0 # x-direction grid length
+ dy:                       10000.0 # y-direction grid length
+
+ # Australia
 # output_grid:             'lambert_conformal'
-# cen_lon:                 -97.5   # central longitude
-# cen_lat:                  34.0   # central latitude
-# stdlat1:                  30.0
-# stdlat2:                  60.0
-# nx:                       450     # Number of points along x-axis.
-# ny:                       430     # Number of points along y-axis.
-# lon1:                    -116.0   # longitude of first grid point (lower-left) (in degrees)
-# lat1:                     13.0    # latitude of first grid point (lower-left) (in degrees)
+# cen_lon:                  135.0   # central longitude
+# cen_lat:                 -25.0    # central latitude
+# stdlat1:                 -15.0
+# stdlat2:                 -35.0
+# nx:                       563     # Number of points along x-axis.
+# ny:                       536     # Number of points along y-axis.
+# lon1:                     100.0   # longitude of first grid point (lower-left) (in degrees)
+# lat1:                    -47.0    # latitude of first grid point (lower-left) (in degrees)
 # dx:                       10000.0 # x-direction grid length
 # dy:                       10000.0 # y-direction grid length
 

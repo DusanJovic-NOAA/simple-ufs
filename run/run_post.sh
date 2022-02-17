@@ -31,6 +31,14 @@ if [[ $((NFHMAX_HF + NFHOUT)) -lt $NHOURS_FCST ]]; then
   done
 fi
 
+if [[ $gtype == regional* ]]; then
+  IOFORM='netcdf'
+  MODELNAME='FV3R'
+else
+  IOFORM='netcdfpara'
+  MODELNAME='GFS'
+fi
+
 for FHR in ${FHRS[@]}; do
 
   NEWDATE=$(date +"%Y%m%d%H" --date "${start_date} ${FHR} hours")
@@ -40,12 +48,15 @@ for FHR in ${FHRS[@]}; do
   HH=${NEWDATE:8:2}
 
   cat > itag.${FHR} <<EOF
-../model_run/atmf${FHR}.nc
-netcdf
-grib2
-${YY}-${MM}-${DD}_${HH}:00:00
-GFS
-../model_run/sfcf${FHR}.nc
+&MODEL_INPUTS
+ FILENAME='../model_run/atmf${FHR}.nc'
+ IOFORM='${IOFORM}'
+ GRIB='grib2'
+ DateStr='${YY}-${MM}-${DD}_${HH}:00:00'
+ MODELNAME='${MODELNAME}'
+ fileNameFlux='../model_run/sfcf${FHR}.nc'
+ fileNameFlat='postxconfig-NT.txt'
+/
 
 &NAMPGB
  KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,

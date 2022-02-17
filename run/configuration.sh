@@ -32,8 +32,10 @@ if [[ $gtype == uniform ]]; then
   export WRITE_TASKS_PER_GROUP=2
   export NTASKS=$(( 6*LAYOUT_1*LAYOUT_2 + WRITE_GROUPS*WRITE_TASKS_PER_GROUP ))
 elif [[ $gtype == regional* ]]; then
-  export target_lon=15
-  export target_lat=45
+  export target_lon=15 # Europe
+  export target_lat=45 # Europe
+  # export target_lon=135 # Australia
+  # export target_lat=-25 # Australia
   export LAYOUT_1=6
   export LAYOUT_2=6
   export WRITE_GROUPS=1
