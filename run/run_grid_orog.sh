@@ -46,7 +46,7 @@ else # run fv3gfs_driver_grid.sh
     ln -sf C${reg_res}_grid.tile7.halo${HALO}.nc C${reg_res}_grid.tile7.nc
 
     cd fix_sfc
-    for file in *.halo${HALO}.nc; do
+    for file in *.halo"${HALO}".nc; do
       if [[ -f $file ]]; then
         file2=${file%.halo${HALO}.nc}
         ln -sf ${file} ${file2}.nc

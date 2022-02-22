@@ -39,7 +39,7 @@ else
   MODELNAME='GFS'
 fi
 
-for FHR in ${FHRS[@]}; do
+for FHR in "${FHRS[@]}"; do
 
   NEWDATE=$(date +"%Y%m%d%H" --date "${start_date} ${FHR} hours")
   YY=${NEWDATE:0:4}
