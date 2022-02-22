@@ -81,12 +81,10 @@ ExternalProject_Add(hdf5
     URL_HASH MD5=abbf353b2d8a1d5a062bdbba1c365171
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND env "CC=${MPI_C_COMPILER}"
-                      env "CFLAGS=-fPIE -pthread"
-                      env "LDFLAGS=-pie"
+                      env "CFLAGS=-pthread"
                       ./configure --prefix=${install_prefix}/hdf5
                                   --disable-shared
                                   --enable-static
-                                  --enable-static-exec
                                   --enable-parallel
                                   --enable-unsupported
                                   --enable-tests=no
@@ -228,7 +226,7 @@ message(STATUS "Set ESMF_COMM to ${MPITYPE}")
 
 list(APPEND esmf_env ESMF_COMM=${MPITYPE})
 list(APPEND esmf_env ESMF_BOPT=O)
-list(APPEND esmf_env ESMF_OPTLEVEL=2)
+# list(APPEND esmf_env ESMF_OPTLEVEL=2)
 list(APPEND esmf_env ESMF_F90COMPILEOPTS=${FCFLAGS_esmf})
 list(APPEND esmf_env ESMF_CXXCOMPILEOPTS=${CXXFLAGS_esmf})
 list(APPEND esmf_env ESMF_MPIRUN=mpiexec)

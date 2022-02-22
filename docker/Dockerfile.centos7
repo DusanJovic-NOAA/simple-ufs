@@ -8,6 +8,7 @@ RUN yum -y install \
            autoconf \
            automake \
            curl \
+           file \
            git \
            libjpeg-devel \
            libtool \
