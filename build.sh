@@ -93,7 +93,6 @@ echo "BUILD_PREPROC = ${BUILD_PREPROC}"
 echo "BUILD_MODEL   = ${BUILD_MODEL}"
 echo "BUILD_POST    = ${BUILD_POST}"
 
-
 readonly MYDIR=$(cd "$(dirname "$(readlink -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
 
 # print compiler version
@@ -164,6 +163,7 @@ export GFTL_ROOT=${ufslibs_install_prefix}/gftl_shared
 export GFTL_SHARED_ROOT=${ufslibs_install_prefix}/gftl_shared
 export YAFYAML_ROOT=${ufslibs_install_prefix}/yafyaml
 export MAPL_ROOT=${ufslibs_install_prefix}/mapl
+
 #
 # preproc
 #

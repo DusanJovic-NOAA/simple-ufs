@@ -8,15 +8,16 @@ set -eu
 set -o pipefail
 
 usage() {
-  echo "Usage: $0 gnu | intel"
+  echo "Usage: $0 gnu | intel [-all] [-mpich] [-openmpi]"
   exit 1
 }
 
-[[ $# -ne 1 ]] && usage
+[[ $# -ne 2 ]] && usage
 
-COMPILERS=$1
+COMPILER=$1
+shift
 
-if [[ $COMPILERS == gnu ]]; then
+if [[ $COMPILER == gnu ]]; then
   export CC=${CC:-gcc}
   export CXX=${CXX:-g++}
   export FC=${FC:-gfortran}
@@ -25,7 +26,7 @@ if [[ $COMPILERS == gnu ]]; then
     export FFLAGS="-fallow-argument-mismatch" # for gcc 10
     export FCFLAGS="-fallow-argument-mismatch" # for gcc 10
   fi
-elif [[ $COMPILERS == intel ]]; then
+elif [[ $COMPILER == intel ]]; then
   export CC=${CC:-icc}
   export CXX=${CXX:-icpc}
   export FC=${FC:-ifort}
@@ -33,16 +34,39 @@ else
   usage
 fi
 
+BUILD_MPICH=no
+BUILD_OPENMPI=no
+
+while [[ $# -gt 0 ]]; do
+opt=$1
+
+case $opt in
+  -all)
+    BUILD_MPICH=yes
+    BUILD_OPENMPI=yes
+    shift
+    ;;
+  -mpich)
+    BUILD_MPICH=yes
+    shift
+    ;;
+  -openmpi)
+    BUILD_OPENMPI=yes
+    shift
+    ;;
+  *)
+    echo "unknown option ${opt}"
+    usage
+esac
+done
+
 date
 
 echo
-echo "Building MPI libraries using ${COMPILERS} compilers"
+echo "Building MPI libraries using ${COMPILER} compilers"
 echo
 
 MAX_BUILD_JOBS=${MAX_BUILD_JOBS:-4}
-
-INSTALL_MPICH=on
-INSTALL_OPENMPI=off
 
 MYDIR=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
 PREFIX_PATH="$(readlink -f "${MYDIR}"/local)"
@@ -99,10 +123,11 @@ download_and_check_md5sum()
 }
 
 MPICH=mpich-3.3.2
-OPENMPI=openmpi-4.0.2
+# MPICH=mpich-4.0.1
+OPENMPI=openmpi-4.1.2
 
-[ $INSTALL_MPICH          == on ] && download_and_check_md5sum   2d680f620583beadd7a08acdcfe355e6   https://www.mpich.org/static/downloads/${MPICH:6}/${MPICH}.tar.gz
-[ $INSTALL_OPENMPI        == on ] && download_and_check_md5sum   d712bcc68a5a0bcce76b39843ed48158   https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.2.tar.gz
+[ $BUILD_MPICH          == yes ] && download_and_check_md5sum   2d680f620583beadd7a08acdcfe355e6   https://www.mpich.org/static/downloads/${MPICH:6}/${MPICH}.tar.gz
+[ $BUILD_OPENMPI        == yes ] && download_and_check_md5sum   2f86dc37b7a00b96ca964637ee68826e   https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.2.tar.gz
 
 #
 # print compiler version
@@ -120,7 +145,7 @@ BUILD_JOBS=$(( NPROC < MAX_BUILD_JOBS ? NPROC : MAX_BUILD_JOBS ))
 ###
 ### MPICH
 ###
-if [ $INSTALL_MPICH == on ]; then
+if [ $BUILD_MPICH == yes ]; then
 printf '%-.30s ' 'Building mpich ..........................'
 (
   set -x
@@ -128,7 +153,9 @@ printf '%-.30s ' 'Building mpich ..........................'
   rm -rf ${MPICH} mpich
   tar -zxf ${MPICH}.tar.gz
   cd ${MPICH}
-  ./configure --prefix=${PREFIX_PATH}/mpich3 \
+  export FFLAGS=-fallow-argument-mismatch
+  export FCFLAGS=-fallow-argument-mismatch
+  ./configure --prefix=${PREFIX_PATH}/mpich \
               --enable-fc \
               --enable-static \
               --disable-shared
@@ -143,7 +170,7 @@ fi
 ###
 ### OPENMPI
 ###
-if [ $INSTALL_OPENMPI == on ]; then
+if [ $BUILD_OPENMPI == yes ]; then
 printf '%-.30s ' 'Building openmpi ........................'
 (
   set -x

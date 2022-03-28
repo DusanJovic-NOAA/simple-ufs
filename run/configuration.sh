@@ -43,7 +43,18 @@ elif [[ $gtype == regional* ]]; then
   export NTASKS=$(( LAYOUT_1*LAYOUT_2 + WRITE_GROUPS*WRITE_TASKS_PER_GROUP ))
 fi
 
-export MPIEXEC=mpiexec
+MPI_IMPLEMENTATION=${MPI_IMPLEMENTATION:-mpich3}
+mpiexec --version | grep OpenRTE 2> /dev/null && MPI_IMPLEMENTATION=openmpi
+mpiexec --version | grep Intel 2> /dev/null && MPI_IMPLEMENTATION=intelmpi
+
+if [[ $MPI_IMPLEMENTATION == openmpi ]]; then
+  # Get rid of Read -1, expected <someNumber>, errno =1 error
+  # See https://github.com/open-mpi/ompi/issues/4948
+  export OMPI_MCA_btl_vader_single_copy_mechanism=none
+  export MPIEXEC='mpiexec --oversubscribe'
+else
+  export MPIEXEC='mpiexec'
+fi
 # export MPIEXEC=srun
 
 eparse() { ( set -eu; set +x; eval "set -eu; cat<<_EOF"$'\n'"$(< "$1")"$'\n'"_EOF"; ) }

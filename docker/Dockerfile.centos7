@@ -31,9 +31,9 @@ USER builder
 
 RUN \
  cd libs/mpilibs && \
- ./build.sh gnu
+ ./build.sh gnu -mpich
 
-ENV PATH=/home/builder/simple-ufs/libs/mpilibs/local/mpich3/bin:$PATH
+ENV PATH=/home/builder/simple-ufs/libs/mpilibs/local/mpich/bin:$PATH
 
 RUN ./build.sh gnu -ufslibs
 

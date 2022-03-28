@@ -243,10 +243,11 @@ list(APPEND esmf_env ESMF_INSTALL_LIBDIR=lib)
 list(APPEND esmf_env ESMF_INSTALL_BINDIR=bin)
 
 ExternalProject_Add(esmf
-    URL https://github.com/esmf-org/esmf/archive/refs/tags/v8.2.1b04.tar.gz
-    URL_HASH MD5=7d7459d5ad508a49db75212f7c0c8553
+    URL https://github.com/esmf-org/esmf/archive/refs/tags/v8.3.0b09.tar.gz
+    URL_HASH MD5=46d62a3ca77cb0d00709b3f7939dc91f
     BUILD_IN_SOURCE ON
-    CONFIGURE_COMMAND ""
+    CONFIGURE_COMMAND
+        COMMAND sed -i -e "s/-lmpichf90/-lmpifort/" scripts/libs.mpich3f90
     BUILD_COMMAND   env ${esmf_env} make -j 8
     INSTALL_COMMAND env ${esmf_env} make install
     LOG_DOWNLOAD ON
@@ -261,7 +262,7 @@ ExternalProject_Add_StepDependencies(esmf build netcdf_fortran)
 ##
 set(EMC_crtm_tag        v2.3.0)
 set(NCEPLIBS-bacio_tag  v2.4.1)
-set(NCEPLIBS-g2_tag     v3.4.2)
+set(NCEPLIBS-g2_tag     v3.4.3)
 set(NCEPLIBS-g2tmpl_tag v1.10.0)
 set(NCEPLIBS-gfsio_tag  v1.4.1)
 set(NCEPLIBS-ip_tag     v3.3.3)
@@ -348,6 +349,7 @@ ExternalProject_Add(wgrib2
         COMMAND sed -i -e "s/^USE_NETCDF3=.*/USE_NETCDF3=0/" makefile
         COMMAND sed -i -e "s/^USE_IPOLATES=.*/USE_IPOLATES=0/" makefile
         COMMAND sed -i -e "s/^USE_SPECTRAL=.*/USE_SPECTRAL=0/" makefile
+        COMMAND sed -i -e "s/^USE_JASPER=.*/USE_JASPER=0/" makefile
         COMMAND sed -i -e "s/^USE_AEC=.*/USE_AEC=0/" makefile
     BUILD_COMMAND
         COMMAND env CC=${CC_wgrib2} FC=${FC_wgrib2} COMP_SYS=${COMP_SYS_wgrib2} make

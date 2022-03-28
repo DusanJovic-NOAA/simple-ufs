@@ -5,18 +5,25 @@ RUN apt-get update && \
             autoconf \
             automake \
             curl \
-            cmake \
             g++ \
             gcc \
             gfortran \
             git \
             libjpeg-dev \
-            libmpich-dev \
+            libopenmpi-dev \
             libtool \
             make \
             pkg-config \
             python3 \
             vim
+
+RUN cd /tmp && \
+    curl -f -s -S -R -L -O https://github.com/Kitware/CMake/releases/download/v3.22.3/cmake-3.22.3-Linux-x86_64.tar.gz && \
+    mkdir -p /usr/local/cmake && \
+    tar zxvf cmake-3.22.3-Linux-x86_64.tar.gz -C /usr/local/cmake --strip-components=1 && \
+    rm cmake-3.22.3-Linux-x86_64.tar.gz
+
+ENV PATH=/usr/local/cmake/bin:$PATH
 
 RUN useradd -ms /bin/bash builder
 WORKDIR /home/builder

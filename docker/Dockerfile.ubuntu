@@ -11,7 +11,7 @@ RUN apt-get update && \
             gfortran \
             git \
             libjpeg-dev \
-            libmpich-dev \
+            libopenmpi-dev \
             libtool \
             make \
             pkg-config \
@@ -19,10 +19,10 @@ RUN apt-get update && \
             vim
 
 RUN cd /tmp && \
-    curl -f -s -S -R -L -O https://github.com/Kitware/CMake/releases/download/v3.21.2/cmake-3.21.2-Linux-x86_64.tar.gz && \
+    curl -f -s -S -R -L -O https://github.com/Kitware/CMake/releases/download/v3.22.3/cmake-3.22.3-Linux-x86_64.tar.gz && \
     mkdir -p /usr/local/cmake && \
-    tar zxvf cmake-3.21.2-Linux-x86_64.tar.gz -C /usr/local/cmake --strip-components=1 && \
-    rm cmake-3.21.2-Linux-x86_64.tar.gz
+    tar zxvf cmake-3.22.3-Linux-x86_64.tar.gz -C /usr/local/cmake --strip-components=1 && \
+    rm cmake-3.22.3-Linux-x86_64.tar.gz
 
 ENV PATH=/usr/local/cmake/bin:$PATH
 
