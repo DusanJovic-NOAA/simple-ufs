@@ -1,5 +1,3 @@
-print_esmf:              .true.
-
 start_year:              ${START_YEAR}
 start_month:             ${START_MONTH}
 start_day:               ${START_DAY}

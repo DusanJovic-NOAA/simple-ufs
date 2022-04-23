@@ -22,6 +22,7 @@ export EXECufs=${sufs}/bin
 export FIXam=${MYDIR}/fix_data/fix_am
 export CRES=${res}
 export VCOORD_FILE=${FIXam}/global_hyblev.l${levp}.txt
+export INPUT_TYPE
 
 export COMIN=${INPUT_DATA}
 

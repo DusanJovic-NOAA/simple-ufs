@@ -15,9 +15,6 @@ mkdir -p ${POST_RUN_DIR}
 
 cd ${POST_RUN_DIR}
 
-cp ../post_conf/params_grib2_tbl_new  .
-cp ../post_conf/postxconfig-NT.txt .
-
 start_date="${START_YEAR}-${START_MONTH}-${START_DAY} ${START_HOUR}:00:00"
 
 FHRS=()
@@ -34,10 +31,14 @@ fi
 if [[ $gtype == regional* ]]; then
   IOFORM='netcdf'
   MODELNAME='FV3R'
+  conf_dir='regional_conf'
 else
   IOFORM='netcdfpara'
   MODELNAME='GFS'
+  conf_dir='global_conf'
 fi
+
+cp ../${conf_dir}/params_grib2_tbl_new  .
 
 for FHR in "${FHRS[@]}"; do
 
@@ -57,16 +58,17 @@ for FHR in "${FHRS[@]}"; do
  fileNameFlux='../model_run/sfcf${FHR}.nc'
  fileNameFlat='postxconfig-NT.txt'
 /
-
-&NAMPGB
- KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,
-                 675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,
-                 375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,
-                  70., 50., 30., 20., 10.,  7.,  5.,  3.,  2.,  1.,
-/
 EOF
 
+  cat ../${conf_dir}/itag >> itag.${FHR}
+
   cp itag.${FHR} itag
+
+  if [[ $FHR == '000' ]]; then
+    cp ../${conf_dir}/postxconfig-NT_FH00.txt postxconfig-NT.txt
+  else
+    cp ../${conf_dir}/postxconfig-NT.txt      postxconfig-NT.txt 
+  fi
 
   # On 8 CPUs (Intel(R) Xeon(R) W-2123 CPU @ 3.60GHz)
 

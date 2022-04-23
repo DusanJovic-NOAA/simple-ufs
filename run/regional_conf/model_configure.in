@@ -1,5 +1,3 @@
-print_esmf:              .true.
-
 start_year:              ${START_YEAR}
 start_month:             ${START_MONTH}
 start_day:               ${START_DAY}
@@ -22,8 +20,6 @@ write_dopost:            .true.
 num_files:               2
 filename_base:           'atm' 'sfc'
 output_file:             'netcdf'
-write_nemsioflip:        .false.
-write_fsyncflag:         .false.
 
 # output_grid:             'gaussian_grid'
 # imo:                     384
