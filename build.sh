@@ -157,7 +157,6 @@ export sigio_ROOT=${ufslibs_install_prefix}/NCEPLIBS-sigio
 export sp_ROOT=${ufslibs_install_prefix}/NCEPLIBS-sp
 export upp_ROOT=${ufslibs_install_prefix}/UPP
 export w3nco_ROOT=${ufslibs_install_prefix}/NCEPLIBS-w3nco
-export wgrib2_ROOT=${ufslibs_install_prefix}/wgrib2
 
 export GFTL_ROOT=${ufslibs_install_prefix}/gftl_shared
 export GFTL_SHARED_ROOT=${ufslibs_install_prefix}/gftl_shared

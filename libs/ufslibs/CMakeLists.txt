@@ -323,49 +323,6 @@ ExternalProject_Add_StepDependencies(NCEPLIBS-w3emc  build NCEPLIBS-nemsio NCEPL
 ExternalProject_Add_StepDependencies(UPP             build NCEPLIBS-bacio EMC_crtm NCEPLIBS-gfsio NCEPLIBS-g2tmpl NCEPLIBS-g2 NCEPLIBS-ip NCEPLIBS-nemsio NCEPLIBS-sfcio NCEPLIBS-sigio netcdf_fortran)
 
 ##
-## wgrib2
-##
-if(${CMAKE_C_COMPILER_ID} STREQUAL "Intel")
-    set(CC_wgrib2 "icc")
-    set(FC_wgrib2 "ifort")
-    set(COMP_SYS_wgrib2 "intel_linux")
-elseif(${CMAKE_C_COMPILER_ID} STREQUAL "IntelLLVM")
-    set(CC_wgrib2 "icx")
-    set(FC_wgrib2 "ifx")
-    set(COMP_SYS_wgrib2 "intel_linux")
-elseif(${CMAKE_C_COMPILER_ID} STREQUAL "GNU")
-    set(CC_wgrib2 ${CMAKE_C_COMPILER})
-    set(FC_wgrib2 ${CMAKE_Fortran_COMPILER})
-    set(COMP_SYS_wgrib2 "gnu_linux")
-else()
-    message(FATAL_ERROR "Unknown compiler ${CMAKE_C_COMPILER_ID}")
-endif()
-ExternalProject_Add(wgrib2
-    URL https://www.ftp.cpc.ncep.noaa.gov/wd51we/wgrib2/wgrib2.tgz.v3.1.0
-    URL_HASH MD5=974265296ae0789d2f84af8908524f50
-    DOWNLOAD_NAME wgrib2.tar.gz
-    BUILD_IN_SOURCE ON
-    CONFIGURE_COMMAND
-        COMMAND sed -i -e "s/^USE_NETCDF3=.*/USE_NETCDF3=0/" makefile
-        COMMAND sed -i -e "s/^USE_IPOLATES=.*/USE_IPOLATES=0/" makefile
-        COMMAND sed -i -e "s/^USE_SPECTRAL=.*/USE_SPECTRAL=0/" makefile
-        COMMAND sed -i -e "s/^USE_JASPER=.*/USE_JASPER=0/" makefile
-        COMMAND sed -i -e "s/^USE_AEC=.*/USE_AEC=0/" makefile
-    BUILD_COMMAND
-        COMMAND env CC=${CC_wgrib2} FC=${FC_wgrib2} COMP_SYS=${COMP_SYS_wgrib2} make
-        COMMAND env CC=${CC_wgrib2} FC=${FC_wgrib2} COMP_SYS=${COMP_SYS_wgrib2} make lib
-    INSTALL_COMMAND
-        COMMAND ${CMAKE_COMMAND} -E copy wgrib2/wgrib2 ${install_prefix}/wgrib2/bin/wgrib2
-        COMMAND ${CMAKE_COMMAND} -E copy lib/libwgrib2.a ${install_prefix}/wgrib2/lib/libwgrib2.a
-        COMMAND ${CMAKE_COMMAND} -E copy lib/wgrib2api.mod ${install_prefix}/wgrib2/include/wgrib2api.mod
-        COMMAND ${CMAKE_COMMAND} -E copy lib/wgrib2lowapi.mod ${install_prefix}/wgrib2/include/wgrib2lowapi.mod
-    LOG_DOWNLOAD ON
-    LOG_CONFIGURE ON
-    LOG_BUILD ON
-    LOG_INSTALL ON
-)
-
-##
 ## ecbuild
 ##
 ExternalProject_Add(ecbuild

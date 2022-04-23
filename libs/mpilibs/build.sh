@@ -153,8 +153,6 @@ printf '%-.30s ' 'Building mpich ..........................'
   rm -rf ${MPICH} mpich
   tar -zxf ${MPICH}.tar.gz
   cd ${MPICH}
-  export FFLAGS=-fallow-argument-mismatch
-  export FCFLAGS=-fallow-argument-mismatch
   ./configure --prefix=${PREFIX_PATH}/mpich \
               --enable-fc \
               --enable-static \
