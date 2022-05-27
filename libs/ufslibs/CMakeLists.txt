@@ -175,8 +175,8 @@ ExternalProject_Add_StepDependencies(pio build netcdf_fortran)
 ## FMS
 ##
 ExternalProject_Add(fms
-    URL https://github.com/NOAA-GFDL/FMS/archive/refs/tags/2021.03.tar.gz
-    URL_HASH MD5=268fca73f451b19026ca6f5072af5683
+    URL https://github.com/NOAA-GFDL/FMS/archive/refs/tags/2022.01.tar.gz
+    URL_HASH MD5=e3299ae47ba9b134e484408c0a07c177
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/fms
                -DCMAKE_PREFIX_PATH=${install_prefix}/netcdf
@@ -262,7 +262,7 @@ ExternalProject_Add_StepDependencies(esmf build netcdf_fortran)
 ##
 set(EMC_crtm_tag        v2.3.0)
 set(NCEPLIBS-bacio_tag  v2.4.1)
-set(NCEPLIBS-g2_tag     v3.4.3)
+set(NCEPLIBS-g2_tag     v3.4.5)
 set(NCEPLIBS-g2tmpl_tag v1.10.0)
 set(NCEPLIBS-gfsio_tag  v1.4.1)
 set(NCEPLIBS-ip_tag     v3.3.3)
