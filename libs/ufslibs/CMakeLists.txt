@@ -243,11 +243,10 @@ list(APPEND esmf_env ESMF_INSTALL_LIBDIR=lib)
 list(APPEND esmf_env ESMF_INSTALL_BINDIR=bin)
 
 ExternalProject_Add(esmf
-    URL https://github.com/esmf-org/esmf/archive/refs/tags/v8.3.0b09.tar.gz
-    URL_HASH MD5=46d62a3ca77cb0d00709b3f7939dc91f
+    URL https://github.com/esmf-org/esmf/archive/refs/tags/v8.3.0.tar.gz
+    URL_HASH MD5=1c63452453fc913b2990f3add7d7aff3
     BUILD_IN_SOURCE ON
-    CONFIGURE_COMMAND
-        COMMAND sed -i -e "s/-lmpichf90/-lmpifort/" scripts/libs.mpich3f90
+    CONFIGURE_COMMAND ""
     BUILD_COMMAND   env ${esmf_env} make -j 8
     INSTALL_COMMAND env ${esmf_env} make install
     LOG_DOWNLOAD ON
