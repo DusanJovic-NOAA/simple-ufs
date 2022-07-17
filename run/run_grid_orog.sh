@@ -12,6 +12,10 @@ MYDIR=$(pwd)
 rm -rf ${GRID_OROG_DATA}
 mkdir -p ${GRID_OROG_DATA}
 
+export gtype
+export res
+export target_lon target_lat
+
 if [[ $gtype == uniform ]]; then # use pregenerated grid/orog files
 
   rm -rf ${GRID_OROG_DATA}/C${res}

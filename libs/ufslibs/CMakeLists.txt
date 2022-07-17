@@ -265,13 +265,12 @@ set(NCEPLIBS-g2_tag     v3.4.5)
 set(NCEPLIBS-g2tmpl_tag v1.10.0)
 set(NCEPLIBS-gfsio_tag  v1.4.1)
 set(NCEPLIBS-ip_tag     v3.3.3)
-set(NCEPLIBS-nemsio_tag v2.5.2)
+set(NCEPLIBS-nemsio_tag v2.5.4)
 set(NCEPLIBS-sfcio_tag  v1.4.1)
 set(NCEPLIBS-sigio_tag  v2.3.2)
 set(NCEPLIBS-sp_tag     v2.3.3)
-set(NCEPLIBS-w3emc_tag  v2.7.3)
+set(NCEPLIBS-w3emc_tag  v2.9.2)
 set(NCEPLIBS-w3nco_tag  v2.4.1)
-set(UPP_tag             upp_v10.0.8)
 
 foreach(lib_name
                  EMC_crtm
@@ -285,8 +284,7 @@ foreach(lib_name
                  NCEPLIBS-sigio
                  NCEPLIBS-sp
                  NCEPLIBS-w3emc
-                 NCEPLIBS-w3nco
-                 UPP)
+                 NCEPLIBS-w3nco)
 
     ExternalProject_Add(${lib_name}
         GIT_REPOSITORY https://github.com/NOAA-EMC/${lib_name}
@@ -307,6 +305,7 @@ foreach(lib_name
                    -Dsigio_ROOT=${install_prefix}/NCEPLIBS-sigio
                    -Dsp_ROOT=${install_prefix}/NCEPLIBS-sp
                    -Dw3nco_ROOT=${install_prefix}/NCEPLIBS-w3nco
+                   -Dw3emc_ROOT=${install_prefix}/NCEPLIBS-w3emc
         LOG_DOWNLOAD ON
         LOG_CONFIGURE ON
         LOG_BUILD ON
@@ -317,9 +316,8 @@ endforeach()
 
 ExternalProject_Add_StepDependencies(NCEPLIBS-g2     build jasper libpng)
 ExternalProject_Add_StepDependencies(NCEPLIBS-ip     build NCEPLIBS-sp)
-ExternalProject_Add_StepDependencies(NCEPLIBS-nemsio build NCEPLIBS-bacio NCEPLIBS-w3nco)
-ExternalProject_Add_StepDependencies(NCEPLIBS-w3emc  build NCEPLIBS-nemsio NCEPLIBS-sigio netcdf_fortran)
-ExternalProject_Add_StepDependencies(UPP             build NCEPLIBS-bacio EMC_crtm NCEPLIBS-gfsio NCEPLIBS-g2tmpl NCEPLIBS-g2 NCEPLIBS-ip NCEPLIBS-nemsio NCEPLIBS-sfcio NCEPLIBS-sigio netcdf_fortran)
+ExternalProject_Add_StepDependencies(NCEPLIBS-nemsio build NCEPLIBS-bacio NCEPLIBS-w3emc)
+ExternalProject_Add_StepDependencies(NCEPLIBS-w3emc  build NCEPLIBS-bacio)
 
 ##
 ## ecbuild
@@ -366,7 +364,7 @@ ExternalProject_Add(esma_cmake
 ##
 ExternalProject_Add(gftl_shared
     GIT_REPOSITORY https://github.com/Goddard-Fortran-Ecosystem/gFTL-shared
-    GIT_TAG v1.3.3
+    GIT_TAG v1.5.0
     GIT_SUBMODULES_RECURSE ON
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/gftl_shared -DGIT_SUBMODULE=OFF
@@ -397,8 +395,8 @@ ExternalProject_Add_StepDependencies(yafyaml build gftl_shared)
 ## mapl
 ##
 ExternalProject_Add(mapl
-    URL https://github.com/GEOS-ESM/MAPL/archive/refs/tags/v2.11.0.tar.gz
-    URL_HASH MD5=2785fe55f090580a0d7bfdca214f9f84
+    URL https://github.com/GEOS-ESM/MAPL/archive/refs/tags/v2.22.0.tar.gz
+    URL_HASH MD5=3370e322f8a0767cf0a065f9ce2765b9
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/mapl
@@ -411,11 +409,13 @@ ExternalProject_Add(mapl
                -DHDF5_ROOT=${install_prefix}/hdf5
                -DGFTL_ROOT=${install_prefix}/gftl_shared
                -DGFTL_SHARED_ROOT=${install_prefix}/gftl_shared
+               -DYAFYAML_ROOT=${install_prefix}/yafyaml
                -DCMAKE_BUILD_TYPE=Release
                -DBUILD_WITH_FLAP=OFF
                -DBUILD_WITH_PFLOGGER=OFF
                -DESMA_USE_GFE_NAMESPACE=ON
                -DBUILD_SHARED_MAPL=OFF
+               -DUSE_EXTDATA2G=OFF
                -DESMFMKFILE=${install_prefix}/esmf/lib/esmf.mk
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
