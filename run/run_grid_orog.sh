@@ -14,7 +14,7 @@ mkdir -p ${GRID_OROG_DATA}
 
 export gtype
 export res
-export target_lon target_lat
+export target_lon target_lat idim jdim delx dely
 
 if [[ $gtype == uniform ]]; then # use pregenerated grid/orog files
 
@@ -44,7 +44,10 @@ else # run fv3gfs_driver_grid.sh
 
   if [[ $gtype == regional* ]]; then
     HALO=$(( halo + 1 ))
-    reg_res=424
+
+    grid_dir=$TEMP_DIR/regional/grid
+    reg_res=$( $NCDUMP -h ${grid_dir}/C*_grid.tile7.nc | grep -o ":RES_equiv = [0-9]\+" | grep -o "[0-9]" )
+    reg_res=${reg_res//$'\n'/}
     cd ${out_dir}/C${reg_res}
 
     ln -sf C${reg_res}_grid.tile7.halo${HALO}.nc C${reg_res}_grid.tile7.nc

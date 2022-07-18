@@ -41,7 +41,9 @@ elif [[ $gtype == regional* ]]; then
 
   HALO=$(( halo + 1 ))
 
-  reg_res=424
+  NCDUMP=${sufs}/libs/ufslibs/install/netcdf/bin/ncdump
+  reg_res=$( $NCDUMP -h ${GRID_OROG_DATA}/C*/C*_grid.tile7.nc | grep -o ":RES_equiv = [0-9]\+" | grep -o "[0-9]" )
+  reg_res=${reg_res//$'\n'/}
   cp -r ${GRID_OROG_DATA}/C${reg_res}/* .
   rm -f  C${reg_res}_grid.tile7.halo0.nc
   rm -f  C${reg_res}_oro_data.tile7.halo${halo}.nc

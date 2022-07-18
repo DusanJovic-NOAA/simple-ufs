@@ -80,7 +80,9 @@ if [[ $gtype == uniform ]]; then
 
 elif [[ $gtype == regional* ]]; then
 
-    reg_res=424
+    export NCDUMP=${sufs}/libs/ufslibs/install/netcdf/bin/ncdump
+    reg_res=$( $NCDUMP -h ${GRID_OROG_DATA}/C*/C*_grid.tile7.nc | grep -o ":RES_equiv = [0-9]\+" | grep -o "[0-9]" )
+    reg_res=${reg_res//$'\n'/}
     export FIXfv3=${GRID_OROG_DATA}/C${reg_res}
     export CRES=${reg_res}
     export OROG_FILES_TARGET_GRID=C${reg_res}_oro_data.tile7.halo4.nc

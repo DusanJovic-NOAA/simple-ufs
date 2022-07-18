@@ -6,6 +6,7 @@ levp=${levp:-65}   # 28, 42 or 65
 
 gtype=uniform
 # gtype=regional_gfdl
+# gtype=regional_esg
 
 START_YEAR=${START_YEAR:-$(date --date="1 day ago" --utc +%Y)}
 START_MONTH=${START_MONTH:-$(date --date="1 day ago" --utc +%m)}
@@ -36,6 +37,10 @@ elif [[ $gtype == regional* ]]; then
   target_lat=45 # Europe
   # target_lon=135 # Australia
   # target_lat=-25 # Australia
+  idim=210 # for esg
+  jdim=192 # for esg
+  delx=0.1 # for esg
+  dely=0.1 # for esg
   LAYOUT_1=6
   LAYOUT_2=6
   WRITE_GROUPS=1
