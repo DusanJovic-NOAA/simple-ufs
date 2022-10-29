@@ -13,8 +13,3 @@ git clone --recursive --branch develop https://github.com/ufs-community/UFS_UTIL
 rm -rf model
 git clone --recursive --branch develop https://github.com/ufs-community/ufs-weather-model model
 )
-
-(
-rm -rf post
-git clone --recursive --branch develop https://github.com/NOAA-EMC/EMC_post post
-)

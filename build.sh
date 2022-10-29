@@ -230,7 +230,7 @@ if [ $BUILD_POST == yes ]; then
 SECONDS=0
 printf '%-.30s ' "Building post ..........................."
 (
-  cd src/post
+  cd src/model/FV3/upp
 
   rm -rf build
   mkdir build
