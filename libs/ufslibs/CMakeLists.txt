@@ -25,6 +25,7 @@ ExternalProject_Add(zlib
     URL_HASH MD5=0095d2d2d1f3442ce1318336637b695f
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND ./configure --prefix=${install_prefix}/zlib
+                                  --libdir=${install_prefix}/zlib/lib
                                   --static
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
@@ -65,6 +66,7 @@ ExternalProject_Add(libpng
     CONFIGURE_COMMAND env "CPPFLAGS=-I${install_prefix}/zlib/include"
                       env "LDFLAGS=-L${install_prefix}/zlib/lib"
                       ./configure --prefix=${install_prefix}/libpng
+                                  --libdir=${install_prefix}/libpng/lib
                                   --disable-shared
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
@@ -83,6 +85,7 @@ ExternalProject_Add(hdf5
     CONFIGURE_COMMAND env "CC=${MPI_C_COMPILER}"
                       env "CFLAGS=-pthread"
                       ./configure --prefix=${install_prefix}/hdf5
+                                  --libdir=${install_prefix}/hdf5/lib
                                   --disable-shared
                                   --enable-static
                                   --enable-parallel
@@ -109,6 +112,7 @@ ExternalProject_Add(netcdf
                       env "LDFLAGS=-L${install_prefix}/hdf5/lib -L${install_prefix}/zlib/lib"
                       env "LIBS=-lhdf5_hl -lhdf5 -lz -ldl -lm"
                       ./configure --prefix=${install_prefix}/netcdf
+                                  --libdir=${install_prefix}/netcdf/lib
                                   --enable-cdf5
                                   --disable-dap
                                   --enable-netcdf-4
@@ -137,6 +141,7 @@ ExternalProject_Add(netcdf_fortran
                       env "LDFLAGS=-L${install_prefix}/netcdf/lib -L${install_prefix}/hdf5/lib -L${install_prefix}/zlib/lib"
                       env "LIBS=-lnetcdf -lhdf5_hl -lhdf5 -lz -ldl -lm"
                       ./configure --prefix=${install_prefix}/netcdf
+                                  --libdir=${install_prefix}/netcdf/lib
                                   --enable-static
                                   --disable-shared
     LOG_DOWNLOAD ON
@@ -160,6 +165,7 @@ ExternalProject_Add(pio
                       env "LDFLAGS=-L${install_prefix}/netcdf/lib -L${install_prefix}/hdf5/lib -L${install_prefix}/zlib/lib"
                       env "LIBS=-lnetcdf -lhdf5_hl -lhdf5 -lz -ldl -lm"
                       ./configure --prefix=${install_prefix}/pio
+                                  --libdir=${install_prefix}/pio/lib
                                   --enable-fortran
                                   --disable-pnetcdf
                                   --enable-static
