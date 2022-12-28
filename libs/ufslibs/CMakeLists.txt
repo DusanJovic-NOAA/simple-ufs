@@ -34,6 +34,22 @@ ExternalProject_Add(zlib
 )
 
 ##
+## jpeg
+##
+ExternalProject_Add(jpeg
+    URL http://www.ijg.org/files/jpegsrc.v9e.tar.gz
+    URL_HASH MD5=2489f1597b046425f5fcd3cf2df7d85f
+    BUILD_IN_SOURCE ON
+    CONFIGURE_COMMAND ./configure --prefix=${install_prefix}/jpeg
+                                  --libdir=${install_prefix}/jpeg/lib
+                                  --disable-shared
+    LOG_DOWNLOAD ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
+)
+
+##
 ## jasper
 ##
 ExternalProject_Add(jasper
@@ -55,6 +71,7 @@ ExternalProject_Add(jasper
     LOG_BUILD ON
     LOG_INSTALL ON
 )
+ExternalProject_Add_StepDependencies(jasper build jpeg)
 
 ##
 ## libpng
@@ -189,6 +206,7 @@ ExternalProject_Add(fms
                -DCMAKE_C_FLAGS=${CFLAGS_fms}
                -DCMAKE_Fortran_FLAGS=${FCFLAGS_fms}
                -DGFS_PHYS=ON
+               -DCONSTANTS=GFS
                -D64BIT=ON
                -DOPENMP=ON
     LOG_DOWNLOAD ON
@@ -299,7 +317,8 @@ foreach(lib_name
         BUILD_IN_SOURCE OFF
         LIST_SEPARATOR ,
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/${lib_name}
-                   -DCMAKE_PREFIX_PATH=${install_prefix}/netcdf,${install_prefix}/jasper,${install_prefix}/libpng,${install_prefix}/zlib
+                   -DCMAKE_INSTALL_LIBDIR=lib
+                   -DCMAKE_PREFIX_PATH=${install_prefix}/netcdf,${install_prefix}/jpeg,${install_prefix}/jasper,${install_prefix}/libpng,${install_prefix}/zlib
                    -Dbacio_ROOT=${install_prefix}/NCEPLIBS-bacio
                    -Dcrtm_ROOT=${install_prefix}/EMC_crtm
                    -Dg2_ROOT=${install_prefix}/NCEPLIBS-g2
@@ -333,6 +352,7 @@ ExternalProject_Add(ecbuild
     URL_HASH MD5=2cdf9ab9efd0b397dc8bf7ec01a949c5
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/ecbuild
+               -DCMAKE_INSTALL_LIBDIR=lib
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
     LOG_BUILD ON
