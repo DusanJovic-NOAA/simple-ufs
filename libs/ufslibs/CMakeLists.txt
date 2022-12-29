@@ -37,12 +37,13 @@ ExternalProject_Add(zlib
 ## jpeg
 ##
 ExternalProject_Add(jpeg
-    URL http://www.ijg.org/files/jpegsrc.v9e.tar.gz
-    URL_HASH MD5=2489f1597b046425f5fcd3cf2df7d85f
-    BUILD_IN_SOURCE ON
-    CONFIGURE_COMMAND ./configure --prefix=${install_prefix}/jpeg
-                                  --libdir=${install_prefix}/jpeg/lib
-                                  --disable-shared
+    URL https://github.com/libjpeg-turbo/libjpeg-turbo/archive/refs/tags/2.1.4.tar.gz
+    URL_HASH MD5=357dc26a802c34387512a42697846d16
+    BUILD_IN_SOURCE OFF
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/jpeg
+               -DCMAKE_INSTALL_DEFAULT_LIBDIR=lib
+               -DENABLE_STATIC=ON
+               -DENABLE_SHARED=OFF
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
     LOG_BUILD ON
@@ -172,21 +173,16 @@ ExternalProject_Add_StepDependencies(netcdf_fortran build netcdf)
 ## PIO
 ##
 ExternalProject_Add(pio
-    URL https://github.com/NCAR/ParallelIO/releases/download/pio2_5_3/pio-2.5.3.tar.gz
-    URL_HASH MD5=46ccbf390c54ce1339439c4e4fc360db
-    BUILD_IN_SOURCE ON
-    CONFIGURE_COMMAND env "CC=${MPI_C_COMPILER}"
-                      env "FC=${MPI_Fortran_COMPILER}"
-                      env "CPPFLAGS=-I${install_prefix}/netcdf/include"
-                      env "FCFLAGS=${FCFLAGS_pio}"
-                      env "LDFLAGS=-L${install_prefix}/netcdf/lib -L${install_prefix}/hdf5/lib -L${install_prefix}/zlib/lib"
-                      env "LIBS=-lnetcdf -lhdf5_hl -lhdf5 -lz -ldl -lm"
-                      ./configure --prefix=${install_prefix}/pio
-                                  --libdir=${install_prefix}/pio/lib
-                                  --enable-fortran
-                                  --disable-pnetcdf
-                                  --enable-static
-                                  --disable-shared
+    URL https://github.com/NCAR/ParallelIO/archive/refs/tags/pio2_5_10.tar.gz
+    URL_HASH MD5=171ee9a2b31a73108314a35b4db1dfaa
+    BUILD_IN_SOURCE OFF
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/pio
+               -DCMAKE_C_COMPILER=${MPI_C_COMPILER}
+               -DCMAKE_Fortran_COMPILER=${MPI_Fortran_COMPILER}
+               -DPIO_ENABLE_TIMING=OFF
+               -DNetCDF_PATH=${install_prefix}/netcdf
+               -DHDF5_PATH=${install_prefix}/hdf5
+               -DLIBZ_PATH=${install_prefix}/zlib
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
     LOG_BUILD ON
@@ -258,7 +254,9 @@ list(APPEND esmf_env ESMF_NETCDF_INCLUDE=${install_prefix}/netcdf/include)
 list(APPEND esmf_env ESMF_NETCDF_LIBPATH=${install_prefix}/netcdf/lib)
 list(APPEND esmf_env ESMF_NETCDF=split)
 list(APPEND esmf_env "ESMF_NETCDF_LIBS=-lnetcdff -lnetcdf -L${install_prefix}/hdf5/lib -lhdf5_hl -lhdf5 -L${install_prefix}/zlib/lib -lz -ldl -lm")
-list(APPEND esmf_env ESMF_PIO=internal)
+list(APPEND esmf_env ESMF_PIO=external)
+list(APPEND esmf_env ESMF_PIO_INCLUDE=${install_prefix}/pio/include)
+list(APPEND esmf_env ESMF_PIO_LIBPATH=${install_prefix}/pio/lib)
 list(APPEND esmf_env ESMF_SHARED_LIB_BUILD=OFF)
 list(APPEND esmf_env ESMF_INSTALL_PREFIX=${install_prefix}/esmf)
 list(APPEND esmf_env ESMF_INSTALL_HEADERDIR=include)
@@ -267,8 +265,8 @@ list(APPEND esmf_env ESMF_INSTALL_LIBDIR=lib)
 list(APPEND esmf_env ESMF_INSTALL_BINDIR=bin)
 
 ExternalProject_Add(esmf
-    URL https://github.com/esmf-org/esmf/archive/refs/tags/v8.3.0.tar.gz
-    URL_HASH MD5=1c63452453fc913b2990f3add7d7aff3
+    URL https://github.com/esmf-org/esmf/archive/refs/tags/v8.4.0.tar.gz
+    URL_HASH MD5=b3b00ae4f7a7d37add2c481ecd564dff
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND ""
     BUILD_COMMAND   env ${esmf_env} make -j 8
@@ -278,7 +276,7 @@ ExternalProject_Add(esmf
     LOG_BUILD ON
     LOG_INSTALL ON
 )
-ExternalProject_Add_StepDependencies(esmf build netcdf_fortran)
+ExternalProject_Add_StepDependencies(esmf build netcdf_fortran pio)
 
 ##
 ## NCEPLIBS
