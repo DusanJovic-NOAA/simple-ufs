@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
 
+if(POLICY CMP0135)
+  # DOWNLOAD_EXTRACT_TIMESTAMP
+  cmake_policy(SET CMP0135 NEW)
+endif()
+
 project(ufs-libraries LANGUAGES C CXX Fortran)
 
 include(ExternalProject)
@@ -97,8 +102,8 @@ ExternalProject_Add_StepDependencies(libpng build zlib)
 ## hdf5
 ##
 ExternalProject_Add(hdf5
-    URL https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5-1_10_6.tar.gz
-    URL_HASH MD5=abbf353b2d8a1d5a062bdbba1c365171
+    URL https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5-1_14_0.tar.gz
+    URL_HASH MD5=7b2d91956be4be8d57e62c1ec4d1a241
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND env "CC=${MPI_C_COMPILER}"
                       env "CFLAGS=-pthread"
@@ -122,8 +127,8 @@ ExternalProject_Add_StepDependencies(hdf5 build zlib)
 ## netcdf
 ##
 ExternalProject_Add(netcdf
-    URL https://github.com/Unidata/netcdf-c/archive/v4.7.4.tar.gz
-    URL_HASH MD5=33979e8f0cf4ee31323fc0934282111b
+    URL https://github.com/Unidata/netcdf-c/archive/v4.9.1.tar.gz
+    URL_HASH MD5=9c4221f11effee782a51388b2f2a9a50
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND env "CC=${MPI_C_COMPILER}"
                       env "CPPFLAGS=-I${install_prefix}/hdf5/include"
@@ -133,6 +138,8 @@ ExternalProject_Add(netcdf
                                   --libdir=${install_prefix}/netcdf/lib
                                   --enable-cdf5
                                   --disable-dap
+                                  --disable-libxml2
+                                  --disable-byterange
                                   --enable-netcdf-4
                                   --disable-doxygen
                                   --disable-shared
@@ -150,8 +157,8 @@ ExternalProject_Add_StepDependencies(netcdf build hdf5)
 ## netcdf_fortran
 ##
 ExternalProject_Add(netcdf_fortran
-    URL https://github.com/Unidata/netcdf-fortran/archive/v4.5.3.tar.gz
-    URL_HASH MD5=47bf6eed50bd50b23b7e391dc1f8b5c4
+    URL https://github.com/Unidata/netcdf-fortran/archive/v4.6.0.tar.gz
+    URL_HASH MD5=9d452a9ff8c8b646fefcfe180273111d
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND env "CC=${MPI_C_COMPILER}"
                       env "FC=${MPI_Fortran_COMPILER}"
@@ -265,8 +272,8 @@ list(APPEND esmf_env ESMF_INSTALL_LIBDIR=lib)
 list(APPEND esmf_env ESMF_INSTALL_BINDIR=bin)
 
 ExternalProject_Add(esmf
-    URL https://github.com/esmf-org/esmf/archive/refs/tags/v8.4.0.tar.gz
-    URL_HASH MD5=b3b00ae4f7a7d37add2c481ecd564dff
+    URL https://github.com/esmf-org/esmf/archive/refs/tags/v8.4.1.tar.gz
+    URL_HASH MD5=5b9ea69c3be25ca14173ef9e16d06f2b
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND ""
     BUILD_COMMAND   env ${esmf_env} make -j 8
@@ -374,8 +381,8 @@ ExternalProject_Add(cmakemodules
 ## esma_cmake
 ##
 ExternalProject_Add(esma_cmake
-    URL https://github.com/GEOS-ESM/ESMA_cmake/archive/refs/tags/v3.4.3.tar.gz
-    URL_HASH MD5=6a5266894bb72a3f9bc5d8dec1bd03b6
+    URL https://github.com/GEOS-ESM/ESMA_cmake/archive/refs/tags/v3.24.0.tar.gz
+    URL_HASH MD5=e26d0a1f535987f1bb07b03cce06831b
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory <SOURCE_DIR> ${install_prefix}/esma_cmake
@@ -388,7 +395,7 @@ ExternalProject_Add(esma_cmake
 ##
 ExternalProject_Add(gftl_shared
     GIT_REPOSITORY https://github.com/Goddard-Fortran-Ecosystem/gFTL-shared
-    GIT_TAG v1.5.0
+    GIT_TAG v1.5.1
     GIT_SUBMODULES_RECURSE ON
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/gftl_shared -DGIT_SUBMODULE=OFF
@@ -402,8 +409,8 @@ ExternalProject_Add(gftl_shared
 ## yafyaml
 ##
 ExternalProject_Add(yafyaml
-    URL https://github.com/Goddard-Fortran-Ecosystem/yaFyaml/archive/refs/tags/v0.5.1.tar.gz
-    URL_HASH MD5=1003ea71ad5ab5dd76827ee941a84b97
+    URL https://github.com/Goddard-Fortran-Ecosystem/yaFyaml/archive/refs/tags/v1.0.4.tar.gz
+    URL_HASH MD5=f1cf8c45f5b9949703c253dfd7918ca5
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/yafyaml
                -DGFTL_ROOT=${install_prefix}/gftl_shared
@@ -419,8 +426,8 @@ ExternalProject_Add_StepDependencies(yafyaml build gftl_shared)
 ## mapl
 ##
 ExternalProject_Add(mapl
-    URL https://github.com/GEOS-ESM/MAPL/archive/refs/tags/v2.22.0.tar.gz
-    URL_HASH MD5=3370e322f8a0767cf0a065f9ce2765b9
+    URL https://github.com/GEOS-ESM/MAPL/archive/refs/tags/v2.35.2.tar.gz
+    URL_HASH MD5=cf04d2622278495a837d1552c4412923
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/mapl
@@ -437,6 +444,7 @@ ExternalProject_Add(mapl
                -DCMAKE_BUILD_TYPE=Release
                -DBUILD_WITH_FLAP=OFF
                -DBUILD_WITH_PFLOGGER=OFF
+               -DBUILD_WITH_FARGPARSE=OFF
                -DESMA_USE_GFE_NAMESPACE=ON
                -DBUILD_SHARED_MAPL=OFF
                -DUSE_EXTDATA2G=OFF
