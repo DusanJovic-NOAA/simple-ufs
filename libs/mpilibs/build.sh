@@ -23,8 +23,8 @@ if [[ $COMPILER == gnu ]]; then
   export FC=${FC:-gfortran}
   gcc_ver=$( gcc -dumpfullversion )
   if [[ ${gcc_ver%%.*} -ge 10 ]]; then
-    export FFLAGS="-fallow-argument-mismatch" # for gcc 10
-    export FCFLAGS="-fallow-argument-mismatch" # for gcc 10
+    export FFLAGS="-fallow-argument-mismatch ${FFLAGS:-}" # for gcc 10
+    export FCFLAGS="-fallow-argument-mismatch ${FCFLAGS:-}" # for gcc 10
   fi
 elif [[ $COMPILER == intel ]]; then
   export CC=${CC:-icc}
@@ -33,6 +33,10 @@ elif [[ $COMPILER == intel ]]; then
 else
   usage
 fi
+
+export CFLAGS="-fPIC ${CFLAGS:-}"
+export FFLAGS="-fPIC ${FFLAGS:-}"
+export FCFLAGS="-fPIC ${FCFLAGS:-}"
 
 BUILD_MPICH=no
 BUILD_OPENMPI=no
@@ -123,11 +127,16 @@ download_and_check_md5sum()
 }
 
 MPICH=mpich-3.3.2
-# MPICH=mpich-4.0.1
-OPENMPI=openmpi-4.1.2
+MPICH_MD5SUM=2d680f620583beadd7a08acdcfe355e6
 
-[ $BUILD_MPICH          == yes ] && download_and_check_md5sum   2d680f620583beadd7a08acdcfe355e6   https://www.mpich.org/static/downloads/${MPICH:6}/${MPICH}.tar.gz
-[ $BUILD_OPENMPI        == yes ] && download_and_check_md5sum   2f86dc37b7a00b96ca964637ee68826e   https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.2.tar.gz
+# MPICH=mpich-4.1.1
+# MPICH_MD5SUM=bd0ecf550e4a3e54128f377b65743370
+
+OPENMPI=openmpi-4.1.2
+OPENMPI_MD5SUM=2f86dc37b7a00b96ca964637ee68826e
+
+[ $BUILD_MPICH   == yes ] && download_and_check_md5sum ${MPICH_MD5SUM}   https://www.mpich.org/static/downloads/${MPICH:6}/${MPICH}.tar.gz
+[ $BUILD_OPENMPI == yes ] && download_and_check_md5sum ${OPENMPI_MD5SUM} https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.2.tar.gz
 
 #
 # print compiler version

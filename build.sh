@@ -123,7 +123,7 @@ printf '%-.30s ' "Building ufslibs .........................."
   mkdir build
   cd build
 
-  cmake .. -DCMAKE_INSTALL_PREFIX=../install
+  cmake .. -DCMAKE_INSTALL_PREFIX=../install -DUSE_ZSTD_AND_DYNAMIC_HDF5=ON
 
   make -j 8
 

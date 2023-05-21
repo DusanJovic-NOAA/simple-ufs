@@ -22,6 +22,34 @@ if(${CMAKE_Fortran_COMPILER_ID} MATCHES "^(GNU)$")
   endif()
 endif()
 
+option(USE_ZSTD_AND_DYNAMIC_HDF5 "Use zstd and dynamic HDF5" OFF)
+if(USE_ZSTD_AND_DYNAMIC_HDF5)
+    message(STATUS "Use zstd and dynamic HDF5")
+endif()
+
+if(USE_ZSTD_AND_DYNAMIC_HDF5)
+    ##
+    ## zstd
+    ##
+    ExternalProject_Add(zstd
+        URL https://github.com/facebook/zstd/releases/download/v1.5.5/zstd-1.5.5.tar.gz
+        URL_HASH MD5=63251602329a106220e0a5ad26ba656f
+        SOURCE_SUBDIR build/cmake
+        CMAKE_ARGS -LH
+                   -DCMAKE_INSTALL_PREFIX=${install_prefix}/zstd
+                   -DCMAKE_INSTALL_LIBDIR=lib
+                   -DZSTD_MULTITHREAD_SUPPORT=OFF
+                   -DZSTD_LEGACY_SUPPORT=OFF
+                   -DZSTD_BUILD_STATIC=ON
+                   -DZSTD_BUILD_SHARED=OFF
+                   -DZSTD_BUILD_PROGRAMS=OFF
+        LOG_DOWNLOAD ON
+        LOG_CONFIGURE ON
+        LOG_BUILD ON
+        LOG_INSTALL ON
+    )
+endif()
+
 ##
 ## zlib
 ##
@@ -29,7 +57,8 @@ ExternalProject_Add(zlib
     URL https://github.com/madler/zlib/archive/refs/tags/v1.2.11.tar.gz
     URL_HASH MD5=0095d2d2d1f3442ce1318336637b695f
     BUILD_IN_SOURCE ON
-    CONFIGURE_COMMAND ./configure --prefix=${install_prefix}/zlib
+    CONFIGURE_COMMAND env "CFLAGS=-fPIC"
+                      ./configure --prefix=${install_prefix}/zlib
                                   --libdir=${install_prefix}/zlib/lib
                                   --static
     LOG_DOWNLOAD ON
@@ -101,21 +130,25 @@ ExternalProject_Add_StepDependencies(libpng build zlib)
 ##
 ## hdf5
 ##
+if(USE_ZSTD_AND_DYNAMIC_HDF5)
+    set(hdf5_enable_shared_libs --enable-shared --disable-static)
+else()
+    set(hdf5_enable_shared_libs --disable-shared --enable-static)
+endif()
 ExternalProject_Add(hdf5
     URL https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5-1_14_0.tar.gz
     URL_HASH MD5=7b2d91956be4be8d57e62c1ec4d1a241
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND env "CC=${MPI_C_COMPILER}"
-                      env "CFLAGS=-pthread"
+                      env "CFLAGS=-pthread -fPIC"
                       ./configure --prefix=${install_prefix}/hdf5
                                   --libdir=${install_prefix}/hdf5/lib
-                                  --disable-shared
-                                  --enable-static
+                                  ${hdf5_enable_shared_libs}
                                   --enable-parallel
                                   --enable-unsupported
                                   --enable-tests=no
                                   --with-zlib=${install_prefix}/zlib
-
+                                  --with-default-plugindir=${install_prefix}/hdf5/lib/plugin
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
     LOG_BUILD ON
@@ -123,17 +156,62 @@ ExternalProject_Add(hdf5
 )
 ExternalProject_Add_StepDependencies(hdf5 build zlib)
 
+if(USE_ZSTD_AND_DYNAMIC_HDF5)
+    ##
+    ## hdf5_plugins
+    ##
+    ExternalProject_Add(hdf5_plugins
+        URL https://github.com/HDFGroup/hdf5_plugins/archive/refs/tags/1.14.0.tar.gz
+        URL_HASH MD5=4a23f03245e72c64079b876218fed2b9
+        BUILD_IN_SOURCE OFF
+        CMAKE_ARGS -C <SOURCE_DIR>/config/cmake/cacheinit.cmake
+                   -DCMAKE_C_COMPILER=${MPI_C_COMPILER}
+                   -DCMAKE_BUILD_TYPE=Release
+                   -DCMAKE_INSTALL_PREFIX=${install_prefix}/hdf5
+                   -DHDF5_INCLUDE_DIR=${install_prefix}/hdf5/include/
+                   -DHDF5_LINK_LIBS=${install_prefix}/hdf5/lib/
+                   -DUSE_SHARED_LIBS=ON
+                   -DBUILD_SHARED_LIBS=ON
+                   -DENABLE_BSHUF=OFF
+                   -DENABLE_BLOSC=OFF
+                   -DENABLE_BZIP2=OFF
+                   -DENABLE_JPEG=OFF
+                   -DENABLE_LZ4=OFF
+                   -DENABLE_LZF=OFF
+                   -DTGZPATH=<SOURCE_DIR>/libs
+                   -DH5PL_ALLOW_EXTERNAL_SUPPORT=TGZ
+                   -DBUILD_EXAMPLES=OFF
+        LOG_DOWNLOAD ON
+        LOG_CONFIGURE ON
+        LOG_BUILD ON
+        LOG_INSTALL ON
+    )
+    ExternalProject_Add_StepDependencies(hdf5_plugins build hdf5)
+endif()
+
 ##
 ## netcdf
 ##
+if(USE_ZSTD_AND_DYNAMIC_HDF5)
+    set(netcdf_cppflags_env        "CPPFLAGS=-I${install_prefix}/hdf5/include -I${install_prefix}/zstd/include")
+    set(netcdf_ldflags_env         "LDFLAGS=-L${install_prefix}/hdf5/lib -L${install_prefix}/zstd/lib -L${install_prefix}/zlib/lib -Wl,-rpath -Wl,${install_prefix}/hdf5/lib")
+    set(netcdf_libs_env            "LIBS=-lhdf5_hl -lhdf5 -lz -lzstd -lm")
+    set(netcdf_ld_library_path_env "LD_LIBRARY_PATH=${install_prefix}/hdf5/lib:$ENV{LD_LIBRARY_PATH}")
+else()
+    set(netcdf_cppflags_env        "CPPFLAGS=-I${install_prefix}/hdf5/include")
+    set(netcdf_ldflags_env         "LDFLAGS=-L${install_prefix}/hdf5/lib -L${install_prefix}/zlib/lib")
+    set(netcdf_libs_env            "LIBS=-lhdf5_hl -lhdf5 -lz -lm")
+    set(netcdf_ld_library_path_env "")
+endif()
 ExternalProject_Add(netcdf
-    URL https://github.com/Unidata/netcdf-c/archive/v4.9.1.tar.gz
-    URL_HASH MD5=9c4221f11effee782a51388b2f2a9a50
+    URL https://github.com/Unidata/netcdf-c/archive/v4.9.2.tar.gz
+    URL_HASH MD5=84acd096ab4f3300c20db862eecdf7c7
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND env "CC=${MPI_C_COMPILER}"
-                      env "CPPFLAGS=-I${install_prefix}/hdf5/include"
-                      env "LDFLAGS=-L${install_prefix}/hdf5/lib -L${install_prefix}/zlib/lib"
-                      env "LIBS=-lhdf5_hl -lhdf5 -lz -ldl -lm"
+                      env ${netcdf_cppflags_env}
+                      env ${netcdf_ldflags_env}
+                      env ${netcdf_libs_env}
+                      env ${netcdf_ld_library_path_env}
                       ./configure --prefix=${install_prefix}/netcdf
                                   --libdir=${install_prefix}/netcdf/lib
                                   --enable-cdf5
@@ -152,19 +230,35 @@ ExternalProject_Add(netcdf
     LOG_INSTALL ON
 )
 ExternalProject_Add_StepDependencies(netcdf build hdf5)
+if(USE_ZSTD_AND_DYNAMIC_HDF5)
+    ExternalProject_Add_StepDependencies(netcdf build zstd)
+endif()
 
 ##
 ## netcdf_fortran
 ##
+if(USE_ZSTD_AND_DYNAMIC_HDF5)
+    set(netcdf_fortran_cppflags_env		   "CPPFLAGS=-I${install_prefix}/netcdf/include")
+    set(netcdf_fortran_ldflags_env		   "LDFLAGS=-L${install_prefix}/hdf5/lib -L${install_prefix}/zstd/lib -L${install_prefix}/netcdf/lib -L${install_prefix}/zlib/lib -Wl,-rpath -Wl,${install_prefix}/hdf5/lib")
+    set(netcdf_fortran_libs_env			   "LIBS=-lnetcdf -lhdf5_hl -lhdf5 -lz -lzstd -lm")
+    set(netcdf_fortran_ld_library_path_env "LD_LIBRARY_PATH=${install_prefix}/hdf5/lib:$ENV{LD_LIBRARY_PATH}")
+else()
+    set(netcdf_fortran_cppflags_env		   "CPPFLAGS=-I${install_prefix}/netcdf/include")
+    set(netcdf_fortran_ldflags_env		   "LDFLAGS=-L${install_prefix}/hdf5/lib -L${install_prefix}/netcdf/lib -L${install_prefix}/zlib/lib")
+    set(netcdf_fortran_libs_env			   "LIBS=-lnetcdf -lhdf5_hl -lhdf5 -lz -lm")
+    set(netcdf_fortran_ld_library_path_env "")
+endif()
+
 ExternalProject_Add(netcdf_fortran
     URL https://github.com/Unidata/netcdf-fortran/archive/v4.6.0.tar.gz
     URL_HASH MD5=9d452a9ff8c8b646fefcfe180273111d
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND env "CC=${MPI_C_COMPILER}"
                       env "FC=${MPI_Fortran_COMPILER}"
-                      env "CPPFLAGS=-I${install_prefix}/netcdf/include"
-                      env "LDFLAGS=-L${install_prefix}/netcdf/lib -L${install_prefix}/hdf5/lib -L${install_prefix}/zlib/lib"
-                      env "LIBS=-lnetcdf -lhdf5_hl -lhdf5 -lz -ldl -lm"
+                      env ${netcdf_fortran_cppflags_env}
+                      env ${netcdf_fortran_ldflags_env}
+                      env ${netcdf_fortran_libs_env}
+                      env ${netcdf_fortran_ld_library_path_env}
                       ./configure --prefix=${install_prefix}/netcdf
                                   --libdir=${install_prefix}/netcdf/lib
                                   --enable-static
@@ -238,6 +332,8 @@ if(NOT MPITYPE)
   if(MPI_C_LIBRARY_VERSION_STRING MATCHES ".*CRAY MPICH.*" AND MPI_C_VERSION_MAJOR MATCHES "3")
     set(MPITYPE "mpi")
   elseif(MPI_C_LIBRARY_VERSION_STRING MATCHES ".*MPICH.*" AND MPI_C_VERSION_MAJOR MATCHES "3")
+    set(MPITYPE "mpich3")
+  elseif(MPI_C_LIBRARY_VERSION_STRING MATCHES ".*MPICH.*" AND MPI_C_VERSION_MAJOR MATCHES "4")
     set(MPITYPE "mpich3")
   elseif(MPI_C_LIBRARY_VERSION_STRING MATCHES ".*Open MPI.*" AND MPI_C_VERSION_MAJOR MATCHES "3")
     set(MPITYPE "openmpi")
@@ -319,6 +415,7 @@ foreach(lib_name
         GIT_REPOSITORY https://github.com/NOAA-EMC/${lib_name}
         GIT_TAG ${${lib_name}_tag}
         GIT_SUBMODULES_RECURSE ON
+        UPDATE_COMMAND ""
         BUILD_IN_SOURCE OFF
         LIST_SEPARATOR ,
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/${lib_name}
@@ -397,6 +494,7 @@ ExternalProject_Add(gftl_shared
     GIT_REPOSITORY https://github.com/Goddard-Fortran-Ecosystem/gFTL-shared
     GIT_TAG v1.5.1
     GIT_SUBMODULES_RECURSE ON
+    UPDATE_COMMAND ""
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/gftl_shared -DGIT_SUBMODULE=OFF
     LOG_DOWNLOAD ON
