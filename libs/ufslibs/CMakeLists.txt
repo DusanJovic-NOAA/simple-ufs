@@ -54,8 +54,8 @@ endif()
 ## zlib
 ##
 ExternalProject_Add(zlib
-    URL https://github.com/madler/zlib/archive/refs/tags/v1.2.11.tar.gz
-    URL_HASH MD5=0095d2d2d1f3442ce1318336637b695f
+    URL https://github.com/madler/zlib/archive/refs/tags/v1.2.13.tar.gz
+    URL_HASH MD5=9c7d356c5acaa563555490676ca14d23
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND env "CFLAGS=-fPIC"
                       ./configure --prefix=${install_prefix}/zlib
@@ -88,8 +88,8 @@ ExternalProject_Add(jpeg
 ## jasper
 ##
 ExternalProject_Add(jasper
-    URL https://github.com/jasper-software/jasper/archive/refs/tags/version-2.0.25.tar.gz
-    URL_HASH MD5=afbdd817fcdd0dcfbd6bec79825b944a
+    URL https://github.com/jasper-software/jasper/archive/refs/tags/version-2.0.32.tar.gz
+    URL_HASH MD5=2c6017d275146f8792fa448227a7c373
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/jasper
                -DCMAKE_INSTALL_LIBDIR=lib
@@ -295,8 +295,8 @@ ExternalProject_Add_StepDependencies(pio build netcdf_fortran)
 ## FMS
 ##
 ExternalProject_Add(fms
-    URL https://github.com/NOAA-GFDL/FMS/archive/refs/tags/2022.04.tar.gz
-    URL_HASH MD5=23486516fa56679827fd9e4c2e28ac8b
+    URL https://github.com/NOAA-GFDL/FMS/archive/refs/tags/2023.01.tar.gz
+    URL_HASH MD5=79b0dd78f71d76f07bf7833d1b81ba0c
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/fms
                -DCMAKE_PREFIX_PATH=${install_prefix}/netcdf
@@ -368,8 +368,8 @@ list(APPEND esmf_env ESMF_INSTALL_LIBDIR=lib)
 list(APPEND esmf_env ESMF_INSTALL_BINDIR=bin)
 
 ExternalProject_Add(esmf
-    URL https://github.com/esmf-org/esmf/archive/refs/tags/v8.4.1.tar.gz
-    URL_HASH MD5=5b9ea69c3be25ca14173ef9e16d06f2b
+    URL https://github.com/esmf-org/esmf/archive/refs/tags/v8.4.2.tar.gz
+    URL_HASH MD5=91482b428aac9e99aa4fbbae2369c4cd
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND ""
     BUILD_COMMAND   env ${esmf_env} make -j 8
@@ -492,7 +492,7 @@ ExternalProject_Add(esma_cmake
 ##
 ExternalProject_Add(gftl_shared
     GIT_REPOSITORY https://github.com/Goddard-Fortran-Ecosystem/gFTL-shared
-    GIT_TAG v1.5.1
+    GIT_TAG v1.5.0
     GIT_SUBMODULES_RECURSE ON
     UPDATE_COMMAND ""
     BUILD_IN_SOURCE OFF

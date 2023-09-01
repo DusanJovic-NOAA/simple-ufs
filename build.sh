@@ -200,7 +200,7 @@ printf '%-.30s ' "Building model ..........................."
   cd build
 
   cmake .. -DAPP=ATM \
-           -DCCPP_SUITES="FV3_GFS_v16,FV3_GFS_2017_gfdlmp_regional" \
+           -DCCPP_SUITES="FV3_GFS_v16" \
            -D32BIT=ON \
            -DINLINE_POST=ON \
            -DPARALLEL_NETCDF=ON \
