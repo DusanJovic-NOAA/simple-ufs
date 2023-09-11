@@ -368,8 +368,8 @@ list(APPEND esmf_env ESMF_INSTALL_LIBDIR=lib)
 list(APPEND esmf_env ESMF_INSTALL_BINDIR=bin)
 
 ExternalProject_Add(esmf
-    URL https://github.com/esmf-org/esmf/archive/refs/tags/v8.4.2.tar.gz
-    URL_HASH MD5=91482b428aac9e99aa4fbbae2369c4cd
+    URL https://github.com/esmf-org/esmf/archive/refs/tags/v8.5.0.tar.gz
+    URL_HASH MD5=c77313a07dca94b16751aae0d3a38865
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND ""
     BUILD_COMMAND   env ${esmf_env} make -j 8
@@ -492,7 +492,7 @@ ExternalProject_Add(esma_cmake
 ##
 ExternalProject_Add(gftl_shared
     GIT_REPOSITORY https://github.com/Goddard-Fortran-Ecosystem/gFTL-shared
-    GIT_TAG v1.5.0
+    GIT_TAG v1.6.1
     GIT_SUBMODULES_RECURSE ON
     UPDATE_COMMAND ""
     BUILD_IN_SOURCE OFF
@@ -524,8 +524,8 @@ ExternalProject_Add_StepDependencies(yafyaml build gftl_shared)
 ## mapl
 ##
 ExternalProject_Add(mapl
-    URL https://github.com/GEOS-ESM/MAPL/archive/refs/tags/v2.35.2.tar.gz
-    URL_HASH MD5=cf04d2622278495a837d1552c4412923
+    URL https://github.com/GEOS-ESM/MAPL/archive/refs/tags/v2.40.3.tar.gz
+    URL_HASH MD5=3ae648a707646f9bf3325c49f80a646e
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/mapl
