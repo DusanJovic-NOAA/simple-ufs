@@ -146,7 +146,7 @@ export ESMFMKFILE=${ufslibs_install_prefix}/esmf/lib/esmf.mk
 export FMS_ROOT=${ufslibs_install_prefix}/fms
 
 export bacio_ROOT=${ufslibs_install_prefix}/NCEPLIBS-bacio
-export crtm_ROOT=${ufslibs_install_prefix}/EMC_crtm
+export crtm_ROOT=${ufslibs_install_prefix}/crtm
 export g2_ROOT=${ufslibs_install_prefix}/NCEPLIBS-g2
 export g2tmpl_ROOT=${ufslibs_install_prefix}/NCEPLIBS-g2tmpl
 export gfsio_ROOT=${ufslibs_install_prefix}/NCEPLIBS-gfsio
@@ -247,3 +247,4 @@ printf 'done [%4d sec]\n' ${SECONDS}
 fi
 
 echo "Done!"
+

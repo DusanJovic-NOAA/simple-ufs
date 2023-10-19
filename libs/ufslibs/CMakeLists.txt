@@ -384,21 +384,19 @@ ExternalProject_Add_StepDependencies(esmf build netcdf_fortran pio)
 ##
 ## NCEPLIBS
 ##
-set(EMC_crtm_tag        v2.3.0)
 set(NCEPLIBS-bacio_tag  v2.4.1)
 set(NCEPLIBS-g2_tag     v3.4.5)
-set(NCEPLIBS-g2tmpl_tag v1.10.0)
+set(NCEPLIBS-g2tmpl_tag v1.10.2)
 set(NCEPLIBS-gfsio_tag  v1.4.1)
-set(NCEPLIBS-ip_tag     v3.3.3)
+set(NCEPLIBS-ip_tag     v4.3.0)
 set(NCEPLIBS-nemsio_tag v2.5.4)
 set(NCEPLIBS-sfcio_tag  v1.4.1)
 set(NCEPLIBS-sigio_tag  v2.3.2)
 set(NCEPLIBS-sp_tag     v2.3.3)
-set(NCEPLIBS-w3emc_tag  v2.9.2)
+set(NCEPLIBS-w3emc_tag  v2.10.0)
 set(NCEPLIBS-w3nco_tag  v2.4.1)
 
 foreach(lib_name
-                 EMC_crtm
                  NCEPLIBS-bacio
                  NCEPLIBS-g2
                  NCEPLIBS-g2tmpl
@@ -422,7 +420,6 @@ foreach(lib_name
                    -DCMAKE_INSTALL_LIBDIR=lib
                    -DCMAKE_PREFIX_PATH=${install_prefix}/netcdf,${install_prefix}/jpeg,${install_prefix}/jasper,${install_prefix}/libpng,${install_prefix}/zlib
                    -Dbacio_ROOT=${install_prefix}/NCEPLIBS-bacio
-                   -Dcrtm_ROOT=${install_prefix}/EMC_crtm
                    -Dg2_ROOT=${install_prefix}/NCEPLIBS-g2
                    -Dg2tmpl_ROOT=${install_prefix}/NCEPLIBS-g2tmpl
                    -Dgfsio_ROOT=${install_prefix}/NCEPLIBS-gfsio
@@ -433,6 +430,7 @@ foreach(lib_name
                    -Dsp_ROOT=${install_prefix}/NCEPLIBS-sp
                    -Dw3nco_ROOT=${install_prefix}/NCEPLIBS-w3nco
                    -Dw3emc_ROOT=${install_prefix}/NCEPLIBS-w3emc
+                   -DBUILD_WITH_BUFR=OFF
         LOG_DOWNLOAD ON
         LOG_CONFIGURE ON
         LOG_BUILD ON
@@ -445,6 +443,23 @@ ExternalProject_Add_StepDependencies(NCEPLIBS-g2     build jasper libpng)
 ExternalProject_Add_StepDependencies(NCEPLIBS-ip     build NCEPLIBS-sp)
 ExternalProject_Add_StepDependencies(NCEPLIBS-nemsio build NCEPLIBS-bacio NCEPLIBS-w3emc)
 ExternalProject_Add_StepDependencies(NCEPLIBS-w3emc  build NCEPLIBS-bacio)
+
+##
+## crtm
+##
+ExternalProject_Add(crtm
+    URL https://github.com/JCSDA/crtm/archive/refs/tags/v2.4.0_emc.tar.gz
+    URL_HASH MD5=fc7506c73d042699450c3114ea449ea4
+    BUILD_IN_SOURCE OFF
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/crtm
+               -DCMAKE_INSTALL_LIBDIR=lib
+               -DNetCDF_ROOT=${install_prefix}/netcdf
+    LOG_DOWNLOAD ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
+)
+ExternalProject_Add_StepDependencies(crtm build netcdf_fortran)
 
 ##
 ## ecbuild

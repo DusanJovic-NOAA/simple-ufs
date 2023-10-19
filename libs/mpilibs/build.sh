@@ -132,11 +132,11 @@ MPICH_MD5SUM=2d680f620583beadd7a08acdcfe355e6
 # MPICH=mpich-4.1.1
 # MPICH_MD5SUM=bd0ecf550e4a3e54128f377b65743370
 
-OPENMPI=openmpi-4.1.2
-OPENMPI_MD5SUM=2f86dc37b7a00b96ca964637ee68826e
+OPENMPI=openmpi-4.1.5
+OPENMPI_MD5SUM=2593008bea4bc721b9f304428abbf94b
 
 [ $BUILD_MPICH   == yes ] && download_and_check_md5sum ${MPICH_MD5SUM}   https://www.mpich.org/static/downloads/${MPICH:6}/${MPICH}.tar.gz
-[ $BUILD_OPENMPI == yes ] && download_and_check_md5sum ${OPENMPI_MD5SUM} https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.2.tar.gz
+[ $BUILD_OPENMPI == yes ] && download_and_check_md5sum ${OPENMPI_MD5SUM} https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.5.tar.gz
 
 #
 # print compiler version
