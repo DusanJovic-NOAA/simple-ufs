@@ -164,6 +164,8 @@ export GFTL_SHARED_ROOT=${ufslibs_install_prefix}/gftl_shared
 export YAFYAML_ROOT=${ufslibs_install_prefix}/yafyaml
 export MAPL_ROOT=${ufslibs_install_prefix}/mapl
 
+export SCOTCH_ROOT=${ufslibs_install_prefix}/scotch
+
 #
 # preproc
 #
@@ -212,6 +214,12 @@ printf '%-.30s ' "Building model ..........................."
 
   # cmake .. -DAPP=ATMAERO \
   #          -DCCPP_SUITES="FV3_GFS_v16" \
+  #          -DCMAKE_INSTALL_PREFIX=install
+
+  # cmake .. -DAPP=S2SWA \
+  #          -DCCPP_SUITES="FV3_GFS_v17_coupled_p8_ugwpv1" \
+  #          -D32BIT=ON \
+  #          -DPDLIB=ON \
   #          -DCMAKE_INSTALL_PREFIX=install
 
   make -j 8

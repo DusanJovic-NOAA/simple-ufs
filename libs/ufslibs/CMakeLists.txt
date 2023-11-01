@@ -568,3 +568,26 @@ ExternalProject_Add(mapl
     LOG_INSTALL ON
 )
 ExternalProject_Add_StepDependencies(mapl build esmf ecbuild cmakemodules esma_cmake yafyaml)
+
+##
+## scotch
+##
+ExternalProject_Add(scotch
+    URL https://gitlab.inria.fr/scotch/scotch/-/archive/v7.0.4/scotch-v7.0.4.tar.gz
+    URL_HASH MD5=da80cae85216f666fc31c45558fee832
+    BUILD_IN_SOURCE OFF
+    LIST_SEPARATOR ,
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/scotch
+               -DCMAKE_BUILD_TYPE=Release
+               -DCMAKE_C_STANDARD=99
+               -DBUILD_LIBSCOTCHMETIS=ON
+               -DINSTALL_METIS_HEADERS=ON
+               -DBUILD_LIBESMUMPS=OFF
+               -DBUILD_SHARED_LIBS=OFF
+               -DBUILD_PTSCOTCH=ON
+               -DTHREADS=OFF
+               -DMPI_THREAD_MULTIPLE=OFF
+    LOG_DOWNLOAD ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+)
