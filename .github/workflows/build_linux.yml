@@ -19,48 +19,10 @@ jobs:
     - name: Fetch dependencies
       run: ./get.sh
 
-# libs/ufslibs
-    - name: Build libs/ufslibs
-      run: |
-        if ./build.sh gnu -ufslibs; then
-          cat log_ufslibs
-        else
-          cat log_ufslibs
-          exit 1
-        fi
+    - name: Build
+      run: ./build.sh gnu -all
 
-# preproc
-    - name: Build preproc
-      run: |
-        if ./build.sh gnu -preproc; then
-          cat log_preproc
-        else
-          cat log_preproc
-          exit 1
-        fi
-
-# model
-    - name: Build model
-      run: |
-        if ./build.sh gnu -model; then
-          cat log_model
-        else
-          cat log_model
-          exit 1
-        fi
-
-# post
-    - name: Build post
-      run: |
-        if ./build.sh gnu -post; then
-          cat log_post
-        else
-          cat log_post
-          exit 1
-        fi
-
-# run
-    - name: Run model
+    - name: Run
       run: |
         cd run
         sed -i -e 's/NHOURS_FCST=24/NHOURS_FCST=3/g' configuration.sh

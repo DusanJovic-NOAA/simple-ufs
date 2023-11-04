@@ -4,7 +4,9 @@ RUN dnf -y install 'dnf-command(config-manager)'
 RUN dnf -y update
 RUN dnf clean all
 RUN dnf -y install \
+           bison \
            cmake \
+           flex \
            g++ \
            gfortran \
            git \

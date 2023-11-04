@@ -1,4 +1,4 @@
-name: Build CentOS 7
+name: Build Rockylinux
 
 on: [push, pull_request]
 
@@ -13,4 +13,4 @@ jobs:
 
     - name: Build docker image
       run: |
-        docker build -t sufs_centos7 -f docker/Dockerfile.centos7 .
+        docker build -t sufs_rockylinux -f docker/Dockerfile.rockylinux .
