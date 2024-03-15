@@ -224,6 +224,7 @@ ExternalProject_Add(netcdf
                                   --enable-static
                                   --disable-large-file-tests
                                   --enable-parallel-tests
+                                  --enable-logging
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
     LOG_BUILD ON
@@ -263,6 +264,7 @@ ExternalProject_Add(netcdf_fortran
                                   --libdir=${install_prefix}/netcdf/lib
                                   --enable-static
                                   --disable-shared
+                                  --enable-logging
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
     LOG_BUILD ON
