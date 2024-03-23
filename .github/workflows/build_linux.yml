@@ -20,7 +20,9 @@ jobs:
       run: ./get.sh
 
     - name: Build
-      run: ./build.sh gnu -all
+      run: |
+        ./build.sh gnu -all
+        rm -rf libs/ufslibs/build
 
     - name: Run
       run: |

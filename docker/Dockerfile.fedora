@@ -1,4 +1,4 @@
-FROM fedora:38
+FROM fedora:39
 
 RUN dnf -y install 'dnf-command(config-manager)'
 RUN dnf -y update
@@ -30,7 +30,7 @@ USER builder
 
 RUN ./build.sh gnu -ufslibs
 
-RUN ./get.sh && ./build.sh gnu -preproc -model -post
+RUN ./get.sh && ./build.sh gnu -preproc -model -post && rm -rf libs/ufslibs/build
 
 RUN cd run && \
  sed -i -e 's/NHOURS_FCST=24/NHOURS_FCST=3/g' configuration.sh && \
