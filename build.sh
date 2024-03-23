@@ -103,9 +103,6 @@ ${FC} --version | head -1
 cmake --version | head -1
 echo
 
-mpiexec --version
-echo
-
 export OMPI_CC=${CC}
 export OMPI_CXX=${CXX}
 export OMPI_FC=${FC}
@@ -156,7 +153,6 @@ export sfcio_ROOT=${ufslibs_install_prefix}/NCEPLIBS-sfcio
 export sigio_ROOT=${ufslibs_install_prefix}/NCEPLIBS-sigio
 export sp_ROOT=${ufslibs_install_prefix}/NCEPLIBS-sp
 export upp_ROOT=${ufslibs_install_prefix}/UPP
-export w3nco_ROOT=${ufslibs_install_prefix}/NCEPLIBS-w3nco
 export w3emc_ROOT=${ufslibs_install_prefix}/NCEPLIBS-w3emc
 
 export GFTL_ROOT=${ufslibs_install_prefix}/gftl_shared

@@ -401,7 +401,6 @@ set(NCEPLIBS-sfcio_tag  v1.4.1)
 set(NCEPLIBS-sigio_tag  v2.3.2)
 set(NCEPLIBS-sp_tag     v2.3.3)
 set(NCEPLIBS-w3emc_tag  v2.10.0)
-set(NCEPLIBS-w3nco_tag  v2.4.1)
 
 foreach(lib_name
                  NCEPLIBS-bacio
@@ -413,8 +412,7 @@ foreach(lib_name
                  NCEPLIBS-sfcio
                  NCEPLIBS-sigio
                  NCEPLIBS-sp
-                 NCEPLIBS-w3emc
-                 NCEPLIBS-w3nco)
+                 NCEPLIBS-w3emc)
 
     ExternalProject_Add(${lib_name}
         GIT_REPOSITORY https://github.com/NOAA-EMC/${lib_name}
