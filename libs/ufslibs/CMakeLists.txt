@@ -68,23 +68,6 @@ ExternalProject_Add(zlib
 )
 
 ##
-## jpeg
-##
-ExternalProject_Add(jpeg
-    URL https://github.com/libjpeg-turbo/libjpeg-turbo/archive/refs/tags/2.1.4.tar.gz
-    URL_HASH MD5=357dc26a802c34387512a42697846d16
-    BUILD_IN_SOURCE OFF
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/jpeg
-               -DCMAKE_INSTALL_DEFAULT_LIBDIR=lib
-               -DENABLE_STATIC=ON
-               -DENABLE_SHARED=OFF
-    LOG_DOWNLOAD ON
-    LOG_CONFIGURE ON
-    LOG_BUILD ON
-    LOG_INSTALL ON
-)
-
-##
 ## jasper
 ##
 ExternalProject_Add(jasper
@@ -106,7 +89,6 @@ ExternalProject_Add(jasper
     LOG_BUILD ON
     LOG_INSTALL ON
 )
-ExternalProject_Add_StepDependencies(jasper build jpeg)
 
 ##
 ## libpng
@@ -423,7 +405,7 @@ foreach(lib_name
         LIST_SEPARATOR ,
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/${lib_name}
                    -DCMAKE_INSTALL_LIBDIR=lib
-                   -DCMAKE_PREFIX_PATH=${install_prefix}/netcdf,${install_prefix}/jpeg,${install_prefix}/jasper,${install_prefix}/libpng,${install_prefix}/zlib
+                   -DCMAKE_PREFIX_PATH=${install_prefix}/netcdf,${install_prefix}/jasper,${install_prefix}/libpng,${install_prefix}/zlib
                    -Dbacio_ROOT=${install_prefix}/NCEPLIBS-bacio
                    -Dg2_ROOT=${install_prefix}/NCEPLIBS-g2
                    -Dg2tmpl_ROOT=${install_prefix}/NCEPLIBS-g2tmpl
