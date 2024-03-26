@@ -29,13 +29,13 @@ halo=3
 if [[ $gtype == uniform ]]; then
 
   cp -r ${GRID_OROG_DATA}/C${res}/* .
-  mv C${res}_mosaic.nc          grid_spec.nc
-  mv C${res}_oro_data.tile1.nc  oro_data.tile1.nc
-  mv C${res}_oro_data.tile2.nc  oro_data.tile2.nc
-  mv C${res}_oro_data.tile3.nc  oro_data.tile3.nc
-  mv C${res}_oro_data.tile4.nc  oro_data.tile4.nc
-  mv C${res}_oro_data.tile5.nc  oro_data.tile5.nc
-  mv C${res}_oro_data.tile6.nc  oro_data.tile6.nc
+  mv C${res}_mosaic.nc                   grid_spec.nc
+  mv C${res}.mx${ocn}_oro_data.tile1.nc  oro_data.tile1.nc
+  mv C${res}.mx${ocn}_oro_data.tile2.nc  oro_data.tile2.nc
+  mv C${res}.mx${ocn}_oro_data.tile3.nc  oro_data.tile3.nc
+  mv C${res}.mx${ocn}_oro_data.tile4.nc  oro_data.tile4.nc
+  mv C${res}.mx${ocn}_oro_data.tile5.nc  oro_data.tile5.nc
+  mv C${res}.mx${ocn}_oro_data.tile6.nc  oro_data.tile6.nc
 
 elif [[ $gtype == regional* ]]; then
 
@@ -112,32 +112,32 @@ FNVETC="global_vegtype.igbp.t${JCAP}.${LONB}.${LATB}.rg.grb"
 FNSOTC="global_soiltype.statsgo.t${JCAP}.${LONB}.${LATB}.rg.grb"
 FNSMCC="global_soilmgldas.t${JCAP}.${LONB}.${LATB}.grb"
 
-cp ${FIX_DATA}/fix_am/global_climaeropac_global.txt             aerosol.dat
-cp ${FIX_DATA}/fix_am/CFSR.SEAICE.1982.2012.monthly.clim.grb    .
-cp ${FIX_DATA}/fix_am/global_co2historicaldata_2013.txt         co2historicaldata_2013.txt
-cp ${FIX_DATA}/fix_am/RTGSST.1982.2012.monthly.clim.grb         .
-cp ${FIX_DATA}/fix_am/global_albedo4.1x1.grb                    .
-cp ${FIX_DATA}/fix_am/global_co2historicaldata_glob.txt         co2historicaldata_glob.txt
-cp ${FIX_DATA}/fix_am/co2monthlycyc.txt                         .
-cp ${FIX_DATA}/fix_am/global_glacier.2x2.grb                    .
-cp ${FIX_DATA}/fix_am/global_h2o_pltc.f77                       global_h2oprdlos.f77
-cp ${FIX_DATA}/fix_am/global_maxice.2x2.grb                     .
-cp ${FIX_DATA}/fix_am/ozprdlos_2015_new_sbuvO3_tclm15_nuchem.f77 global_o3prdlos.f77
-cp ${FIX_DATA}/fix_am/global_shdmax.0.144x0.144.grb             .
-cp ${FIX_DATA}/fix_am/global_shdmin.0.144x0.144.grb             .
-cp ${FIX_DATA}/fix_am/global_slope.1x1.grb                      .
-cp ${FIX_DATA}/fix_am/global_snoclim.1.875.grb                  .
-cp ${FIX_DATA}/fix_am/global_solarconstant_noaa_an.txt          solarconstant_noaa_an.txt
-cp ${FIX_DATA}/fix_am/global_tg3clim.2.6x1.5.grb                .
-cp ${FIX_DATA}/fix_am/global_vegfrac.0.144.decpercent.grb       .
-cp ${FIX_DATA}/fix_am/global_sfc_emissivity_idx.txt             sfc_emissivity_idx.txt
+cp ${FIX_DATA}/am/20220805/global_climaeropac_global.txt             aerosol.dat
+cp ${FIX_DATA}/am/20220805/CFSR.SEAICE.1982.2012.monthly.clim.grb    .
+cp ${FIX_DATA}/am/20220805/global_co2historicaldata_2013.txt         co2historicaldata_2013.txt
+cp ${FIX_DATA}/am/20220805/RTGSST.1982.2012.monthly.clim.grb         .
+cp ${FIX_DATA}/am/20220805/global_albedo4.1x1.grb                    .
+cp ${FIX_DATA}/am/20220805/global_co2historicaldata_glob.txt         co2historicaldata_glob.txt
+cp ${FIX_DATA}/am/20220805/co2monthlycyc.txt                         .
+cp ${FIX_DATA}/am/20220805/global_glacier.2x2.grb                    .
+cp ${FIX_DATA}/am/20220805/global_h2o_pltc.f77                       global_h2oprdlos.f77
+cp ${FIX_DATA}/am/20220805/global_maxice.2x2.grb                     .
+cp ${FIX_DATA}/am/20220805/ozprdlos_2015_new_sbuvO3_tclm15_nuchem.f77 global_o3prdlos.f77
+cp ${FIX_DATA}/am/20220805/global_shdmax.0.144x0.144.grb             .
+cp ${FIX_DATA}/am/20220805/global_shdmin.0.144x0.144.grb             .
+cp ${FIX_DATA}/am/20220805/global_slope.1x1.grb                      .
+cp ${FIX_DATA}/am/20220805/global_snoclim.1.875.grb                  .
+cp ${FIX_DATA}/am/20220805/global_solarconstant_noaa_an.txt          solarconstant_noaa_an.txt
+cp ${FIX_DATA}/am/20220805/global_tg3clim.2.6x1.5.grb                .
+cp ${FIX_DATA}/am/20220805/global_vegfrac.0.144.decpercent.grb       .
+cp ${FIX_DATA}/am/20220805/global_sfc_emissivity_idx.txt             sfc_emissivity_idx.txt
 
-cp ${FIX_DATA}/fix_am/${FNABSC}                                 .
-cp ${FIX_DATA}/fix_am/global_slmask.t1534.3072.1536.grb         seaice_newland.grb
-cp ${FIX_DATA}/fix_am/${FNALBC}                                 .
-cp ${FIX_DATA}/fix_am/${FNSMCC}                                 .
-cp ${FIX_DATA}/fix_am/${FNSOTC}                                 .
-cp ${FIX_DATA}/fix_am/${FNVETC}                                 .
+cp ${FIX_DATA}/am/20220805/${FNABSC}                                 .
+cp ${FIX_DATA}/am/20220805/global_slmask.t1534.3072.1536.grb         seaice_newland.grb
+cp ${FIX_DATA}/am/20220805/${FNALBC}                                 .
+cp ${FIX_DATA}/am/20220805/${FNSMCC}                                 .
+cp ${FIX_DATA}/am/20220805/${FNSOTC}                                 .
+cp ${FIX_DATA}/am/20220805/${FNVETC}                                 .
 
 if [[ $gtype == uniform ]]; then
    cp ${MYDIR}/global_conf/* .

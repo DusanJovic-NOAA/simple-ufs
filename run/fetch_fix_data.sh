@@ -3,16 +3,16 @@ set -eux
 
 source configuration.sh
 
-FIX_URL="https://ftp.emc.ncep.noaa.gov/static_files/public/UFS/GFS/fix"
+FIX_URL="https://noaa-nws-global-pds.s3.amazonaws.com/fix"
 
 rm -rf ${FIX_DATA}
 mkdir -p ${FIX_DATA}
 cd ${FIX_DATA}
 
 (
-  rm -rf fix_am
-  mkdir -p fix_am
-  cd fix_am
+  rm -rf am/20220805
+  mkdir -p am/20220805
+  cd am/20220805
 
   #for res in 96 192; do
   for res in ${res}; do
@@ -89,23 +89,17 @@ cd ${FIX_DATA}
     global_vegtype.igbp.t${JCAP}.${LONB}.${LATB}.rg.grb
     "
     for file in ${FIX_AM_FILES}; do
-        curl -f -s -S -R -L -C - -O ${FIX_URL}/fix_am/${file}
+        curl -f -s -S -R -L -C - -O ${FIX_URL}/am/20220805/${file}
     done
-
-    # ln -s global_mxsnoalb.uariz.t126.384.190.rg.grb        global_mxsnoalb.uariz.t190.384.192.rg.grb
-    # ln -s global_snowfree_albedo.bosu.t126.384.190.rg.grb  global_snowfree_albedo.bosu.t190.384.192.rg.grb
-    # ln -s global_soilmgldas.t126.384.190.grb               global_soilmgldas.t190.384.192.grb
-    # ln -s global_soiltype.statsgo.t126.384.190.rg.grb      global_soiltype.statsgo.t190.384.192.rg.grb
-    # ln -s global_vegtype.igbp.t126.384.190.rg.grb          global_vegtype.igbp.t190.384.192.rg.grb
 
   done # res
 )
 
 if [[ $gtype == uniform ]]; then
 (
-  rm -rf fix_fv3_gmted2010
-  mkdir fix_fv3_gmted2010
-  cd fix_fv3_gmted2010
+  rm -rf orog/20231027
+  mkdir -p orog/20231027
+  cd orog/20231027
 
   #for res in 96 192; do
   for res in ${res}; do
@@ -113,47 +107,51 @@ if [[ $gtype == uniform ]]; then
     FIX_FV3_FILES="
     C${res}_grid.tile[1-6].nc
     C${res}_mosaic.nc
-    C${res}_oro_data.tile[1-6].nc
+    C${res}.mx${ocn}_oro_data.tile[1-6].nc
     "
     mkdir -p C${res}
     cd C${res}
     for file in ${FIX_FV3_FILES}; do
-        curl -f -s -S -R -L -C - -O ${FIX_URL}/fix_fv3_gmted2010/C${res}/${file}
+        curl -f -s -S -R -L -C - -O ${FIX_URL}/orog/20231027/C${res}/${file}
     done
 
     FIX_FV3_FIX_SFC_FILES="
-    C${res}.facsf.tile[1-6].nc
-    C${res}.maximum_snow_albedo.tile[1-6].nc
-    C${res}.slope_type.tile[1-6].nc
-    C${res}.snowfree_albedo.tile[1-6].nc
-    C${res}.soil_type.tile[1-6].nc
-    C${res}.substrate_temperature.tile[1-6].nc
-    C${res}.vegetation_greenness.tile[1-6].nc
-    C${res}.vegetation_type.tile[1-6].nc
+    C${res}.mx${ocn}.facsf.tile[1-6].nc
+    C${res}.mx${ocn}.maximum_snow_albedo.tile[1-6].nc
+    C${res}.mx${ocn}.slope_type.tile[1-6].nc
+    C${res}.mx${ocn}.snowfree_albedo.tile[1-6].nc
+    C${res}.mx${ocn}.soil_type.tile[1-6].nc
+    C${res}.mx${ocn}.substrate_temperature.tile[1-6].nc
+    C${res}.mx${ocn}.vegetation_greenness.tile[1-6].nc
+    C${res}.mx${ocn}.vegetation_type.tile[1-6].nc
     "
-    mkdir -p fix_sfc
-    cd fix_sfc
+    mkdir -p sfc
+    cd sfc
     for file in ${FIX_FV3_FIX_SFC_FILES}; do
-        sleep 5
-        curl -f -s -S -R -L -C - -O ${FIX_URL}/fix_fv3_gmted2010/C${res}/fix_sfc/${file}
+        curl -f -s -S -R -L -C - -O ${FIX_URL}/orog/20231027/C${res}/sfc/${file}
     done
   )
   done # res
 )
 elif [[ $gtype == regional* ]]; then
 (
+    # redefine s3 bucket to SRW
+    FIX_URL="https://noaa-ufs-srw-pds.s3.amazonaws.com/fix"
     OROG_FILES="
-    gmted2010.30sec.int
-    landcover30.fixed
-    thirty.second.antarctic.new.bin
+    topography.gmted2010.30s.nc
+    landcover.umd.30s.nc
+    topography.antarctica.ramp.30s.nc
     "
-    rm -rf fix_orog
-    mkdir fix_orog
-    cd fix_orog
+    # gmted2010.30sec.int
+    # landcover30.fixed
+    # thirty.second.antarctic.new.bin
+    rm -rf raw/orog
+    mkdir -p raw/orog
+    cd raw/orog
     for file in ${OROG_FILES}; do
         curl -f -s -S -R -L -C - -O ${FIX_URL}/fix_orog/${file}
     done
-    cd ..
+    cd ../..
 
     SFC_CLIMO_FILES="
     facsf.1.0.nc
@@ -165,13 +163,13 @@ elif [[ $gtype == regional* ]]; then
     vegetation_greenness.0.144.nc
     vegetation_type.modis.igbp.0.05.nc
     "
-    rm -rf fix_sfc_climo
-    mkdir -p fix_sfc_climo
-    cd fix_sfc_climo
+    rm -rf sfc_climo/20230925
+    mkdir -p sfc_climo/20230925
+    cd sfc_climo/20230925
     for file in ${SFC_CLIMO_FILES}; do
         curl -f -s -S -R -L -C - -O ${FIX_URL}/fix_sfc_climo/${file}
     done
-    cd ..
+    cd ../..
 )
 else
     echo "Unknown gtype $gtype"

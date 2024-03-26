@@ -19,15 +19,20 @@ export target_lon target_lat idim jdim delx dely
 if [[ $gtype == uniform ]]; then # use pregenerated grid/orog files
 
   rm -rf ${GRID_OROG_DATA}/C${res}
-  ln -sf ${FIX_DATA}/fix_fv3_gmted2010/C${res} ${GRID_OROG_DATA}/C${res}
+  ln -sf ${FIX_DATA}/orog/20231027/C${res} ${GRID_OROG_DATA}/C${res}
 
 else # run fv3gfs_driver_grid.sh
 
   [[ -e ${sufs}/src/preproc/ush/fv3gfs_driver_grid.sh ]] || exit 1
 
-  ln -sf ${FIX_DATA}/fix_am ${sufs}/src/preproc/fix/.
-  ln -sf ${FIX_DATA}/fix_orog ${sufs}/src/preproc/fix/.
-  ln -sf ${FIX_DATA}/fix_sfc_climo ${sufs}/src/preproc/fix/.
+  rm -f ${sufs}/src/preproc/fix/am
+  rm -f ${sufs}/src/preproc/fix/orog
+  rm -f ${sufs}/src/preproc/fix/orog_raw
+  rm -f ${sufs}/src/preproc/fix/sfc_climo
+  ln -sf ${FIX_DATA}/am/20220805         ${sufs}/src/preproc/fix/am
+  ln -sf ${FIX_DATA}/orog/20231027       ${sufs}/src/preproc/fix/orog
+  ln -sf ${FIX_DATA}/raw/orog            ${sufs}/src/preproc/fix/orog_raw
+  ln -sf ${FIX_DATA}/sfc_climo/20230925  ${sufs}/src/preproc/fix/sfc_climo
 
   export machine=linux
   export TEMP_DIR=${MYDIR}/tmp_grid_orog_$$

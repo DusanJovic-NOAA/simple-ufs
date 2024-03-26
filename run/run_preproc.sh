@@ -15,14 +15,15 @@ mkdir ${DATA}
 cd ${DATA}
 
 export APRUN="${MPIEXEC} -n 6"
-export OMP_NUM_THREADS_CH=1
+export OMP_NUM_THREADS=1
 export CDATE=${START_YEAR}${START_MONTH}${START_DAY}${START_HOUR}
 export HOMEufs=${sufs}/src/preproc
 export EXECufs=${sufs}/bin
-export FIXam=${MYDIR}/fix_data/fix_am
+export FIXam=${MYDIR}/fix_data/am/20220805
 export CRES=${res}
 export VCOORD_FILE=${FIXam}/global_hyblev.l${levp}.txt
 export INPUT_TYPE
+export ocn
 
 export COMIN=${INPUT_DATA}
 

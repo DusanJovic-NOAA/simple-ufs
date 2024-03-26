@@ -2,6 +2,7 @@
 sufs=$( cd $(pwd)/.. ; pwd -P )
 
 res=${res:-96}
+ocn=${ocn:-100}
 levp=${levp:-65}   # 28, 42 or 65
 
 gtype=uniform
