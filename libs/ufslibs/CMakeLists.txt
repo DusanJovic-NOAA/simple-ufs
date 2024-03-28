@@ -373,32 +373,32 @@ ExternalProject_Add_StepDependencies(esmf build netcdf_fortran pio)
 ##
 ## NCEPLIBS
 ##
-set(NCEPLIBS-bacio_tag  v2.4.1)
-set(NCEPLIBS-g2_tag     v3.4.5)
-set(NCEPLIBS-g2tmpl_tag v1.10.2)
-set(NCEPLIBS-gfsio_tag  v1.4.1)
-set(NCEPLIBS-ip_tag     v4.3.0)
-set(NCEPLIBS-nemsio_tag v2.5.4)
-set(NCEPLIBS-sfcio_tag  v1.4.1)
-set(NCEPLIBS-sigio_tag  v2.3.2)
-set(NCEPLIBS-sp_tag     v2.3.3)
-set(NCEPLIBS-w3emc_tag  v2.10.0)
+set(bacio_tag  2.4.1)
+set(g2_tag     3.4.5)
+set(g2tmpl_tag 1.10.2)
+set(gfsio_tag  1.4.1)
+set(ip_tag     4.3.0)
+set(nemsio_tag 2.5.4)
+set(sfcio_tag  1.4.1)
+set(sigio_tag  2.3.2)
+set(sp_tag     2.3.3)
+set(w3emc_tag  2.10.0)
 
 foreach(lib_name
-                 NCEPLIBS-bacio
-                 NCEPLIBS-g2
-                 NCEPLIBS-g2tmpl
-                 NCEPLIBS-gfsio
-                 NCEPLIBS-ip
-                 NCEPLIBS-nemsio
-                 NCEPLIBS-sfcio
-                 NCEPLIBS-sigio
-                 NCEPLIBS-sp
-                 NCEPLIBS-w3emc)
+                 bacio
+                 g2
+                 g2tmpl
+                 gfsio
+                 ip
+                 nemsio
+                 sfcio
+                 sigio
+                 sp
+                 w3emc)
 
     ExternalProject_Add(${lib_name}
-        GIT_REPOSITORY https://github.com/NOAA-EMC/${lib_name}
-        GIT_TAG ${${lib_name}_tag}
+        GIT_REPOSITORY https://github.com/NOAA-EMC/NCEPLIBS-${lib_name}
+        GIT_TAG v${${lib_name}_tag}
         GIT_SUBMODULES_RECURSE ON
         UPDATE_COMMAND ""
         BUILD_IN_SOURCE OFF
@@ -406,17 +406,16 @@ foreach(lib_name
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/${lib_name}
                    -DCMAKE_INSTALL_LIBDIR=lib
                    -DCMAKE_PREFIX_PATH=${install_prefix}/netcdf,${install_prefix}/jasper,${install_prefix}/libpng,${install_prefix}/zlib
-                   -Dbacio_ROOT=${install_prefix}/NCEPLIBS-bacio
-                   -Dg2_ROOT=${install_prefix}/NCEPLIBS-g2
-                   -Dg2tmpl_ROOT=${install_prefix}/NCEPLIBS-g2tmpl
-                   -Dgfsio_ROOT=${install_prefix}/NCEPLIBS-gfsio
-                   -Dip_ROOT=${install_prefix}/NCEPLIBS-ip
-                   -Dnemsio_ROOT=${install_prefix}/NCEPLIBS-nemsio
-                   -Dsfcio_ROOT=${install_prefix}/NCEPLIBS-sfcio
-                   -Dsigio_ROOT=${install_prefix}/NCEPLIBS-sigio
-                   -Dsp_ROOT=${install_prefix}/NCEPLIBS-sp
-                   -Dw3nco_ROOT=${install_prefix}/NCEPLIBS-w3nco
-                   -Dw3emc_ROOT=${install_prefix}/NCEPLIBS-w3emc
+                   -Dbacio_ROOT=${install_prefix}/bacio
+                   -Dg2_ROOT=${install_prefix}/g2
+                   -Dg2tmpl_ROOT=${install_prefix}/g2tmpl
+                   -Dgfsio_ROOT=${install_prefix}/gfsio
+                   -Dip_ROOT=${install_prefix}/ip
+                   -Dnemsio_ROOT=${install_prefix}/nemsio
+                   -Dsfcio_ROOT=${install_prefix}/sfcio
+                   -Dsigio_ROOT=${install_prefix}/sigio
+                   -Dsp_ROOT=${install_prefix}/sp
+                   -Dw3emc_ROOT=${install_prefix}/w3emc
                    -DBUILD_WITH_BUFR=OFF
         LOG_DOWNLOAD ON
         LOG_CONFIGURE ON
@@ -426,10 +425,10 @@ foreach(lib_name
 
 endforeach()
 
-ExternalProject_Add_StepDependencies(NCEPLIBS-g2     build jasper libpng)
-ExternalProject_Add_StepDependencies(NCEPLIBS-ip     build NCEPLIBS-sp)
-ExternalProject_Add_StepDependencies(NCEPLIBS-nemsio build NCEPLIBS-bacio NCEPLIBS-w3emc)
-ExternalProject_Add_StepDependencies(NCEPLIBS-w3emc  build NCEPLIBS-bacio)
+ExternalProject_Add_StepDependencies(g2     build jasper libpng)
+ExternalProject_Add_StepDependencies(ip     build sp)
+ExternalProject_Add_StepDependencies(nemsio build bacio w3emc)
+ExternalProject_Add_StepDependencies(w3emc  build bacio)
 
 ##
 ## crtm
