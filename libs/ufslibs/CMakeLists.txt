@@ -431,13 +431,18 @@ ExternalProject_Add_StepDependencies(w3emc  build bacio)
 ## crtm
 ##
 ExternalProject_Add(crtm
-    URL https://github.com/JCSDA/crtm/archive/refs/tags/v2.4.0_emc.tar.gz
-    URL_HASH MD5=fc7506c73d042699450c3114ea449ea4
+    DOWNLOAD_COMMAND git clone --branch v2.4.0_emc.3
+                               --depth=1
+                               --config "filter.lfs.process=git-lfs\ filter-process\ --skip"
+                               --config "advice.detachedHead=false"
+                               "https://github.com/JCSDA/crtm"
+    PATCH_COMMAND bash -l -c "sed -i -e 's/-fbacktrace/-fbacktrace -ffree-line-length-none/g' libsrc/CMakeLists.txt"
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/crtm
                -DCMAKE_INSTALL_LIBDIR=lib
                -DNetCDF_ROOT=${install_prefix}/netcdf
     LOG_DOWNLOAD ON
+    LOG_PATCH ON
     LOG_CONFIGURE ON
     LOG_BUILD ON
     LOG_INSTALL ON
