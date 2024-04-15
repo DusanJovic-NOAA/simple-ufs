@@ -146,7 +146,6 @@ export bacio_ROOT=${ufslibs_install_prefix}/bacio
 export crtm_ROOT=${ufslibs_install_prefix}/crtm
 export g2_ROOT=${ufslibs_install_prefix}/g2
 export g2tmpl_ROOT=${ufslibs_install_prefix}/g2tmpl
-export gfsio_ROOT=${ufslibs_install_prefix}/gfsio
 export ip_ROOT=${ufslibs_install_prefix}/ip
 export nemsio_ROOT=${ufslibs_install_prefix}/nemsio
 export sfcio_ROOT=${ufslibs_install_prefix}/sfcio

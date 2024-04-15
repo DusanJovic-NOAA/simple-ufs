@@ -376,7 +376,6 @@ ExternalProject_Add_StepDependencies(esmf build netcdf_fortran pio)
 set(bacio_tag  2.4.1)
 set(g2_tag     3.4.5)
 set(g2tmpl_tag 1.10.2)
-set(gfsio_tag  1.4.1)
 set(ip_tag     4.3.0)
 set(nemsio_tag 2.5.4)
 set(sfcio_tag  1.4.1)
@@ -388,7 +387,6 @@ foreach(lib_name
                  bacio
                  g2
                  g2tmpl
-                 gfsio
                  ip
                  nemsio
                  sfcio
@@ -409,7 +407,6 @@ foreach(lib_name
                    -Dbacio_ROOT=${install_prefix}/bacio
                    -Dg2_ROOT=${install_prefix}/g2
                    -Dg2tmpl_ROOT=${install_prefix}/g2tmpl
-                   -Dgfsio_ROOT=${install_prefix}/gfsio
                    -Dip_ROOT=${install_prefix}/ip
                    -Dnemsio_ROOT=${install_prefix}/nemsio
                    -Dsfcio_ROOT=${install_prefix}/sfcio
