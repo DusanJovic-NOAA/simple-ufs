@@ -547,6 +547,7 @@ ExternalProject_Add(mapl
                -DESMA_USE_GFE_NAMESPACE=ON
                -DBUILD_SHARED_MAPL=OFF
                -DUSE_EXTDATA2G=OFF
+               -DUSE_F2PY=OFF
                -DESMFMKFILE=${install_prefix}/esmf/lib/esmf.mk
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
