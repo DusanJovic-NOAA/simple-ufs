@@ -506,22 +506,6 @@ ExternalProject_Add(gftl_shared
     LOG_INSTALL ON
 )
 
-##
-## yafyaml
-##
-ExternalProject_Add(yafyaml
-    URL https://github.com/Goddard-Fortran-Ecosystem/yaFyaml/archive/refs/tags/v1.0.4.tar.gz
-    URL_HASH MD5=f1cf8c45f5b9949703c253dfd7918ca5
-    BUILD_IN_SOURCE OFF
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/yafyaml
-               -DGFTL_ROOT=${install_prefix}/gftl_shared
-               -DGFTL_SHARED_ROOT=${install_prefix}/gftl_shared
-    LOG_DOWNLOAD ON
-    LOG_CONFIGURE ON
-    LOG_BUILD ON
-    LOG_INSTALL ON
-)
-ExternalProject_Add_StepDependencies(yafyaml build gftl_shared)
 
 ##
 ## mapl
@@ -541,7 +525,6 @@ ExternalProject_Add(mapl
                -DHDF5_ROOT=${install_prefix}/hdf5
                -DGFTL_ROOT=${install_prefix}/gftl_shared
                -DGFTL_SHARED_ROOT=${install_prefix}/gftl_shared
-               -DYAFYAML_ROOT=${install_prefix}/yafyaml
                -DCMAKE_BUILD_TYPE=Release
                -DBUILD_WITH_FLAP=OFF
                -DBUILD_WITH_PFLOGGER=OFF
@@ -556,7 +539,7 @@ ExternalProject_Add(mapl
     LOG_BUILD ON
     LOG_INSTALL ON
 )
-ExternalProject_Add_StepDependencies(mapl build esmf ecbuild cmakemodules esma_cmake yafyaml)
+ExternalProject_Add_StepDependencies(mapl build esmf ecbuild cmakemodules esma_cmake gftl_shared)
 
 ##
 ## scotch
