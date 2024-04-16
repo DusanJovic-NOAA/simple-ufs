@@ -174,7 +174,7 @@ printf '%-.30s ' "Building preproc ..........................."
   mkdir build
   cd build
 
-  cmake .. -DCMAKE_INSTALL_PREFIX="${MYDIR}"
+  cmake .. -DCMAKE_INSTALL_PREFIX="${MYDIR}" -DBUILD_TESTING=OFF
 
   make -j 8
   make install
