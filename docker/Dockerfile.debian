@@ -13,6 +13,7 @@ RUN apt-get update && \
             gcc \
             gfortran \
             git \
+            git-lfs \
             libjpeg-dev \
             libopenmpi-dev \
             libtool \

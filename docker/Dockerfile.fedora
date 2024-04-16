@@ -10,6 +10,7 @@ RUN dnf -y install \
            g++ \
            gfortran \
            git \
+           git-lfs \
            libjpeg-devel \
            libtool \
            m4 \
