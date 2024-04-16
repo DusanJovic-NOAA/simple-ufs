@@ -16,8 +16,15 @@ jobs:
         sudo apt-get update
         sudo apt-get install libmpich-dev
 
+    - name: Install cmake
+      run: |
+        cd ${{ github.workspace }}
+        curl -f -s -S -R -L https://github.com/Kitware/CMake/releases/download/v3.29.2/cmake-3.29.2-Linux-x86_64.tar.gz | tar -zx
+        echo "${{ github.workspace }}/cmake-3.29.2-linux-x86_64/bin" >> $GITHUB_PATH
+
     - name: Fetch dependencies
-      run: ./get.sh
+      run: |
+        ./get.sh
 
     - name: Build
       run: |
