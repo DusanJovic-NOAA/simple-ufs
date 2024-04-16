@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eu
+set -u
 set -o pipefail
 
 usage() {
@@ -125,7 +125,25 @@ printf '%-.30s ' "Building ufslibs .........................."
   make -j 8
 
 ) > log_ufslibs 2>&1
+status=$?
+  if [ $status -eq 0 ]; then
 printf 'done [%4d sec]\n' ${SECONDS}
+  else
+    printf 'FAILED [%4d sec]\n' ${SECONDS}
+    echo
+    echo "---------------------------------------------------------------"
+    echo "--- log_ufslibs"
+    cat log_ufslibs
+    echo "---------------------------------------------------------------"
+    for f in libs/ufslibs/build/*-prefix/src/*-stamp/*-*-*.log; do
+      echo
+      echo "---------------------------------------------------------------"
+      echo "--- $f"
+      cat $f
+      echo "---------------------------------------------------------------"
+    done
+    exit 1
+  fi
 fi
 
 export CC=${MPICC}
@@ -180,7 +198,14 @@ printf '%-.30s ' "Building preproc ..........................."
   make install
 
 ) > log_preproc 2>&1
+status=$?
+  if [ $status -eq 0 ]; then
 printf 'done [%4d sec]\n' ${SECONDS}
+  else
+    printf 'FAILED [%4d sec]\n' ${SECONDS}
+    cat log_preproc
+    exit 1
+  fi
 fi
 
 #
@@ -223,7 +248,14 @@ printf '%-.30s ' "Building model ..........................."
   cp ufs_model ${MYDIR}/bin/ufs_model
 
 ) > log_model 2>&1
+status=$?
+  if [ $status -eq 0 ]; then
 printf 'done [%4d sec]\n' ${SECONDS}
+  else
+    printf 'FAILED [%4d sec]\n' ${SECONDS}
+    cat log_model
+    exit 1
+  fi
 fi
 
 #
@@ -246,8 +278,14 @@ printf '%-.30s ' "Building post ..........................."
   cp sorc/ncep_post.fd/upp.x ${MYDIR}/bin/ufs_post
 
 ) > log_post 2>&1
+status=$?
+  if [ $status -eq 0 ]; then
 printf 'done [%4d sec]\n' ${SECONDS}
+  else
+    printf 'FAILED [%4d sec]\n' ${SECONDS}
+    cat log_post
+    exit 1
+  fi
 fi
 
 echo "Done!"
-
