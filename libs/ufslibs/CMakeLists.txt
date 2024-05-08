@@ -233,8 +233,8 @@ else()
 endif()
 
 ExternalProject_Add(netcdf_fortran
-    URL https://github.com/Unidata/netcdf-fortran/archive/v4.6.0.tar.gz
-    URL_HASH MD5=9d452a9ff8c8b646fefcfe180273111d
+    URL https://github.com/Unidata/netcdf-fortran/archive/v4.6.1.tar.gz
+    URL_HASH MD5=8c200fcf7d9d2761037dfd2dabe2216b
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND env "CC=${MPI_C_COMPILER}"
                       env "FC=${MPI_Fortran_COMPILER}"
@@ -279,8 +279,8 @@ ExternalProject_Add_StepDependencies(pio build netcdf_fortran)
 ## FMS
 ##
 ExternalProject_Add(fms
-    URL https://github.com/NOAA-GFDL/FMS/archive/refs/tags/2023.02.01.tar.gz
-    URL_HASH MD5=448fe2420c0df8067317a2369bc3624b
+    URL https://github.com/NOAA-GFDL/FMS/archive/refs/tags/2023.04.tar.gz
+    URL_HASH MD5=2725e558eaa53fa1016fe785444759ae
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/fms
                -DCMAKE_PREFIX_PATH=${install_prefix}/netcdf
@@ -357,8 +357,8 @@ list(APPEND esmf_env ESMF_INSTALL_LIBDIR=lib)
 list(APPEND esmf_env ESMF_INSTALL_BINDIR=bin)
 
 ExternalProject_Add(esmf
-    URL https://github.com/esmf-org/esmf/archive/refs/tags/v8.5.0.tar.gz
-    URL_HASH MD5=c77313a07dca94b16751aae0d3a38865
+    URL https://github.com/esmf-org/esmf/archive/refs/tags/v8.6.1.tar.gz
+    URL_HASH MD5=ddf8e428e5d9cc3b17a6ed8408aade41
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND ""
     BUILD_COMMAND   env ${esmf_env} make -j 8
@@ -380,7 +380,7 @@ set(ip_tag     4.3.0)
 set(nemsio_tag 2.5.4)
 set(sfcio_tag  1.4.1)
 set(sigio_tag  2.3.2)
-set(sp_tag     2.3.3)
+set(sp_tag     2.5.0)
 set(w3emc_tag  2.10.0)
 
 foreach(lib_name
@@ -453,8 +453,8 @@ ExternalProject_Add_StepDependencies(crtm build netcdf_fortran)
 ## ecbuild
 ##
 ExternalProject_Add(ecbuild
-    URL https://github.com/ecmwf/ecbuild/archive/refs/tags/3.6.1.tar.gz
-    URL_HASH MD5=2cdf9ab9efd0b397dc8bf7ec01a949c5
+    URL https://github.com/ecmwf/ecbuild/archive/refs/tags/3.7.2.tar.gz
+    URL_HASH MD5=7a7b4138e0c7e68abcd64e56002cbfcf
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/ecbuild
                -DCMAKE_INSTALL_LIBDIR=lib
@@ -465,24 +465,11 @@ ExternalProject_Add(ecbuild
 )
 
 ##
-## cmakemodules
-##
-ExternalProject_Add(cmakemodules
-    URL https://github.com/NOAA-EMC/CMakeModules/archive/refs/tags/v1.2.0.tar.gz
-    URL_HASH MD5=f4fc0b0ee277c8116ed9df30da4d3818
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND ""
-    INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory <SOURCE_DIR> ${install_prefix}/cmakemodules
-    LOG_DOWNLOAD ON
-    LOG_INSTALL ON
-)
-
-##
 ## esma_cmake
 ##
 ExternalProject_Add(esma_cmake
-    URL https://github.com/GEOS-ESM/ESMA_cmake/archive/refs/tags/v3.24.0.tar.gz
-    URL_HASH MD5=e26d0a1f535987f1bb07b03cce06831b
+    URL https://github.com/GEOS-ESM/ESMA_cmake/archive/refs/tags/v3.45.0.tar.gz
+    URL_HASH MD5=042ed33c7f2621cd021cfcf813b2e24b
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory <SOURCE_DIR> ${install_prefix}/esma_cmake
@@ -495,7 +482,7 @@ ExternalProject_Add(esma_cmake
 ##
 ExternalProject_Add(gftl_shared
     GIT_REPOSITORY https://github.com/Goddard-Fortran-Ecosystem/gFTL-shared
-    GIT_TAG v1.6.1
+    GIT_TAG v1.8.0
     GIT_SUBMODULES_RECURSE ON
     UPDATE_COMMAND ""
     BUILD_IN_SOURCE OFF
@@ -510,16 +497,22 @@ ExternalProject_Add(gftl_shared
 ##
 ## mapl
 ##
+
+# Must specify a value for MPI_STACK
+#  with cmake ...  -DMPI_STACK=<mpistack>.  The acceptable values are:
+#  intelmpi, mvapich, mpt, mpich, openmpi
+message(STATUS "Set MAPL's MPI_STACK to ${MPITYPE}")
+
 ExternalProject_Add(mapl
-    URL https://github.com/GEOS-ESM/MAPL/archive/refs/tags/v2.40.3.tar.gz
-    URL_HASH MD5=3ae648a707646f9bf3325c49f80a646e
+    URL https://github.com/GEOS-ESM/MAPL/archive/refs/tags/v2.46.0.tar.gz
+    URL_HASH MD5=031bf295ba831f7bf308ace66fd23af1
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/mapl
                -DCMAKE_CC_COMPILER=${MPI_C_COMPILER}
                -DCMAKE_Fortran_COMPILER=${MPI_Fortran_COMPILER}
                -DCMAKE_PREFIX_PATH=${install_prefix}/ecbuild
-               -DCMAKE_MODULE_PATH=${install_prefix}/esma_cmake,${install_prefix}/cmakemodules/Modules,${install_prefix}/share/ecbuild/cmake
+               -DCMAKE_MODULE_PATH=${install_prefix}/esma_cmake,${install_prefix}/ecbuild
                -DNetCDF_ROOT=${install_prefix}/netcdf
                -DNetCDF_Fortran_EXTRA_LIBRARIES=-L${install_prefix}/netcdf/lib,-lnetcdf,-L${install_prefix}/hdf5/lib,-lhdf5_hl,-lhdf5,-L${install_prefix}/zlib/lib,-lz,-ldl,-lm
                -DHDF5_ROOT=${install_prefix}/hdf5
@@ -534,12 +527,13 @@ ExternalProject_Add(mapl
                -DUSE_EXTDATA2G=OFF
                -DUSE_F2PY=OFF
                -DESMFMKFILE=${install_prefix}/esmf/lib/esmf.mk
+               -DMPI_STACK=${MPITYPE}
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
     LOG_BUILD ON
     LOG_INSTALL ON
 )
-ExternalProject_Add_StepDependencies(mapl build esmf ecbuild cmakemodules esma_cmake gftl_shared)
+ExternalProject_Add_StepDependencies(mapl build esmf ecbuild esma_cmake gftl_shared)
 
 ##
 ## scotch
