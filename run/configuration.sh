@@ -49,8 +49,9 @@ elif [[ $gtype == regional* ]]; then
   NTASKS=$(( LAYOUT_1*LAYOUT_2 + WRITE_GROUPS*WRITE_TASKS_PER_GROUP ))
 fi
 
-MPI_IMPLEMENTATION=${MPI_IMPLEMENTATION:-mpich3}
+MPI_IMPLEMENTATION=${MPI_IMPLEMENTATION:-mpich}
 mpiexec --version | grep OpenRTE 2> /dev/null && MPI_IMPLEMENTATION=openmpi
+mpiexec --version | grep "Open MPI" 2> /dev/null && MPI_IMPLEMENTATION=openmpi
 mpiexec --version | grep Intel 2> /dev/null && MPI_IMPLEMENTATION=intelmpi
 
 if [[ $MPI_IMPLEMENTATION == openmpi ]]; then

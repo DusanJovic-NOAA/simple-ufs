@@ -1,0 +1,225 @@
+diff -ruN hdf5-hdf5_1.14.4.2.orig/CMakeFilters.cmake hdf5-hdf5_1.14.4.2/CMakeFilters.cmake
+--- hdf5-hdf5_1.14.4.2.orig/CMakeFilters.cmake	2024-04-15 15:19:00.000000000 -0400
++++ hdf5-hdf5_1.14.4.2/CMakeFilters.cmake	2024-05-05 16:51:40.147970408 -0400
+@@ -158,3 +158,27 @@
+     message (WARNING "SZIP support in HDF5 was enabled but not found")
+   endif ()
+ endif ()
++
++#-----------------------------------------------------------------------------
++# Option for Zstd support
++#-----------------------------------------------------------------------------
++option (HDF5_ENABLE_ZSTD_SUPPORT "Use Zstd Filter" OFF)
++if (HDF5_ENABLE_ZSTD_SUPPORT)
++  set(zstd_FOUND FALSE)
++  find_package (zstd CONFIG REQUIRED)
++  if (zstd_FOUND)
++    get_target_property(ZSTD_LIBRARIES zstd::libzstd_static LOCATION)
++    get_target_property(ZSTD_INCLUDE_DIRS zstd::libzstd_static INTERFACE_INCLUDE_DIRECTORIES)
++    set (LINK_COMP_LIBS ${LINK_COMP_LIBS} ${ZSTD_LIBRARIES})
++    set (H5_HAVE_FILTER_ZSTD 1)
++    set (H5_HAVE_ZSTD_H 1)
++    set (H5_HAVE_LIBZSTD 1)
++    INCLUDE_DIRECTORIES (${ZSTD_INCLUDE_DIRS})
++    message (STATUS "Filter ZSTD is ON")
++    if (H5_HAVE_FILTER_ZSTD)
++      set (EXTERNAL_FILTERS "${EXTERNAL_FILTERS} DECODE")
++    endif ()
++  else ()
++    message (WARNING "ZSTD support in HDF5 was enabled but not found")
++  endif ()
++endif ()
+diff -ruN hdf5-hdf5_1.14.4.2.orig/config/cmake/H5pubconf.h.in hdf5-hdf5_1.14.4.2/config/cmake/H5pubconf.h.in
+--- hdf5-hdf5_1.14.4.2.orig/config/cmake/H5pubconf.h.in	2024-04-15 15:19:00.000000000 -0400
++++ hdf5-hdf5_1.14.4.2/config/cmake/H5pubconf.h.in	2024-05-05 16:59:20.434450226 -0400
+@@ -146,6 +146,9 @@
+ /* Define if support for szip filter is enabled */
+ #cmakedefine H5_HAVE_FILTER_SZIP @H5_HAVE_FILTER_SZIP@
+ 
++/* Define if support for zstd filter is enabled */
++#cmakedefine H5_HAVE_FILTER_ZSTD @H5_HAVE_FILTER_ZSTD@
++
+ /* Determine if _Float16 is available */
+ #cmakedefine H5_HAVE__FLOAT16 @H5_HAVE__FLOAT16@
+ 
+@@ -334,6 +337,9 @@
+ /* Define to 1 if you have the <szlib.h> header file. */
+ #cmakedefine H5_HAVE_SZLIB_H @H5_HAVE_SZLIB_H@
+ 
++/* Define to 1 if you have the <zstd.h> header file. */
++#cmakedefine H5_HAVE_ZSTD_H @H5_HAVE_ZSTD_H@
++
+ #if defined(_WIN32) && !defined(H5_BUILT_AS_DYNAMIC_LIB)
+ /* Not supported on WIN32 platforms with static linking */
+ /* #undef H5_HAVE_THREADSAFE */
+diff -ruN hdf5-hdf5_1.14.4.2.orig/src/CMakeLists.txt hdf5-hdf5_1.14.4.2/src/CMakeLists.txt
+--- hdf5-hdf5_1.14.4.2.orig/src/CMakeLists.txt	2024-04-15 15:19:00.000000000 -0400
++++ hdf5-hdf5_1.14.4.2/src/CMakeLists.txt	2024-05-05 16:51:40.148970416 -0400
+@@ -707,6 +707,7 @@
+     ${HDF5_SRC_DIR}/H5Zscaleoffset.c
+     ${HDF5_SRC_DIR}/H5Zshuffle.c
+     ${HDF5_SRC_DIR}/H5Zszip.c
++    ${HDF5_SRC_DIR}/H5Zzstd.c
+     ${HDF5_SRC_DIR}/H5Ztrans.c
+ )
+ if (H5_ZLIB_HEADER)
+diff -ruN hdf5-hdf5_1.14.4.2.orig/src/H5Z.c hdf5-hdf5_1.14.4.2/src/H5Z.c
+--- hdf5-hdf5_1.14.4.2.orig/src/H5Z.c	2024-04-15 15:19:00.000000000 -0400
++++ hdf5-hdf5_1.14.4.2/src/H5Z.c	2024-05-05 16:51:40.148970416 -0400
+@@ -119,6 +119,10 @@
+             HGOTO_ERROR(H5E_PLINE, H5E_CANTINIT, FAIL, "unable to register szip filter");
+     }
+ #endif /* H5_HAVE_FILTER_SZIP */
++#ifdef H5_HAVE_FILTER_ZSTD
++    if (H5Z_register(H5Z_ZSTD) < 0)
++        HGOTO_ERROR(H5E_PLINE, H5E_CANTINIT, FAIL, "unable to register zstd filter");
++#endif /* H5_HAVE_FILTER_ZSTD */
+ 
+ done:
+     FUNC_LEAVE_NOAPI(ret_value)
+diff -ruN hdf5-hdf5_1.14.4.2.orig/src/H5Zpkg.h hdf5-hdf5_1.14.4.2/src/H5Zpkg.h
+--- hdf5-hdf5_1.14.4.2.orig/src/H5Zpkg.h	2024-04-15 15:19:00.000000000 -0400
++++ hdf5-hdf5_1.14.4.2/src/H5Zpkg.h	2024-05-05 16:51:40.149970424 -0400
+@@ -50,6 +50,11 @@
+ H5_DLLVAR H5Z_class2_t H5Z_SZIP[1];
+ #endif /* H5_HAVE_FILTER_SZIP */
+ 
++/* zstd filter */
++#ifdef H5_HAVE_FILTER_ZSTD
++H5_DLLVAR H5Z_class2_t H5Z_ZSTD[1];
++#endif /* H5_HAVE_FILTER_ZSTD */
++
+ /* Package internal routines */
+ H5_DLL herr_t H5Z__unregister(H5Z_filter_t filter_id);
+ 
+diff -ruN hdf5-hdf5_1.14.4.2.orig/src/H5Zpublic.h hdf5-hdf5_1.14.4.2/src/H5Zpublic.h
+--- hdf5-hdf5_1.14.4.2.orig/src/H5Zpublic.h	2024-04-15 15:19:00.000000000 -0400
++++ hdf5-hdf5_1.14.4.2/src/H5Zpublic.h	2024-05-05 16:51:40.149970424 -0400
+@@ -52,6 +52,10 @@
+  */
+ #define H5Z_FILTER_SZIP 4
+ /**
++ * zstd compression
++ */
++#define H5Z_FILTER_ZSTD 32015
++/**
+  * nbit compression
+  */
+ #define H5Z_FILTER_NBIT 5
+diff -ruN hdf5-hdf5_1.14.4.2.orig/src/H5Zzstd.c hdf5-hdf5_1.14.4.2/src/H5Zzstd.c
+--- hdf5-hdf5_1.14.4.2.orig/src/H5Zzstd.c	1969-12-31 19:00:00.000000000 -0500
++++ hdf5-hdf5_1.14.4.2/src/H5Zzstd.c	2024-05-05 16:51:40.149970424 -0400
+@@ -0,0 +1,113 @@
++/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
++ * Copyright by The HDF Group.                                               *
++ * All rights reserved.                                                      *
++ *                                                                           *
++ * This file is part of HDF5.  The full HDF5 copyright notice, including     *
++ * terms governing use, modification, and redistribution, is contained in    *
++ * the COPYING file, which can be found at the root of the source code       *
++ * distribution tree, or in https://www.hdfgroup.org/licenses.               *
++ * If you do not have access to either file, you may request a copy from     *
++ * help@hdfgroup.org.                                                        *
++ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
++
++#include "H5Zmodule.h" /* This source code file is part of the H5Z module */
++
++#include "H5private.h"   /* Generic Functions			*/
++#include "H5Eprivate.h"  /* Error handling		  	*/
++#include "H5MMprivate.h" /* Memory management			*/
++#include "H5Zpkg.h"      /* Data filters				*/
++
++#ifdef H5_HAVE_FILTER_ZSTD
++
++#ifdef H5_HAVE_ZSTD_H
++#include "zstd.h"
++#endif
++
++/* Local function prototypes */
++static size_t H5Z__filter_zstd(unsigned flags, size_t cd_nelmts, const unsigned cd_values[], size_t nbytes,
++                               size_t *buf_size, void **buf);
++
++/* This message derives from H5Z */
++H5Z_class2_t H5Z_ZSTD[1] = {{
++    H5Z_CLASS_T_VERS,    /* H5Z_class_t version */
++    H5Z_FILTER_ZSTD,     /* Filter id number		*/
++    1,                   /* encoder_present flag (set to true) */
++    1,                   /* decoder_present flag (set to true) */
++    "zstd",              /* Filter name for debugging	*/
++    NULL,                /* The "can apply" callback     */
++    NULL,                /* The "set local" callback     */
++    H5Z__filter_zstd,    /* The actual filter function	*/
++}};
++
++/*-------------------------------------------------------------------------
++ * Function:	H5Z__filter_zstd
++ *
++ * Purpose:	Implement an I/O filter around the 'zstd' algorithm in
++ *              libzstd
++ *
++ * Return:	Success: Size of buffer filtered
++ *		Failure: 0
++ *
++ *-------------------------------------------------------------------------
++ */
++static size_t
++H5Z__filter_zstd(unsigned flags, size_t cd_nelmts, const unsigned cd_values[], size_t nbytes,
++                 size_t *buf_size, void **buf)
++{
++    size_t buf_size_out = 0;
++    void  *outbuf = NULL; /* Pointer to new buffer */
++    size_t ret_value = 0; /* Return value */
++
++    FUNC_ENTER_PACKAGE
++
++    /* Sanity check */
++    assert(*buf_size > 0);
++    assert(buf);
++    assert(*buf);
++
++    /* Check arguments */
++    if (cd_nelmts != 1 || cd_values[0] > 19)
++        HGOTO_ERROR(H5E_ARGS, H5E_BADVALUE, 0, "invalid zstd aggression level");
++
++    if (flags & H5Z_FLAG_REVERSE) {
++        /* Input; uncompress */
++        unsigned long long decompSize = ZSTD_getFrameContentSize(*buf, nbytes);
++        if (NULL == (outbuf = malloc(decompSize)))
++            goto done;
++
++        buf_size_out = ZSTD_decompress(outbuf, decompSize, *buf, nbytes);
++
++    } else {
++        /* We're compressing */
++        /*
++         * cd_values[0] = aggression
++         */
++        int aggression;
++        if (cd_nelmts > 0)
++            aggression = (int)cd_values[0];
++        else
++            aggression = ZSTD_CLEVEL_DEFAULT;
++        if (aggression < 1 /*ZSTD_minCLevel()*/)
++            aggression = 1 /*ZSTD_minCLevel()*/;
++        else if (aggression > ZSTD_maxCLevel())
++            aggression = ZSTD_maxCLevel();
++
++        size_t compSize = ZSTD_compressBound(nbytes);
++        if (NULL == (outbuf = malloc(compSize)))
++            goto done;
++
++        buf_size_out = ZSTD_compress(outbuf, compSize, *buf, nbytes, aggression);
++
++    }
++
++    free(*buf);
++    *buf = outbuf;
++    *buf_size = buf_size_out;
++    return buf_size_out;
++
++done:
++    if (outbuf)
++        H5MM_xfree(outbuf);
++    FUNC_LEAVE_NOAPI(ret_value)
++}
++#endif /* H5_HAVE_FILTER_ZSTD */

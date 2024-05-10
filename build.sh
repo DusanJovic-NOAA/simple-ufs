@@ -120,7 +120,7 @@ printf '%-.30s ' "Building ufslibs .........................."
   mkdir build
   cd build
 
-  cmake .. -DCMAKE_INSTALL_PREFIX=../install -DUSE_ZSTD_AND_DYNAMIC_HDF5=ON
+  cmake .. -DCMAKE_INSTALL_PREFIX=../install
 
   make -j 8
 
@@ -165,16 +165,12 @@ export crtm_ROOT=${ufslibs_install_prefix}/crtm
 export g2_ROOT=${ufslibs_install_prefix}/g2
 export g2tmpl_ROOT=${ufslibs_install_prefix}/g2tmpl
 export ip_ROOT=${ufslibs_install_prefix}/ip
-export nemsio_ROOT=${ufslibs_install_prefix}/nemsio
-export sfcio_ROOT=${ufslibs_install_prefix}/sfcio
-export sigio_ROOT=${ufslibs_install_prefix}/sigio
 export sp_ROOT=${ufslibs_install_prefix}/sp
 export upp_ROOT=${ufslibs_install_prefix}/UPP
 export w3emc_ROOT=${ufslibs_install_prefix}/w3emc
 
 export GFTL_ROOT=${ufslibs_install_prefix}/gftl_shared
 export GFTL_SHARED_ROOT=${ufslibs_install_prefix}/gftl_shared
-export YAFYAML_ROOT=${ufslibs_install_prefix}/yafyaml
 export MAPL_ROOT=${ufslibs_install_prefix}/mapl
 
 export SCOTCH_ROOT=${ufslibs_install_prefix}/scotch
@@ -192,7 +188,7 @@ printf '%-.30s ' "Building preproc ..........................."
   mkdir build
   cd build
 
-  cmake .. -DCMAKE_INSTALL_PREFIX="${MYDIR}" -DBUILD_TESTING=OFF
+  cmake .. -DCMAKE_INSTALL_PREFIX="${MYDIR}" -DBUILD_TESTING=OFF -DGBLEVENTS=OFF
 
   make -j 8
   make install
@@ -271,7 +267,7 @@ printf '%-.30s ' "Building post ..........................."
   mkdir build
   cd build
 
-  cmake ..
+  cmake .. -DBUILD_WITH_NEMSIO=OFF
 
   make -j 8
 
