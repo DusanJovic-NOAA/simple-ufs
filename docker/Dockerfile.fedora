@@ -6,6 +6,7 @@ RUN dnf clean all
 RUN dnf -y install \
            bison \
            cmake \
+           diffutils \
            flex \
            g++ \
            gfortran \
@@ -16,6 +17,7 @@ RUN dnf -y install \
            m4 \
            make \
            openmpi-devel \
+           patch \
            which
 
 ENV PATH=/usr/lib64/openmpi/bin:$PATH

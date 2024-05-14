@@ -14,13 +14,6 @@ find_package(MPI REQUIRED C CXX Fortran)
 
 set(install_prefix ${CMAKE_INSTALL_PREFIX})
 
-# if(${CMAKE_Fortran_COMPILER_ID} MATCHES "^(GNU)$")
-#   if(${CMAKE_Fortran_COMPILER_VERSION} VERSION_GREATER_EQUAL 10)
-#     set(FCFLAGS_fms "${FCFLAGS_fms} -fallow-argument-mismatch -fallow-invalid-boz")
-#     set(FCFLAGS_esmf "${FCFLAGS_esmf} -fallow-argument-mismatch -fallow-invalid-boz")
-#   endif()
-# endif()
-
 ##
 ## zstd
 ##
@@ -121,6 +114,7 @@ ExternalProject_Add(hdf5
                -DHDF5_ENABLE_PARALLEL=ON
                -DHDF5_ENABLE_Z_LIB_SUPPORT=ON
                -DHDF5_ENABLE_ZSTD_SUPPORT=ON
+               -DZLIB_ROOT=${install_prefix}/zlib
                -Dzstd_ROOT=${install_prefix}/zstd/lib/cmake
                -DHDF5_INSTALL_CMAKE_DIR=lib/cmake
     LOG_DOWNLOAD ON
@@ -220,8 +214,6 @@ ExternalProject_Add(fms
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/fms
                -DCMAKE_PREFIX_PATH=${install_prefix}/netcdf
-               -DCMAKE_C_FLAGS=${CFLAGS_fms}
-               -DCMAKE_Fortran_FLAGS=${FCFLAGS_fms}
                -DGFS_PHYS=ON
                -DCONSTANTS=GFS
                -D64BIT=ON
