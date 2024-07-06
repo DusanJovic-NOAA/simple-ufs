@@ -40,9 +40,9 @@ elif [[ $COMPILER == intel_llvm ]]; then
   export CC=${CC:-icx}
   export CXX=${CXX:-icpx}
   export FC=${FC:-ifx}
-  export MPICC=${MPICC:-mpiicc}
-  export MPICXX=${MPICXX:-mpiicpc}
-  export MPIF90=${MPIF90:-mpiifort}
+  export MPICC=${MPICC:-mpiicx}
+  export MPICXX=${MPICXX:-mpiicpx}
+  export MPIF90=${MPIF90:-mpiifx}
   export I_MPI_CC=${CC}
   export I_MPI_CXX=${CXX}
   export I_MPI_F90=${FC}
@@ -97,9 +97,26 @@ readonly MYDIR=$(cd "$(dirname "$(readlink -n "${BASH_SOURCE[0]}" )" )" && pwd -
 
 # print compiler version
 echo
+echo "CC = ${CC}"
+echo "CXX = ${CXX}"
+echo "FC = ${FC}"
+which ${CC}
+which ${CXX}
+which ${FC}
 ${CC} --version | head -1
 ${CXX} --version | head -1
 ${FC} --version | head -1
+echo
+echo "MPICC = ${MPICC}"
+echo "MPICXX = ${MPICXX}"
+echo "MPIF90 = ${MPIF90}"
+which ${MPICC}
+which ${MPICXX}
+which ${MPIF90}
+${MPICC} --version | head -1
+${MPICXX} --version | head -1
+${MPIF90} --version | head -1
+echo
 cmake --version | head -1
 echo
 

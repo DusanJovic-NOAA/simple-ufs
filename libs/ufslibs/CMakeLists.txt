@@ -101,6 +101,7 @@ ExternalProject_Add(hdf5
     URL https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5_1.14.4.2.tar.gz
     URL_HASH MD5=f1eaf87cc338475deb4aa48fb17cb8f8
     PATCH_COMMAND patch -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/hdf5-1.14.4.2_add_zstd.patch
+          COMMAND bash -l -c "sed -i -e 's/find_package (ZLIB.*/find_package (ZLIB MODULE)/g' CMakeFilters.cmake"
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/hdf5
                -DCMAKE_PREFIX_PATH=${install_prefix}
@@ -345,8 +346,6 @@ ExternalProject_Add_StepDependencies(w3emc  build bacio)
 ExternalProject_Add(crtm
     DOWNLOAD_COMMAND git clone --branch v2.4.0_emc.3
                                --depth=1
-                               --config "filter.lfs.process=git-lfs\ filter-process\ --skip"
-                               --config "advice.detachedHead=false"
                                "https://github.com/JCSDA/crtm"
     PATCH_COMMAND bash -l -c "sed -i -e 's/-fbacktrace/-fbacktrace -ffree-line-length-none/g' libsrc/CMakeLists.txt"
     BUILD_IN_SOURCE OFF
