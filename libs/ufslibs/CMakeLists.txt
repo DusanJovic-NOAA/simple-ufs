@@ -14,6 +14,8 @@ find_package(MPI REQUIRED C CXX Fortran)
 
 set(install_prefix ${CMAKE_INSTALL_PREFIX})
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 ##
 ## zstd
 ##
@@ -321,6 +323,7 @@ foreach(lib_name bacio g2 g2tmpl ip sp w3emc)
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/${lib_name}
                    -DCMAKE_INSTALL_LIBDIR=lib
                    -DCMAKE_PREFIX_PATH=${install_prefix}/netcdf,${install_prefix}/jasper,${install_prefix}/libpng,${install_prefix}/zlib
+                   -DCMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}
                    -Dbacio_ROOT=${install_prefix}/bacio
                    -Dg2_ROOT=${install_prefix}/g2
                    -Dg2tmpl_ROOT=${install_prefix}/g2tmpl
