@@ -132,6 +132,9 @@ ExternalProject_Add_StepDependencies(hdf5 build zlib zstd)
 ##
 ## netcdf
 ##
+if(NOT APPLE)
+  set(_disable_libxml2 "--disable-libxml2")
+endif()
 ExternalProject_Add(netcdf
     URL https://github.com/Unidata/netcdf-c/archive/v4.9.2.tar.gz
     URL_HASH MD5=84acd096ab4f3300c20db862eecdf7c7
@@ -144,7 +147,7 @@ ExternalProject_Add(netcdf
                                   --libdir=${install_prefix}/netcdf/lib
                                   --enable-cdf5
                                   --disable-dap
-                                  --disable-libxml2
+                                  ${_disable_libxml2}
                                   --disable-byterange
                                   --enable-netcdf-4
                                   --disable-doxygen

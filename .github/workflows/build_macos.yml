@@ -1,0 +1,44 @@
+name: Build macOS
+
+on: [push, pull_request]
+
+env:
+  CC: gcc-13
+  CXX: g++-13
+  FC: gfortran-13
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Update brew packages
+      run: |
+        brew install autoconf automake bison coreutils open-mpi
+        echo "/opt/homebrew/opt/bison/bin" >> $GITHUB_PATH
+        echo "/opt/homebrew/opt/coreutils/libexec/gnubin" >> $GITHUB_PATH
+
+    - name: Fetch dependencies
+      run: |
+        ./get.sh
+
+    - name: Build
+      run: |
+        ./build.sh gnu -all
+        rm -rf libs/ufslibs/build
+
+    - name: Run
+      run: |
+        cd run
+        sed -i -e 's/NHOURS_FCST=24/NHOURS_FCST=3/g' configuration.sh
+        sed -i -e 's/NFHMAX_HF=12/NFHMAX_HF=3/g' configuration.sh
+        ./fetch_fix_data.sh
+        ./fetch_input_data.sh
+        ./run.sh
+        ls -l preproc_run
+        ls -l model_run
+        ls -l post_run

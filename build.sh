@@ -95,6 +95,10 @@ echo "BUILD_POST    = ${BUILD_POST}"
 
 readonly MYDIR=$(cd "$(dirname "$(readlink -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
 
+export OMPI_CC=${CC}
+export OMPI_CXX=${CXX}
+export OMPI_FC=${FC}
+
 # print compiler version
 echo
 echo "CC = ${CC}"
@@ -119,10 +123,6 @@ ${MPIF90} --version | head -1
 echo
 cmake --version | head -1
 echo
-
-export OMPI_CC=${CC}
-export OMPI_CXX=${CXX}
-export OMPI_FC=${FC}
 
 #
 # ufslibs
