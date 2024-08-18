@@ -175,6 +175,7 @@ export NetCDF_ROOT=${ufslibs_install_prefix}/netcdf
 export PIO_ROOT=${ufslibs_install_prefix}/pio
 
 export ESMFMKFILE=${ufslibs_install_prefix}/esmf/lib/esmf.mk
+export ESMF_ROOT=${ufslibs_install_prefix}/esmf
 export FMS_ROOT=${ufslibs_install_prefix}/fms
 
 export bacio_ROOT=${ufslibs_install_prefix}/bacio

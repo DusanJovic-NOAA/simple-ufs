@@ -302,14 +302,20 @@ ExternalProject_Add(esmf
     LOG_BUILD ON
     LOG_INSTALL ON
 )
+ExternalProject_Add_Step(esmf post_install
+    COMMAND ${CMAKE_COMMAND} -E copy_directory <SOURCE_DIR>/cmake ${install_prefix}/esmf/cmake
+    DEPENDEES install
+    WORKING_DIRECTORY <INSTALL_DIR>
+    LOG ON
+)
 ExternalProject_Add_StepDependencies(esmf build netcdf_fortran pio)
 
 ##
 ## NCEPLIBS
 ##
 set(bacio_tag  2.4.1)
-set(g2_tag     3.4.5)
-set(g2tmpl_tag 1.10.2)
+set(g2_tag     3.5.1)
+set(g2tmpl_tag 1.13.0)
 set(ip_tag     4.3.0)
 set(sp_tag     2.5.0)
 set(w3emc_tag  2.10.0)
@@ -334,6 +340,7 @@ foreach(lib_name bacio g2 g2tmpl ip sp w3emc)
                    -Dsp_ROOT=${install_prefix}/sp
                    -Dw3emc_ROOT=${install_prefix}/w3emc
                    -DBUILD_WITH_BUFR=OFF
+                   -DBUILD_WITH_W3EMC=OFF
         LOG_DOWNLOAD ON
         LOG_CONFIGURE ON
         LOG_BUILD ON
@@ -438,8 +445,8 @@ endif()
 message(STATUS "Set MAPL MPI_STACK to ${MPITYPE}")
 
 ExternalProject_Add(mapl
-    URL https://github.com/GEOS-ESM/MAPL/archive/refs/tags/v2.46.0.tar.gz
-    URL_HASH MD5=7be5f4dc91597db772086691d80bfbfc
+    URL https://github.com/GEOS-ESM/MAPL/archive/refs/tags/v2.46.3.tar.gz
+    URL_HASH MD5=8ddf81796cb51a5d48c6989fdb639b9d
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/mapl
