@@ -31,9 +31,11 @@ WORKDIR /home/builder/simple-ufs
 
 USER builder
 
+RUN ./get.sh
+
 RUN ./build.sh gnu -ufslibs
 
-RUN ./get.sh && ./build.sh gnu -preproc -model -post && rm -rf libs/ufslibs/build
+RUN ./build.sh gnu -preproc -model -post && rm -rf libs/ufslibs/build
 
 RUN cd run && \
  sed -i -e 's/NHOURS_FCST=24/NHOURS_FCST=3/g' configuration.sh && \

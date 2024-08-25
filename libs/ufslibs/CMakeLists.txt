@@ -16,11 +16,13 @@ set(install_prefix ${CMAKE_INSTALL_PREFIX})
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+set(downloads_prefix "${CMAKE_CURRENT_SOURCE_DIR}/downloads")
+
 ##
 ## zstd
 ##
 ExternalProject_Add(zstd
-    URL https://github.com/facebook/zstd/releases/download/v1.5.5/zstd-1.5.5.tar.gz
+    URL ${downloads_prefix}/zstd.tar.gz
     URL_HASH MD5=63251602329a106220e0a5ad26ba656f
     SOURCE_SUBDIR build/cmake
     CMAKE_ARGS -LH
@@ -41,7 +43,7 @@ ExternalProject_Add(zstd
 ## zlib
 ##
 ExternalProject_Add(zlib
-    URL https://github.com/madler/zlib/archive/refs/tags/v1.2.13.tar.gz
+    URL ${downloads_prefix}/zlib.tar.gz
     URL_HASH MD5=9c7d356c5acaa563555490676ca14d23
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND ./configure --prefix=${install_prefix}/zlib
@@ -57,7 +59,7 @@ ExternalProject_Add(zlib
 ## jasper
 ##
 ExternalProject_Add(jasper
-    URL https://github.com/jasper-software/jasper/archive/refs/tags/version-2.0.32.tar.gz
+    URL ${downloads_prefix}/jasper.tar.gz
     URL_HASH MD5=2c6017d275146f8792fa448227a7c373
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/jasper
@@ -69,7 +71,6 @@ ExternalProject_Add(jasper
                -DJAS_ENABLE_PROGRAMS=OFF
                -DJAS_ENABLE_OPENGL=OFF
                -DJAS_ENABLE_LIBJPEG=OFF
-               -DCMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP=ON
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
     LOG_BUILD ON
@@ -80,7 +81,7 @@ ExternalProject_Add(jasper
 ## libpng
 ##
 ExternalProject_Add(libpng
-    URL https://github.com/glennrp/libpng/archive/refs/tags/v1.6.37.tar.gz
+    URL ${downloads_prefix}/libpng.tar.gz
     URL_HASH MD5=564aa9f6c678dbb016b07ecfae8b7245
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND env "CPPFLAGS=-I${install_prefix}/zlib/include"
@@ -99,10 +100,9 @@ ExternalProject_Add_StepDependencies(libpng build zlib)
 ## hdf5
 ##
 ExternalProject_Add(hdf5
-    PREFIX ${contrib_prefix}
-    URL https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5_1.14.4.2.tar.gz
+    URL ${downloads_prefix}/hdf5.tar.gz
     URL_HASH MD5=f1eaf87cc338475deb4aa48fb17cb8f8
-    PATCH_COMMAND patch -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/hdf5-1.14.4.2_add_zstd.patch
+    PATCH_COMMAND patch -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/patches/hdf5-1.14.4.2_add_zstd.patch
           COMMAND bash -l -c "sed -i -e 's/find_package (ZLIB.*/find_package (ZLIB MODULE)/g' CMakeFilters.cmake"
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/hdf5
@@ -136,7 +136,7 @@ if(NOT APPLE)
   set(_disable_libxml2 "--disable-libxml2")
 endif()
 ExternalProject_Add(netcdf
-    URL https://github.com/Unidata/netcdf-c/archive/v4.9.2.tar.gz
+    URL ${downloads_prefix}/netcdf.tar.gz
     URL_HASH MD5=84acd096ab4f3300c20db862eecdf7c7
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND env "CC=${MPI_C_COMPILER}"
@@ -167,7 +167,7 @@ ExternalProject_Add_StepDependencies(netcdf build hdf5)
 ## netcdf_fortran
 ##
 ExternalProject_Add(netcdf_fortran
-    URL https://github.com/Unidata/netcdf-fortran/archive/v4.6.1.tar.gz
+    URL ${downloads_prefix}/netcdf_fortran.tar.gz
     URL_HASH MD5=8c200fcf7d9d2761037dfd2dabe2216b
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND env "CC=${MPI_C_COMPILER}"
@@ -180,6 +180,7 @@ ExternalProject_Add(netcdf_fortran
                                   --libdir=${install_prefix}/netcdf/lib
                                   --enable-static
                                   --disable-shared
+                                  --disable-doxygen
                                   --enable-zstandard_plugin
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
@@ -189,10 +190,36 @@ ExternalProject_Add(netcdf_fortran
 ExternalProject_Add_StepDependencies(netcdf_fortran build netcdf)
 
 ##
+## genf90
+##
+ExternalProject_Add(genf90
+    URL ${downloads_prefix}/genf90.tar.gz
+    URL_HASH MD5=7f3504dfb5aab846f4a9018dda7bb8ad
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/genf90.pl ${install_prefix}/genf90/bin/genf90.pl
+    LOG_DOWNLOAD ON
+    LOG_INSTALL ON
+)
+
+##
+## cmake_fortran_utils
+##
+ExternalProject_Add(cmake_fortran_utils
+    URL ${downloads_prefix}/cmake_fortran_utils.tar.gz
+    URL_HASH MD5=a3c39f002a7a81882b65b7eb8c9a7d91
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory <SOURCE_DIR> ${install_prefix}/cmake_fortran_utils
+    LOG_DOWNLOAD ON
+    LOG_INSTALL ON
+)
+
+##
 ## PIO
 ##
 ExternalProject_Add(pio
-    URL https://github.com/NCAR/ParallelIO/archive/refs/tags/pio2_5_10.tar.gz
+    URL ${downloads_prefix}/pio.tar.gz
     URL_HASH MD5=171ee9a2b31a73108314a35b4db1dfaa
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/pio
@@ -201,6 +228,8 @@ ExternalProject_Add(pio
                -DPIO_ENABLE_TIMING=OFF
                -DPIO_ENABLE_DOC=OFF
                -DPIO_ENABLE_EXAMPLES=OFF
+               -DUSER_CMAKE_MODULE_PATH=${install_prefix}/cmake_fortran_utils
+               -DGENF90_PATH=${install_prefix}/genf90/bin
                -DNetCDF_PATH=${install_prefix}/netcdf
                -DHDF5_PATH=${install_prefix}/hdf5
                -DLIBZ_PATH=${install_prefix}/zlib
@@ -209,17 +238,39 @@ ExternalProject_Add(pio
     LOG_BUILD ON
     LOG_INSTALL ON
 )
-ExternalProject_Add_StepDependencies(pio build netcdf_fortran)
+ExternalProject_Add_StepDependencies(pio build netcdf_fortran genf90 cmake_fortran_utils)
 
 ##
 ## FMS
 ##
+if (${CMAKE_Fortran_COMPILER_ID} MATCHES "IntelLLVM")
 ExternalProject_Add(fms
-    URL https://github.com/NOAA-GFDL/FMS/archive/refs/tags/2023.04.tar.gz
+    URL ${downloads_prefix}/fms.tar.gz
+    URL_HASH MD5=2725e558eaa53fa1016fe785444759ae
+    BUILD_IN_SOURCE OFF
+    CMAKE_COMMAND env I_MPI_F90=ifort cmake # Temporary until ifx fixes ICE
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/fms
+               -DCMAKE_PREFIX_PATH=${install_prefix}/netcdf
+               -DCMAKE_Fortran_COMPILER=${MPI_Fortran_COMPILER}
+               -DGFS_PHYS=ON
+               -DCONSTANTS=GFS
+               -D64BIT=ON
+               -DOPENMP=ON
+               -DUSE_DEPRECATED_IO=ON
+    BUILD_COMMAND env I_MPI_F90=ifort make -j 8
+    LOG_DOWNLOAD ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
+)
+else()
+ExternalProject_Add(fms
+    URL ${downloads_prefix}/fms.tar.gz
     URL_HASH MD5=2725e558eaa53fa1016fe785444759ae
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/fms
                -DCMAKE_PREFIX_PATH=${install_prefix}/netcdf
+               -DCMAKE_Fortran_COMPILER=${MPI_Fortran_COMPILER}
                -DGFS_PHYS=ON
                -DCONSTANTS=GFS
                -D64BIT=ON
@@ -230,6 +281,7 @@ ExternalProject_Add(fms
     LOG_BUILD ON
     LOG_INSTALL ON
 )
+endif()
 ExternalProject_Add_StepDependencies(fms build netcdf_fortran)
 
 ##
@@ -240,7 +292,7 @@ list(APPEND esmf_env ESMF_DIR=${CMAKE_CURRENT_BINARY_DIR}/esmf-prefix/src/esmf)
 if(${CMAKE_C_COMPILER_ID} STREQUAL "Intel")
   list(APPEND esmf_env ESMF_COMPILER=intel)
 elseif(${CMAKE_C_COMPILER_ID} MATCHES "IntelLLVM")
-  list(APPEND esmf_env ESMF_COMPILER=intel)
+  list(APPEND esmf_env ESMF_COMPILER=intel ESMF_C=mpiicx ESMF_CXX=mpiicpx ESMF_F90=mpiifx I_MPI_F90=ifx ESMF_CXXLINKLIBS=-lstdc++)
 elseif(${CMAKE_C_COMPILER_ID} MATCHES "^(GNU|Clang|AppleClang)$")
   list(APPEND esmf_env ESMF_COMPILER=gfortran)
 else()
@@ -291,7 +343,7 @@ list(APPEND esmf_env ESMF_INSTALL_LIBDIR=lib)
 list(APPEND esmf_env ESMF_INSTALL_BINDIR=bin)
 
 ExternalProject_Add(esmf
-    URL https://github.com/esmf-org/esmf/archive/refs/tags/v8.6.1.tar.gz
+    URL ${downloads_prefix}/esmf.tar.gz
     URL_HASH MD5=ddf8e428e5d9cc3b17a6ed8408aade41
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND ""
@@ -311,55 +363,112 @@ ExternalProject_Add_Step(esmf post_install
 ExternalProject_Add_StepDependencies(esmf build netcdf_fortran pio)
 
 ##
-## NCEPLIBS
+## bacio
 ##
-set(bacio_tag  2.4.1)
-set(g2_tag     3.5.1)
-set(g2tmpl_tag 1.13.0)
-set(ip_tag     4.3.0)
-set(sp_tag     2.5.0)
-set(w3emc_tag  2.10.0)
+ExternalProject_Add(bacio
+    URL ${downloads_prefix}/bacio.tar.gz
+    BUILD_IN_SOURCE OFF
+    LIST_SEPARATOR ,
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/bacio
+               -DCMAKE_INSTALL_LIBDIR=lib
+    LOG_DOWNLOAD ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
+)
 
-foreach(lib_name bacio g2 g2tmpl ip sp w3emc)
+##
+## g2
+##
+ExternalProject_Add(g2
+    URL ${downloads_prefix}/g2.tar.gz
+    BUILD_IN_SOURCE OFF
+    LIST_SEPARATOR ,
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/g2
+               -DCMAKE_INSTALL_LIBDIR=lib
+               -DCMAKE_PREFIX_PATH=${install_prefix}/jasper,${install_prefix}/libpng,${install_prefix}/zlib
+               -DCMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}
+               -Dbacio_ROOT=${install_prefix}/bacio
+               -DBUILD_TESTING=OFF
+               -DBUILD_WITH_W3EMC=OFF
+    LOG_DOWNLOAD ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
+)
+ExternalProject_Add_StepDependencies(g2 build jasper libpng bacio)
 
-    ExternalProject_Add(${lib_name}
-        GIT_REPOSITORY https://github.com/NOAA-EMC/NCEPLIBS-${lib_name}
-        GIT_TAG v${${lib_name}_tag}
-        GIT_SUBMODULES_RECURSE ON
-        UPDATE_COMMAND ""
-        BUILD_IN_SOURCE OFF
-        LIST_SEPARATOR ,
-        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/${lib_name}
-                   -DCMAKE_INSTALL_LIBDIR=lib
-                   -DCMAKE_PREFIX_PATH=${install_prefix}/netcdf,${install_prefix}/jasper,${install_prefix}/libpng,${install_prefix}/zlib
-                   -DCMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}
-                   -Dbacio_ROOT=${install_prefix}/bacio
-                   -Dg2_ROOT=${install_prefix}/g2
-                   -Dg2tmpl_ROOT=${install_prefix}/g2tmpl
-                   -Dip_ROOT=${install_prefix}/ip
-                   -Dsp_ROOT=${install_prefix}/sp
-                   -Dw3emc_ROOT=${install_prefix}/w3emc
-                   -DBUILD_WITH_BUFR=OFF
-                   -DBUILD_WITH_W3EMC=OFF
-        LOG_DOWNLOAD ON
-        LOG_CONFIGURE ON
-        LOG_BUILD ON
-        LOG_INSTALL ON
-    )
+##
+## g2tmpl
+##
+ExternalProject_Add(g2tmpl
+    URL ${downloads_prefix}/g2tmpl.tar.gz
+    BUILD_IN_SOURCE OFF
+    LIST_SEPARATOR ,
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/g2tmpl
+               -DCMAKE_INSTALL_LIBDIR=lib
+    LOG_DOWNLOAD ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
+)
 
-endforeach()
+##
+## sp
+##
+ExternalProject_Add(sp
+    URL ${downloads_prefix}/sp.tar.gz
+    BUILD_IN_SOURCE OFF
+    LIST_SEPARATOR ,
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/sp
+               -DCMAKE_INSTALL_LIBDIR=lib
+    LOG_DOWNLOAD ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
+)
 
-ExternalProject_Add_StepDependencies(g2     build jasper libpng)
-ExternalProject_Add_StepDependencies(ip     build sp)
-ExternalProject_Add_StepDependencies(w3emc  build bacio)
+##
+## ip
+##
+ExternalProject_Add(ip
+    URL ${downloads_prefix}/ip.tar.gz
+    BUILD_IN_SOURCE OFF
+    LIST_SEPARATOR ,
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/ip
+               -DCMAKE_INSTALL_LIBDIR=lib
+               -Dsp_ROOT=${install_prefix}/sp
+    LOG_DOWNLOAD ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
+)
+ExternalProject_Add_StepDependencies(ip build sp)
+
+##
+## w3emc
+##
+ExternalProject_Add(w3emc
+    URL ${downloads_prefix}/w3emc.tar.gz
+    BUILD_IN_SOURCE OFF
+    LIST_SEPARATOR ,
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/w3emc
+               -DCMAKE_INSTALL_LIBDIR=lib
+               -Dbacio_ROOT=${install_prefix}/bacio
+               -DBUILD_WITH_BUFR=OFF
+    LOG_DOWNLOAD ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
+)
+ExternalProject_Add_StepDependencies(w3emc build bacio)
 
 ##
 ## crtm
 ##
 ExternalProject_Add(crtm
-    DOWNLOAD_COMMAND git clone --branch v2.4.0_emc.3
-                               --depth=1
-                               "https://github.com/JCSDA/crtm"
+    URL ${downloads_prefix}/crtm.tar.gz
+    URL_HASH MD5=95a040cdfb0426448f1aab38b0c7601b
     PATCH_COMMAND bash -l -c "sed -i -e 's/-fbacktrace/-fbacktrace -ffree-line-length-none/g' libsrc/CMakeLists.txt"
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/crtm
@@ -377,7 +486,7 @@ ExternalProject_Add_StepDependencies(crtm build netcdf_fortran)
 ## ecbuild
 ##
 ExternalProject_Add(ecbuild
-    URL https://github.com/ecmwf/ecbuild/archive/refs/tags/3.7.2.tar.gz
+    URL ${downloads_prefix}/ecbuild.tar.gz
     URL_HASH MD5=7a7b4138e0c7e68abcd64e56002cbfcf
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/ecbuild
@@ -392,7 +501,7 @@ ExternalProject_Add(ecbuild
 ## esma_cmake
 ##
 ExternalProject_Add(esma_cmake
-    URL https://github.com/GEOS-ESM/ESMA_cmake/archive/refs/tags/v3.45.0.tar.gz
+    URL ${downloads_prefix}/esma_cmake.tar.gz
     URL_HASH MD5=042ed33c7f2621cd021cfcf813b2e24b
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
@@ -402,20 +511,34 @@ ExternalProject_Add(esma_cmake
 )
 
 ##
-## gftl_shared
+## gftl
 ##
-ExternalProject_Add(gftl_shared
-    GIT_REPOSITORY https://github.com/Goddard-Fortran-Ecosystem/gFTL-shared
-    GIT_TAG v1.8.0
-    GIT_SUBMODULES_RECURSE ON
-    UPDATE_COMMAND ""
+ExternalProject_Add(gftl
+    URL ${downloads_prefix}/gftl.tar.gz
+    URL_HASH MD5=e869943e27d5e39db2ffacd960ae3e77
     BUILD_IN_SOURCE OFF
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/gftl_shared -DGIT_SUBMODULE=OFF
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/gftl
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
     LOG_BUILD ON
     LOG_INSTALL ON
 )
+
+##
+## gftl_shared
+##
+ExternalProject_Add(gftl_shared
+    URL ${downloads_prefix}/gftl_shared.tar.gz
+    URL_HASH MD5=7d733037a2a2b62c4221ab924c30915c
+    BUILD_IN_SOURCE OFF
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/gftl_shared
+               -DCMAKE_PREFIX_PATH=${install_prefix}/gftl
+    LOG_DOWNLOAD ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
+)
+ExternalProject_Add_StepDependencies(gftl_shared build gftl)
 
 
 ##
@@ -445,19 +568,19 @@ endif()
 message(STATUS "Set MAPL MPI_STACK to ${MPITYPE}")
 
 ExternalProject_Add(mapl
-    URL https://github.com/GEOS-ESM/MAPL/archive/refs/tags/v2.46.3.tar.gz
+    URL ${downloads_prefix}/mapl.tar.gz
     URL_HASH MD5=8ddf81796cb51a5d48c6989fdb639b9d
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/mapl
-               -DCMAKE_CC_COMPILER=${MPI_C_COMPILER}
+               -DCMAKE_C_COMPILER=${MPI_C_COMPILER}
                -DCMAKE_Fortran_COMPILER=${MPI_Fortran_COMPILER}
                -DCMAKE_PREFIX_PATH=${install_prefix}/ecbuild
                -DCMAKE_MODULE_PATH=${install_prefix}/esma_cmake,${install_prefix}/ecbuild
                -DNetCDF_ROOT=${install_prefix}/netcdf
                -DNetCDF_Fortran_EXTRA_LIBRARIES=-L${install_prefix}/netcdf/lib,-lnetcdf,-L${install_prefix}/hdf5/lib,-lhdf5_hl,-lhdf5,-L${install_prefix}/zstd/lib,-lzstd,-L${install_prefix}/zlib/lib,-lz,-ldl,-lm
                -DHDF5_ROOT=${install_prefix}/hdf5
-               -DGFTL_ROOT=${install_prefix}/gftl_shared
+               -DGFTL_ROOT=${install_prefix}/gftl
                -DGFTL_SHARED_ROOT=${install_prefix}/gftl_shared
                -DCMAKE_BUILD_TYPE=Release
                -DBUILD_WITH_FLAP=OFF
@@ -474,13 +597,13 @@ ExternalProject_Add(mapl
     LOG_BUILD ON
     LOG_INSTALL ON
 )
-ExternalProject_Add_StepDependencies(mapl build esmf ecbuild esma_cmake gftl_shared)
+ExternalProject_Add_StepDependencies(mapl build esmf ecbuild esma_cmake gftl gftl_shared)
 
 ##
 ## scotch
 ##
 ExternalProject_Add(scotch
-    URL https://gitlab.inria.fr/scotch/scotch/-/archive/v7.0.4/scotch-v7.0.4.tar.gz
+    URL ${downloads_prefix}/scotch.tar.gz
     URL_HASH MD5=da80cae85216f666fc31c45558fee832
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
@@ -497,4 +620,5 @@ ExternalProject_Add(scotch
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
     LOG_BUILD ON
+    LOG_INSTALL ON
 )

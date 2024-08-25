@@ -93,7 +93,8 @@ echo "BUILD_PREPROC = ${BUILD_PREPROC}"
 echo "BUILD_MODEL   = ${BUILD_MODEL}"
 echo "BUILD_POST    = ${BUILD_POST}"
 
-readonly MYDIR=$(cd "$(dirname "$(readlink -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
+MYDIR=$(dirname "$(realpath "$0")")
+readonly MYDIR
 
 export OMPI_CC=${CC}
 export OMPI_CXX=${CXX}
@@ -179,15 +180,15 @@ export ESMF_ROOT=${ufslibs_install_prefix}/esmf
 export FMS_ROOT=${ufslibs_install_prefix}/fms
 
 export bacio_ROOT=${ufslibs_install_prefix}/bacio
-export crtm_ROOT=${ufslibs_install_prefix}/crtm
 export g2_ROOT=${ufslibs_install_prefix}/g2
 export g2tmpl_ROOT=${ufslibs_install_prefix}/g2tmpl
 export ip_ROOT=${ufslibs_install_prefix}/ip
 export sp_ROOT=${ufslibs_install_prefix}/sp
-export upp_ROOT=${ufslibs_install_prefix}/UPP
 export w3emc_ROOT=${ufslibs_install_prefix}/w3emc
 
-export GFTL_ROOT=${ufslibs_install_prefix}/gftl_shared
+export crtm_ROOT=${ufslibs_install_prefix}/crtm
+
+export GFTL_ROOT=${ufslibs_install_prefix}/gftl
 export GFTL_SHARED_ROOT=${ufslibs_install_prefix}/gftl_shared
 export MAPL_ROOT=${ufslibs_install_prefix}/mapl
 

@@ -1,8 +1,15 @@
 #!/bin/bash
 set -eu
 
-MYDIR=$(cd "$(dirname "$(readlink -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
+MYDIR=$(dirname "$(realpath "$0")")
+readonly MYDIR
 
-cd ${MYDIR}/src
+(
+    cd "${MYDIR}"/src
+    ./get.sh
+)
 
-./get.sh
+(
+    cd "${MYDIR}"/libs/ufslibs
+    ./fetch.sh
+)
