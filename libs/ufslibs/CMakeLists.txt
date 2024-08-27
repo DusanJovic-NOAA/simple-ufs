@@ -11,6 +11,21 @@ include(ExternalProject)
 
 set(MPI_DETERMINE_LIBRARY_VERSION true)
 find_package(MPI REQUIRED C CXX Fortran)
+message(STATUS "MPI find_package Found MPI_C_COMPILER = ${MPI_C_COMPILER}")
+message(STATUS "MPI find_package Found MPI_CXX_COMPILER = ${MPI_CXX_COMPILER}")
+message(STATUS "MPI find_package Found MPI_Fortran_COMPILER = ${MPI_Fortran_COMPILER}")
+
+# Overwrite found mpi compiler wrappers
+message(STATUS "CMAKE_VERSION = ${CMAKE_VERSION}")
+# FindMPI.cmake in CMake < 3.29.0 does not find IntelLLVM mpi wrappers. Set them explicitly
+if (CMAKE_VERSION VERSION_LESS "3.29.0" AND ${CMAKE_Fortran_COMPILER_ID} MATCHES "IntelLLVM")
+set(MPI_C_COMPILER mpiicx)
+set(MPI_CXX_COMPILER mpiicpx)
+set(MPI_Fortran_COMPILER mpiifx)
+message(STATUS "Overwritten for IntelLLVM MPI_C_COMPILER = ${MPI_C_COMPILER}")
+message(STATUS "Overwritten for IntelLLVM MPI_CXX_COMPILER = ${MPI_CXX_COMPILER}")
+message(STATUS "Overwritten for IntelLLVM MPI_Fortran_COMPILER = ${MPI_Fortran_COMPILER}")
+endif()
 
 set(install_prefix ${CMAKE_INSTALL_PREFIX})
 
@@ -248,7 +263,7 @@ ExternalProject_Add(fms
     URL ${downloads_prefix}/fms.tar.gz
     URL_HASH MD5=2725e558eaa53fa1016fe785444759ae
     BUILD_IN_SOURCE OFF
-    CMAKE_COMMAND env I_MPI_F90=ifort cmake # Temporary until ifx fixes ICE
+    # CMAKE_COMMAND env I_MPI_F90=ifort cmake # Temporary until ifx fixes ICE
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/fms
                -DCMAKE_PREFIX_PATH=${install_prefix}/netcdf
                -DCMAKE_Fortran_COMPILER=${MPI_Fortran_COMPILER}
@@ -257,7 +272,7 @@ ExternalProject_Add(fms
                -D64BIT=ON
                -DOPENMP=ON
                -DUSE_DEPRECATED_IO=ON
-    BUILD_COMMAND env I_MPI_F90=ifort make -j 8
+    # BUILD_COMMAND env I_MPI_F90=ifort make -j 8
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
     LOG_BUILD ON
