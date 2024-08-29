@@ -382,6 +382,7 @@ ExternalProject_Add_StepDependencies(esmf build netcdf_fortran pio)
 ##
 ExternalProject_Add(bacio
     URL ${downloads_prefix}/bacio.tar.gz
+    URL_HASH MD5=95bab417fbaf7c1f6f99316052189bea
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/bacio
@@ -397,6 +398,7 @@ ExternalProject_Add(bacio
 ##
 ExternalProject_Add(g2
     URL ${downloads_prefix}/g2.tar.gz
+    URL_HASH MD5=9931fb0740e66d3bfc09fb6cb842532b
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/g2
@@ -418,6 +420,7 @@ ExternalProject_Add_StepDependencies(g2 build jasper libpng bacio)
 ##
 ExternalProject_Add(g2tmpl
     URL ${downloads_prefix}/g2tmpl.tar.gz
+    URL_HASH MD5=dd40b6ff5d08f76e71475c24a81ea2a3
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/g2tmpl
@@ -433,6 +436,7 @@ ExternalProject_Add(g2tmpl
 ##
 ExternalProject_Add(sp
     URL ${downloads_prefix}/sp.tar.gz
+    URL_HASH MD5=fc50806fb552b114a9f18d57ad3747a7
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/sp
@@ -448,6 +452,7 @@ ExternalProject_Add(sp
 ##
 ExternalProject_Add(ip
     URL ${downloads_prefix}/ip.tar.gz
+    URL_HASH MD5=e19101124af68ee6a8f9c8051aa3aa6a
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/ip
@@ -465,6 +470,7 @@ ExternalProject_Add_StepDependencies(ip build sp)
 ##
 ExternalProject_Add(w3emc
     URL ${downloads_prefix}/w3emc.tar.gz
+    URL_HASH MD5=ab162725c04899b8295bd74ed184debf
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/w3emc

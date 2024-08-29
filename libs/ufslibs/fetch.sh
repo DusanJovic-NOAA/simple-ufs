@@ -70,7 +70,7 @@ download_and_check_md5sum 9931fb0740e66d3bfc09fb6cb842532b  https://github.com/N
 download_and_check_md5sum dd40b6ff5d08f76e71475c24a81ea2a3  https://github.com/NOAA-EMC/NCEPLIBS-g2tmpl/archive/refs/tags/v1.13.0.tar.gz              g2tmpl.tar.gz
 download_and_check_md5sum e19101124af68ee6a8f9c8051aa3aa6a  https://github.com/NOAA-EMC/NCEPLIBS-ip/archive/refs/tags/v4.3.0.tar.gz                   ip.tar.gz
 download_and_check_md5sum fc50806fb552b114a9f18d57ad3747a7  https://github.com/NOAA-EMC/NCEPLIBS-sp/archive/refs/tags/v2.5.0.tar.gz                   sp.tar.gz
-download_and_check_md5sum 63a4b64654e6be77eaadeba1f2252d8f  https://github.com/NOAA-EMC/NCEPLIBS-w3emc/archive/refs/tags/v2.10.0.tar.gz               w3emc.tar.gz
+download_and_check_md5sum ab162725c04899b8295bd74ed184debf  https://github.com/NOAA-EMC/NCEPLIBS-w3emc/archive/refs/tags/v2.12.0.tar.gz               w3emc.tar.gz
 
 download_and_check_md5sum 95a040cdfb0426448f1aab38b0c7601b  https://github.com/JCSDA/crtm/archive/refs/tags/v2.4.0_emc.3.tar.gz                       crtm.tar.gz
 
