@@ -58,6 +58,7 @@ download_and_check_md5sum 84acd096ab4f3300c20db862eecdf7c7  https://github.com/U
 download_and_check_md5sum 8c200fcf7d9d2761037dfd2dabe2216b  https://github.com/Unidata/netcdf-fortran/archive/v4.6.1.tar.gz                           netcdf_fortran.tar.gz
 
 download_and_check_md5sum a3c39f002a7a81882b65b7eb8c9a7d91  https://github.com/CESM-Development/CMake_Fortran_utils/archive/refs/tags/CMake_Fortran_utils_150308.tar.gz cmake_fortran_utils.tar.gz
+download_and_check_md5sum 31b94d39462b1f1f2293f735c9819bf2  https://parallel-netcdf.github.io/Release/pnetcdf-1.13.0.tar.gz                           pnetcdf.tar.gz
 download_and_check_md5sum 7f3504dfb5aab846f4a9018dda7bb8ad  https://github.com/PARALLELIO/genf90/archive/refs/tags/genf90_200608.tar.gz               genf90.tar.gz
 download_and_check_md5sum 171ee9a2b31a73108314a35b4db1dfaa  https://github.com/NCAR/ParallelIO/archive/refs/tags/pio2_5_10.tar.gz                     pio.tar.gz
 

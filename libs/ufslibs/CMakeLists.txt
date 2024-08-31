@@ -231,6 +231,25 @@ ExternalProject_Add(cmake_fortran_utils
 )
 
 ##
+## pnetcdf
+##
+ExternalProject_Add(pnetcdf
+    URL ${downloads_prefix}/pnetcdf.tar.gz
+    URL_HASH MD5=31b94d39462b1f1f2293f735c9819bf2
+    BUILD_IN_SOURCE ON
+    CONFIGURE_COMMAND env "MPICC=${MPI_C_COMPILER}"
+                      env "MPICXX=${MPI_CXX_COMPILER}"
+                      env "MPIF90=${MPI_Fortran_COMPILER}"
+                      ./configure --prefix=${install_prefix}/pnetcdf
+                                  --disable-shared
+                                  --enable-static
+    LOG_DOWNLOAD ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
+)
+
+##
 ## PIO
 ##
 ExternalProject_Add(pio
@@ -246,6 +265,7 @@ ExternalProject_Add(pio
                -DUSER_CMAKE_MODULE_PATH=${install_prefix}/cmake_fortran_utils
                -DGENF90_PATH=${install_prefix}/genf90/bin
                -DNetCDF_PATH=${install_prefix}/netcdf
+               -DPnetCDF_PATH=${install_prefix}/pnetcdf
                -DHDF5_PATH=${install_prefix}/hdf5
                -DLIBZ_PATH=${install_prefix}/zlib
     LOG_DOWNLOAD ON
@@ -253,7 +273,7 @@ ExternalProject_Add(pio
     LOG_BUILD ON
     LOG_INSTALL ON
 )
-ExternalProject_Add_StepDependencies(pio build netcdf_fortran genf90 cmake_fortran_utils)
+ExternalProject_Add_StepDependencies(pio build netcdf_fortran pnetcdf genf90 cmake_fortran_utils)
 
 ##
 ## FMS
@@ -339,17 +359,20 @@ message(STATUS "Set ESMF_COMM to ${ESMF_COMM}")
 
 list(APPEND esmf_env ESMF_COMM=${ESMF_COMM})
 list(APPEND esmf_env ESMF_BOPT=O)
-# list(APPEND esmf_env ESMF_OPTLEVEL=2)
 list(APPEND esmf_env ESMF_F90COMPILEOPTS=${FCFLAGS_esmf})
 list(APPEND esmf_env ESMF_CXXCOMPILEOPTS=${CXXFLAGS_esmf})
 list(APPEND esmf_env ESMF_MPIRUN=mpiexec)
-list(APPEND esmf_env ESMF_NETCDF_INCLUDE=${install_prefix}/netcdf/include)
-list(APPEND esmf_env ESMF_NETCDF_LIBPATH=${install_prefix}/netcdf/lib)
+
 list(APPEND esmf_env ESMF_NETCDF=split)
-list(APPEND esmf_env "ESMF_NETCDF_LIBS=-lnetcdff -lnetcdf -L${install_prefix}/hdf5/lib -lhdf5_hl -lhdf5 -L${install_prefix}/zstd/lib -lzstd -L${install_prefix}/zlib/lib -lz -ldl -lm")
+list(APPEND esmf_env ESMF_NETCDF_INCLUDE=${install_prefix}/netcdf/include)
+list(APPEND esmf_env "ESMF_NETCDF_LIBPATH=${install_prefix}/netcdf/lib ${install_prefix}/hdf5/lib ${install_prefix}/zstd/lib ${install_prefix}/zlib/lib")
+list(APPEND esmf_env "ESMF_NETCDF_LIBS=-lnetcdff -lnetcdf -lhdf5_hl -lhdf5 -lzstd -lz -ldl -lm")
+
 list(APPEND esmf_env ESMF_PIO=external)
 list(APPEND esmf_env ESMF_PIO_INCLUDE=${install_prefix}/pio/include)
-list(APPEND esmf_env ESMF_PIO_LIBPATH=${install_prefix}/pio/lib)
+list(APPEND esmf_env "ESMF_PIO_LIBPATH=${install_prefix}/pio/lib -L${install_prefix}/pnetcdf/lib")
+list(APPEND esmf_env "ESMF_PIO_LIBS=-lpioc -lpnetcdf")
+
 list(APPEND esmf_env ESMF_SHARED_LIB_BUILD=OFF)
 list(APPEND esmf_env ESMF_INSTALL_PREFIX=${install_prefix}/esmf)
 list(APPEND esmf_env ESMF_INSTALL_HEADERDIR=include)
