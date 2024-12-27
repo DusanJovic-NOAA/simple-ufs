@@ -278,30 +278,9 @@ ExternalProject_Add_StepDependencies(pio build netcdf_fortran pnetcdf genf90 cma
 ##
 ## FMS
 ##
-if (${CMAKE_Fortran_COMPILER_ID} MATCHES "IntelLLVM")
 ExternalProject_Add(fms
     URL ${downloads_prefix}/fms.tar.gz
-    URL_HASH MD5=2725e558eaa53fa1016fe785444759ae
-    BUILD_IN_SOURCE OFF
-    # CMAKE_COMMAND env I_MPI_F90=ifort cmake # Temporary until ifx fixes ICE
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/fms
-               -DCMAKE_PREFIX_PATH=${install_prefix}/netcdf
-               -DCMAKE_Fortran_COMPILER=${MPI_Fortran_COMPILER}
-               -DGFS_PHYS=ON
-               -DCONSTANTS=GFS
-               -D64BIT=ON
-               -DOPENMP=ON
-               -DUSE_DEPRECATED_IO=ON
-    # BUILD_COMMAND env I_MPI_F90=ifort make -j 8
-    LOG_DOWNLOAD ON
-    LOG_CONFIGURE ON
-    LOG_BUILD ON
-    LOG_INSTALL ON
-)
-else()
-ExternalProject_Add(fms
-    URL ${downloads_prefix}/fms.tar.gz
-    URL_HASH MD5=2725e558eaa53fa1016fe785444759ae
+    URL_HASH MD5=82a26e62825d4439b58535d9b29da7a4
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/fms
                -DCMAKE_PREFIX_PATH=${install_prefix}/netcdf
@@ -316,7 +295,6 @@ ExternalProject_Add(fms
     LOG_BUILD ON
     LOG_INSTALL ON
 )
-endif()
 ExternalProject_Add_StepDependencies(fms build netcdf_fortran)
 
 ##

@@ -62,7 +62,7 @@ download_and_check_md5sum 31b94d39462b1f1f2293f735c9819bf2  https://parallel-net
 download_and_check_md5sum 7f3504dfb5aab846f4a9018dda7bb8ad  https://github.com/PARALLELIO/genf90/archive/refs/tags/genf90_200608.tar.gz               genf90.tar.gz
 download_and_check_md5sum 171ee9a2b31a73108314a35b4db1dfaa  https://github.com/NCAR/ParallelIO/archive/refs/tags/pio2_5_10.tar.gz                     pio.tar.gz
 
-download_and_check_md5sum 2725e558eaa53fa1016fe785444759ae  https://github.com/NOAA-GFDL/FMS/archive/refs/tags/2023.04.tar.gz                         fms.tar.gz
+download_and_check_md5sum 82a26e62825d4439b58535d9b29da7a4  https://github.com/NOAA-GFDL/FMS/archive/refs/tags/2024.01.tar.gz                         fms.tar.gz
 download_and_check_md5sum ddf8e428e5d9cc3b17a6ed8408aade41  https://github.com/esmf-org/esmf/archive/refs/tags/v8.6.1.tar.gz                          esmf.tar.gz
 
 
