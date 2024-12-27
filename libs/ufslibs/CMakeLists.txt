@@ -524,7 +524,7 @@ ExternalProject_Add(ecbuild
 ##
 ExternalProject_Add(esma_cmake
     URL ${downloads_prefix}/esma_cmake.tar.gz
-    URL_HASH MD5=042ed33c7f2621cd021cfcf813b2e24b
+    URL_HASH MD5=3921ba13701606cc0e55dc046508f66d
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory <SOURCE_DIR> ${install_prefix}/esma_cmake
@@ -537,7 +537,7 @@ ExternalProject_Add(esma_cmake
 ##
 ExternalProject_Add(gftl
     URL ${downloads_prefix}/gftl.tar.gz
-    URL_HASH MD5=e869943e27d5e39db2ffacd960ae3e77
+    URL_HASH MD5=2f29353658bc8a40cdd453b7870c06ab
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/gftl
     LOG_DOWNLOAD ON
@@ -551,7 +551,7 @@ ExternalProject_Add(gftl
 ##
 ExternalProject_Add(gftl_shared
     URL ${downloads_prefix}/gftl_shared.tar.gz
-    URL_HASH MD5=7d733037a2a2b62c4221ab924c30915c
+    URL_HASH MD5=4f9413fa40962ea17b37706296c0263e
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/gftl_shared
                -DCMAKE_PREFIX_PATH=${install_prefix}/gftl
@@ -561,6 +561,24 @@ ExternalProject_Add(gftl_shared
     LOG_INSTALL ON
 )
 ExternalProject_Add_StepDependencies(gftl_shared build gftl)
+
+
+##
+## udunits
+##
+ExternalProject_Add(udunits
+    URL ${downloads_prefix}/udunits.tar.gz
+    URL_HASH MD5=58259d94f766c13b5b0cf1aed92ebbe3
+    BUILD_IN_SOURCE ON
+    CONFIGURE_COMMAND env "CFLAGS=-fPIC"
+                      ./configure --prefix=${install_prefix}/udunits
+                                  --libdir=${install_prefix}/udunits/lib
+                                  --disable-shared
+    LOG_DOWNLOAD ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
+)
 
 
 ##
@@ -591,13 +609,13 @@ message(STATUS "Set MAPL MPI_STACK to ${MPITYPE}")
 
 ExternalProject_Add(mapl
     URL ${downloads_prefix}/mapl.tar.gz
-    URL_HASH MD5=8ddf81796cb51a5d48c6989fdb639b9d
+    URL_HASH MD5=217e13f18baa51b8063288086b3bf989
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/mapl
                -DCMAKE_C_COMPILER=${MPI_C_COMPILER}
                -DCMAKE_Fortran_COMPILER=${MPI_Fortran_COMPILER}
-               -DCMAKE_PREFIX_PATH=${install_prefix}/ecbuild
+               -DCMAKE_PREFIX_PATH=${install_prefix}/ecbuild,${install_prefix}/udunits
                -DCMAKE_MODULE_PATH=${install_prefix}/esma_cmake,${install_prefix}/ecbuild
                -DNetCDF_ROOT=${install_prefix}/netcdf
                -DNetCDF_Fortran_EXTRA_LIBRARIES=-L${install_prefix}/netcdf/lib,-lnetcdf,-L${install_prefix}/hdf5/lib,-lhdf5_hl,-lhdf5,-L${install_prefix}/zstd/lib,-lzstd,-L${install_prefix}/zlib/lib,-lz,-ldl,-lm
@@ -619,7 +637,7 @@ ExternalProject_Add(mapl
     LOG_BUILD ON
     LOG_INSTALL ON
 )
-ExternalProject_Add_StepDependencies(mapl build esmf ecbuild esma_cmake gftl gftl_shared)
+ExternalProject_Add_StepDependencies(mapl build esmf ecbuild esma_cmake gftl gftl_shared udunits)
 
 ##
 ## scotch

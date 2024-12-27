@@ -76,8 +76,10 @@ download_and_check_md5sum ab162725c04899b8295bd74ed184debf  https://github.com/N
 download_and_check_md5sum 95a040cdfb0426448f1aab38b0c7601b  https://github.com/JCSDA/crtm/archive/refs/tags/v2.4.0_emc.3.tar.gz                       crtm.tar.gz
 
 download_and_check_md5sum 7a7b4138e0c7e68abcd64e56002cbfcf  https://github.com/ecmwf/ecbuild/archive/refs/tags/3.7.2.tar.gz                           ecbuild.tar.gz
-download_and_check_md5sum 042ed33c7f2621cd021cfcf813b2e24b  https://github.com/GEOS-ESM/ESMA_cmake/archive/refs/tags/v3.45.0.tar.gz                   esma_cmake.tar.gz
-download_and_check_md5sum e869943e27d5e39db2ffacd960ae3e77  https://github.com/Goddard-Fortran-Ecosystem/gFTL/archive/refs/tags/v1.11.0.tar.gz        gftl.tar.gz
-download_and_check_md5sum 7d733037a2a2b62c4221ab924c30915c  https://github.com/Goddard-Fortran-Ecosystem/gFTL-shared/archive/refs/tags/v1.8.0.tar.gz  gftl_shared.tar.gz
-download_and_check_md5sum 8ddf81796cb51a5d48c6989fdb639b9d  https://github.com/GEOS-ESM/MAPL/archive/refs/tags/v2.46.3.tar.gz                         mapl.tar.gz
+download_and_check_md5sum 3921ba13701606cc0e55dc046508f66d  https://github.com/GEOS-ESM/ESMA_cmake/archive/refs/tags/v3.55.0.tar.gz                   esma_cmake.tar.gz
+download_and_check_md5sum 2f29353658bc8a40cdd453b7870c06ab  https://github.com/Goddard-Fortran-Ecosystem/gFTL/archive/refs/tags/v1.14.0.tar.gz        gftl.tar.gz
+download_and_check_md5sum 4f9413fa40962ea17b37706296c0263e  https://github.com/Goddard-Fortran-Ecosystem/gFTL-shared/archive/refs/tags/v1.9.0.tar.gz  gftl_shared.tar.gz
+download_and_check_md5sum 58259d94f766c13b5b0cf1aed92ebbe3  https://downloads.unidata.ucar.edu/udunits/2.2.28/udunits-2.2.28.tar.gz                   udunits.tar.gz
+download_and_check_md5sum 217e13f18baa51b8063288086b3bf989  https://github.com/GEOS-ESM/MAPL/archive/refs/tags/v2.51.2.tar.gz                         mapl.tar.gz
+
 download_and_check_md5sum da80cae85216f666fc31c45558fee832  https://gitlab.inria.fr/scotch/scotch/-/archive/v7.0.4/scotch-v7.0.4.tar.gz               scotch.tar.gz
