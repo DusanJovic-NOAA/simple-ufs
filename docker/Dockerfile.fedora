@@ -31,20 +31,6 @@ WORKDIR /home/builder/simple-ufs
 
 USER builder
 
-RUN ./get.sh
-
-RUN ./build.sh gnu -ufslibs
-
-RUN ./build.sh gnu -preproc -model -post && rm -rf libs/ufslibs/build
-
-RUN cd run && \
- sed -i -e 's/NHOURS_FCST=24/NHOURS_FCST=3/g' configuration.sh && \
- sed -i -e 's/NFHMAX_HF=12/NFHMAX_HF=3/g' configuration.sh && \
- ./fetch_fix_data.sh && \
- ./fetch_input_data.sh && \
- ./run.sh && \
- ls -l preproc_run && \
- ls -l model_run && \
- ls -l post_run
+RUN ./get_build_run.sh
 
 CMD ["/bin/bash"]

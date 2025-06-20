@@ -71,6 +71,24 @@ ExternalProject_Add(zlib
 )
 
 ##
+## lz4
+##
+ExternalProject_Add(lz4
+    URL ${downloads_prefix}/lz4.tar.gz
+    URL_HASH MD5=dead9f5f1966d9ae56e1e32761e4e675
+    SOURCE_SUBDIR build/cmake
+    CMAKE_ARGS -LH
+               -DCMAKE_INSTALL_PREFIX=${install_prefix}/lz4
+               -DCMAKE_INSTALL_LIBDIR=lib
+               -DBUILD_STATIC_LIBS=ON
+               -DBUILD_SHARED_LIBS=OFF
+    LOG_DOWNLOAD ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
+)
+
+##
 ## jasper
 ##
 ExternalProject_Add(jasper
@@ -116,9 +134,8 @@ ExternalProject_Add_StepDependencies(libpng build zlib)
 ##
 ExternalProject_Add(hdf5
     URL ${downloads_prefix}/hdf5.tar.gz
-    URL_HASH MD5=f1eaf87cc338475deb4aa48fb17cb8f8
-    PATCH_COMMAND patch -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/patches/hdf5-1.14.4.2_add_zstd.patch
-          COMMAND bash -l -c "sed -i -e 's/find_package (ZLIB.*/find_package (ZLIB MODULE)/g' CMakeFilters.cmake"
+    URL_HASH MD5=73b513b9c40a8ca2913fcb38570ecdbd
+    PATCH_COMMAND patch -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/patches/hdf5-1.14.6_add_zstd_lz4.patch
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/hdf5
                -DCMAKE_PREFIX_PATH=${install_prefix}
@@ -131,9 +148,13 @@ ExternalProject_Add(hdf5
                -DHDF5_BUILD_EXAMPLES=OFF
                -DHDF5_ENABLE_PARALLEL=ON
                -DHDF5_ENABLE_Z_LIB_SUPPORT=ON
+               -DHDF5_USE_ZLIB_STATIC=ON
                -DHDF5_ENABLE_ZSTD_SUPPORT=ON
+               -DHDF5_ENABLE_SZIP_SUPPORT=OFF
+               -DHDF5_ENABLE_LZ4_SUPPORT=ON
                -DZLIB_ROOT=${install_prefix}/zlib
                -Dzstd_ROOT=${install_prefix}/zstd/lib/cmake
+               -Dlz4_ROOT=${install_prefix}/lz4/lib/cmake
                -DHDF5_INSTALL_CMAKE_DIR=lib/cmake
     LOG_DOWNLOAD ON
     LOG_PATCH ON
@@ -156,12 +177,15 @@ ExternalProject_Add(netcdf
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND env "CC=${MPI_C_COMPILER}"
                       env "CPPFLAGS=-I${install_prefix}/hdf5/include"
-                      env "LDFLAGS=-L${install_prefix}/hdf5/lib -L${install_prefix}/zstd/lib -L${install_prefix}/zlib/lib"
-                      env "LIBS=-lhdf5_hl -lhdf5 -lzstd -lz -lm"
+                      env "LDFLAGS=-L${install_prefix}/hdf5/lib -L${install_prefix}/zstd/lib -L${install_prefix}/lz4/lib -L${install_prefix}/zlib/lib"
+                      env "LIBS=-lhdf5_hl -lhdf5 -lzstd -llz4 -lz -lm"
                       ./configure --prefix=${install_prefix}/netcdf
                                   --libdir=${install_prefix}/netcdf/lib
                                   --enable-cdf5
                                   --disable-dap
+                                  --disable-nczarr
+                                  --disable-nczarr-s3
+                                  --disable-s3
                                   ${_disable_libxml2}
                                   --disable-byterange
                                   --enable-netcdf-4
@@ -188,8 +212,8 @@ ExternalProject_Add(netcdf_fortran
     CONFIGURE_COMMAND env "CC=${MPI_C_COMPILER}"
                       env "FC=${MPI_Fortran_COMPILER}"
                       env "CPPFLAGS=-I${install_prefix}/netcdf/include"
-                      env "LDFLAGS=-L${install_prefix}/hdf5/lib -L${install_prefix}/netcdf/lib -L${install_prefix}/zstd/lib -L${install_prefix}/zlib/lib"
-                      env "LIBS=-lnetcdf -lhdf5_hl -lhdf5 -lzstd -lz -lm"
+                      env "LDFLAGS=-L${install_prefix}/hdf5/lib -L${install_prefix}/netcdf/lib -L${install_prefix}/zstd/lib -L${install_prefix}/lz4/lib -L${install_prefix}/zlib/lib"
+                      env "LIBS=-lnetcdf -lhdf5_hl -lhdf5 -lzstd -llz4 -lz -lm"
                       env "HDF5_PLUGIN_PATH=${install_prefix}/hdf5/lib/plugin"
                       ./configure --prefix=${install_prefix}/netcdf
                                   --libdir=${install_prefix}/netcdf/lib
@@ -237,6 +261,8 @@ ExternalProject_Add(pnetcdf
     URL ${downloads_prefix}/pnetcdf.tar.gz
     URL_HASH MD5=31b94d39462b1f1f2293f735c9819bf2
     BUILD_IN_SOURCE ON
+    PATCH_COMMAND bash -l -c "sed -i -e 's/1.16.5/1.16.2/g' configure.ac"
+          COMMAND autoreconf -i
     CONFIGURE_COMMAND env "MPICC=${MPI_C_COMPILER}"
                       env "MPICXX=${MPI_CXX_COMPILER}"
                       env "MPIF90=${MPI_Fortran_COMPILER}"
@@ -254,7 +280,7 @@ ExternalProject_Add(pnetcdf
 ##
 ExternalProject_Add(pio
     URL ${downloads_prefix}/pio.tar.gz
-    URL_HASH MD5=171ee9a2b31a73108314a35b4db1dfaa
+    URL_HASH MD5=b16e88125fbb7e5bd06e8f392f91ae26
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/pio
                -DCMAKE_C_COMPILER=${MPI_C_COMPILER}
@@ -343,8 +369,8 @@ list(APPEND esmf_env ESMF_MPIRUN=mpiexec)
 
 list(APPEND esmf_env ESMF_NETCDF=split)
 list(APPEND esmf_env ESMF_NETCDF_INCLUDE=${install_prefix}/netcdf/include)
-list(APPEND esmf_env "ESMF_NETCDF_LIBPATH=${install_prefix}/netcdf/lib ${install_prefix}/hdf5/lib ${install_prefix}/zstd/lib ${install_prefix}/zlib/lib")
-list(APPEND esmf_env "ESMF_NETCDF_LIBS=-lnetcdff -lnetcdf -lhdf5_hl -lhdf5 -lzstd -lz -ldl -lm")
+list(APPEND esmf_env "ESMF_NETCDF_LIBPATH=${install_prefix}/netcdf/lib ${install_prefix}/hdf5/lib ${install_prefix}/zstd/lib ${install_prefix}/lz4/lib ${install_prefix}/zlib/lib")
+list(APPEND esmf_env "ESMF_NETCDF_LIBS=-lnetcdff -lnetcdf -lhdf5_hl -lhdf5 -lzstd -llz4 -lz -ldl -lm")
 
 list(APPEND esmf_env ESMF_PIO=external)
 list(APPEND esmf_env ESMF_PIO_INCLUDE=${install_prefix}/pio/include)
@@ -360,7 +386,7 @@ list(APPEND esmf_env ESMF_INSTALL_BINDIR=bin)
 
 ExternalProject_Add(esmf
     URL ${downloads_prefix}/esmf.tar.gz
-    URL_HASH MD5=ddf8e428e5d9cc3b17a6ed8408aade41
+    URL_HASH MD5=6308b2a13d151475a4f2ecb3eb6cbebe
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND ""
     BUILD_COMMAND   env ${esmf_env} make -j 8
@@ -570,6 +596,7 @@ ExternalProject_Add(udunits
     URL ${downloads_prefix}/udunits.tar.gz
     URL_HASH MD5=58259d94f766c13b5b0cf1aed92ebbe3
     BUILD_IN_SOURCE ON
+    PATCH_COMMAND autoreconf -i
     CONFIGURE_COMMAND env "CFLAGS=-fPIC"
                       ./configure --prefix=${install_prefix}/udunits
                                   --libdir=${install_prefix}/udunits/lib
@@ -609,7 +636,7 @@ message(STATUS "Set MAPL MPI_STACK to ${MPITYPE}")
 
 ExternalProject_Add(mapl
     URL ${downloads_prefix}/mapl.tar.gz
-    URL_HASH MD5=217e13f18baa51b8063288086b3bf989
+    URL_HASH MD5=2277e5fc3128cda361403c5f202bf9cd
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/mapl
@@ -618,7 +645,7 @@ ExternalProject_Add(mapl
                -DCMAKE_PREFIX_PATH=${install_prefix}/ecbuild,${install_prefix}/udunits
                -DCMAKE_MODULE_PATH=${install_prefix}/esma_cmake,${install_prefix}/ecbuild
                -DNetCDF_ROOT=${install_prefix}/netcdf
-               -DNetCDF_Fortran_EXTRA_LIBRARIES=-L${install_prefix}/netcdf/lib,-lnetcdf,-L${install_prefix}/hdf5/lib,-lhdf5_hl,-lhdf5,-L${install_prefix}/zstd/lib,-lzstd,-L${install_prefix}/zlib/lib,-lz,-ldl,-lm
+               -DNetCDF_Fortran_EXTRA_LIBRARIES=-L${install_prefix}/netcdf/lib,-lnetcdf,-L${install_prefix}/hdf5/lib,-lhdf5_hl,-lhdf5,-L${install_prefix}/zstd/lib,-lzstd,-L${install_prefix}/lz4/lib,-llz4,-L${install_prefix}/zlib/lib,-lz,-ldl,-lm
                -DHDF5_ROOT=${install_prefix}/hdf5
                -DGFTL_ROOT=${install_prefix}/gftl
                -DGFTL_SHARED_ROOT=${install_prefix}/gftl_shared
@@ -644,7 +671,7 @@ ExternalProject_Add_StepDependencies(mapl build esmf ecbuild esma_cmake gftl gft
 ##
 ExternalProject_Add(scotch
     URL ${downloads_prefix}/scotch.tar.gz
-    URL_HASH MD5=da80cae85216f666fc31c45558fee832
+    URL_HASH MD5=d94a92c7206139d2b9dafab64d9c75bf
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/scotch

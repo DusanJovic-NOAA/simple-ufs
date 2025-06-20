@@ -50,20 +50,21 @@ cd downloads || exit
 
 download_and_check_md5sum 63251602329a106220e0a5ad26ba656f  https://github.com/facebook/zstd/releases/download/v1.5.5/zstd-1.5.5.tar.gz               zstd.tar.gz
 download_and_check_md5sum 9c7d356c5acaa563555490676ca14d23  https://github.com/madler/zlib/archive/refs/tags/v1.2.13.tar.gz                           zlib.tar.gz
+download_and_check_md5sum dead9f5f1966d9ae56e1e32761e4e675  https://github.com/lz4/lz4/releases/download/v1.10.0/lz4-1.10.0.tar.gz                    lz4.tar.gz
 download_and_check_md5sum 2c6017d275146f8792fa448227a7c373  https://github.com/jasper-software/jasper/archive/refs/tags/version-2.0.32.tar.gz         jasper.tar.gz
 download_and_check_md5sum 564aa9f6c678dbb016b07ecfae8b7245  https://github.com/glennrp/libpng/archive/refs/tags/v1.6.37.tar.gz                        libpng.tar.gz
 
-download_and_check_md5sum f1eaf87cc338475deb4aa48fb17cb8f8  https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5_1.14.4.2.tar.gz                   hdf5.tar.gz
+download_and_check_md5sum 73b513b9c40a8ca2913fcb38570ecdbd  https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5_1.14.6.tar.gz                     hdf5.tar.gz
 download_and_check_md5sum 84acd096ab4f3300c20db862eecdf7c7  https://github.com/Unidata/netcdf-c/archive/v4.9.2.tar.gz                                 netcdf.tar.gz
 download_and_check_md5sum 8c200fcf7d9d2761037dfd2dabe2216b  https://github.com/Unidata/netcdf-fortran/archive/v4.6.1.tar.gz                           netcdf_fortran.tar.gz
 
 download_and_check_md5sum a3c39f002a7a81882b65b7eb8c9a7d91  https://github.com/CESM-Development/CMake_Fortran_utils/archive/refs/tags/CMake_Fortran_utils_150308.tar.gz cmake_fortran_utils.tar.gz
 download_and_check_md5sum 31b94d39462b1f1f2293f735c9819bf2  https://parallel-netcdf.github.io/Release/pnetcdf-1.13.0.tar.gz                           pnetcdf.tar.gz
 download_and_check_md5sum 7f3504dfb5aab846f4a9018dda7bb8ad  https://github.com/PARALLELIO/genf90/archive/refs/tags/genf90_200608.tar.gz               genf90.tar.gz
-download_and_check_md5sum 171ee9a2b31a73108314a35b4db1dfaa  https://github.com/NCAR/ParallelIO/archive/refs/tags/pio2_5_10.tar.gz                     pio.tar.gz
+download_and_check_md5sum b16e88125fbb7e5bd06e8f392f91ae26  https://github.com/NCAR/ParallelIO/archive/refs/tags/pio2_6_2.tar.gz                      pio.tar.gz
 
 download_and_check_md5sum 82a26e62825d4439b58535d9b29da7a4  https://github.com/NOAA-GFDL/FMS/archive/refs/tags/2024.01.tar.gz                         fms.tar.gz
-download_and_check_md5sum ddf8e428e5d9cc3b17a6ed8408aade41  https://github.com/esmf-org/esmf/archive/refs/tags/v8.6.1.tar.gz                          esmf.tar.gz
+download_and_check_md5sum 6308b2a13d151475a4f2ecb3eb6cbebe  https://github.com/esmf-org/esmf/archive/refs/tags/v8.8.0.tar.gz                          esmf.tar.gz
 
 
 download_and_check_md5sum 95bab417fbaf7c1f6f99316052189bea  https://github.com/NOAA-EMC/NCEPLIBS-bacio/archive/refs/tags/v2.4.1.tar.gz                bacio.tar.gz
@@ -80,6 +81,6 @@ download_and_check_md5sum 3921ba13701606cc0e55dc046508f66d  https://github.com/G
 download_and_check_md5sum 2f29353658bc8a40cdd453b7870c06ab  https://github.com/Goddard-Fortran-Ecosystem/gFTL/archive/refs/tags/v1.14.0.tar.gz        gftl.tar.gz
 download_and_check_md5sum 4f9413fa40962ea17b37706296c0263e  https://github.com/Goddard-Fortran-Ecosystem/gFTL-shared/archive/refs/tags/v1.9.0.tar.gz  gftl_shared.tar.gz
 download_and_check_md5sum 58259d94f766c13b5b0cf1aed92ebbe3  https://downloads.unidata.ucar.edu/udunits/2.2.28/udunits-2.2.28.tar.gz                   udunits.tar.gz
-download_and_check_md5sum 217e13f18baa51b8063288086b3bf989  https://github.com/GEOS-ESM/MAPL/archive/refs/tags/v2.51.2.tar.gz                         mapl.tar.gz
+download_and_check_md5sum 2277e5fc3128cda361403c5f202bf9cd  https://github.com/GEOS-ESM/MAPL/archive/refs/tags/v2.53.4.tar.gz                         mapl.tar.gz
 
-download_and_check_md5sum da80cae85216f666fc31c45558fee832  https://gitlab.inria.fr/scotch/scotch/-/archive/v7.0.4/scotch-v7.0.4.tar.gz               scotch.tar.gz
+download_and_check_md5sum d94a92c7206139d2b9dafab64d9c75bf  https://gitlab.inria.fr/scotch/scotch/-/archive/v7.0.7/scotch-v7.0.7.tar.gz               scotch.tar.gz

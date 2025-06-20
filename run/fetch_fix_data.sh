@@ -21,6 +21,7 @@ cd ${FIX_DATA}
     # C192  t382.768.384
     # C384  t766.1536.768
     # C768  t1534.3072.1536
+    # C1152 t1534.3072.1536
 
     case $res in
       48)
@@ -48,6 +49,11 @@ cd ${FIX_DATA}
         LONB=3072
         LATB=1536
         ;;
+      1152)
+        JCAP=1534
+        LONB=3072
+        LATB=1536
+        ;;
       *)
         echo "Unsuppored resolution ${res}"
         exit 1
@@ -56,6 +62,7 @@ cd ${FIX_DATA}
 
     FIX_AM_FILES="
     CFSR.SEAICE.1982.2012.monthly.clim.grb
+    IMS-NIC.blended.ice.monthly.clim.grb
     RTGSST.1982.2012.monthly.clim.grb
     co2monthlycyc.txt
     global_albedo4.1x1.grb
@@ -67,6 +74,7 @@ cd ${FIX_DATA}
     global_hyblev.l28.txt
     global_hyblev.l42.txt
     global_hyblev.l65.txt
+    global_hyblev.l128.txt
     global_maxice.2x2.grb
     global_sfc_emissivity_idx.txt
     global_shdmax.0.144x0.144.grb
@@ -120,6 +128,7 @@ if [[ $gtype == uniform ]]; then
     C${res}.mx${ocn}.maximum_snow_albedo.tile[1-6].nc
     C${res}.mx${ocn}.slope_type.tile[1-6].nc
     C${res}.mx${ocn}.snowfree_albedo.tile[1-6].nc
+    C${res}.mx${ocn}.soil_color.tile[1-6].nc
     C${res}.mx${ocn}.soil_type.tile[1-6].nc
     C${res}.mx${ocn}.substrate_temperature.tile[1-6].nc
     C${res}.mx${ocn}.vegetation_greenness.tile[1-6].nc

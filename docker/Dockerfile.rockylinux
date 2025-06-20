@@ -1,12 +1,15 @@
 FROM rockylinux:9
 
 RUN dnf -y install 'dnf-command(config-manager)'
+RUN dnf config-manager --set-enabled crb
 RUN dnf -y update
-RUN dnf clean all
 RUN dnf -y install \
+           autoconf271 \
            bison \
            cmake \
            diffutils \
+           expat-devel \
+           file \
            flex \
            g++ \
            gfortran \
@@ -17,10 +20,11 @@ RUN dnf -y install \
            m4 \
            make \
            openmpi-devel \
+           texinfo \
            patch \
            which
 
-ENV PATH=/usr/lib64/openmpi/bin:$PATH
+ENV PATH=/usr/lib64/openmpi/bin:/opt/rh/autoconf271/bin:$PATH
 
 RUN useradd -ms /bin/bash builder
 WORKDIR /home/builder
@@ -31,20 +35,6 @@ WORKDIR /home/builder/simple-ufs
 
 USER builder
 
-RUN ./get.sh
-
-RUN ./build.sh gnu -ufslibs
-
-RUN ./build.sh gnu -preproc -model -post && rm -rf libs/ufslibs/build
-
-RUN cd run && \
- sed -i -e 's/NHOURS_FCST=24/NHOURS_FCST=3/g' configuration.sh && \
- sed -i -e 's/NFHMAX_HF=12/NFHMAX_HF=3/g' configuration.sh && \
- ./fetch_fix_data.sh && \
- ./fetch_input_data.sh && \
- ./run.sh && \
- ls -l preproc_run && \
- ls -l model_run && \
- ls -l post_run
+RUN ./get_build_run.sh
 
 CMD ["/bin/bash"]

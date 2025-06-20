@@ -145,6 +145,10 @@ elif [[ $gtype == regional* ]]; then
    cp ${MYDIR}/regional_conf/* .
 fi
 
+cp ${sufs}/src/model/tests/parm/fd_ufs.yaml .
+cp ${sufs}/src/model/tests/parm/noahmptable.tbl .
+cp ${sufs}/src/model/FV3/upp/parm/params_grib2_tbl_new .
+
 eparse model_configure.in > model_configure
 eparse input.nml.in > input.nml
 eparse diag_table.in > diag_table

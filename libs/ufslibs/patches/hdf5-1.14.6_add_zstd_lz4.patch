@@ -1,0 +1,455 @@
+diff -ruN hdf5-hdf5_1.14.6.orig/CMakeFilters.cmake hdf5-hdf5_1.14.6/CMakeFilters.cmake
+--- hdf5-hdf5_1.14.6.orig/CMakeFilters.cmake	2025-02-04 17:01:45.000000000 -0500
++++ hdf5-hdf5_1.14.6/CMakeFilters.cmake	2025-06-17 20:05:34.635817571 -0400
+@@ -221,3 +221,46 @@
+     message (WARNING "SZIP support in HDF5 was enabled but not found")
+   endif ()
+ endif ()
++
++#-----------------------------------------------------------------------------
++# Option for Zstd support
++#-----------------------------------------------------------------------------
++option (HDF5_ENABLE_ZSTD_SUPPORT "Use Zstd Filter" OFF)
++if (HDF5_ENABLE_ZSTD_SUPPORT)
++  set(zstd_FOUND FALSE)
++  find_package (zstd CONFIG REQUIRED)
++  if (zstd_FOUND)
++    set (LINK_COMP_LIBS ${LINK_COMP_LIBS} zstd::libzstd_static)
++    set (H5_HAVE_FILTER_ZSTD 1)
++    set (H5_HAVE_ZSTD_H 1)
++    set (H5_HAVE_LIBZSTD 1)
++    message (STATUS "Filter ZSTD is ON")
++    if (H5_HAVE_FILTER_ZSTD)
++      set (EXTERNAL_FILTERS "${EXTERNAL_FILTERS} DECODE")
++    endif ()
++  else ()
++    message (WARNING "ZSTD support in HDF5 was enabled but not found")
++  endif ()
++endif ()
++
++
++#-----------------------------------------------------------------------------
++# Option for LZ4 support
++#-----------------------------------------------------------------------------
++option (HDF5_ENABLE_LZ4_SUPPORT "Use LZ4 Filter" OFF)
++if (HDF5_ENABLE_LZ4_SUPPORT)
++  set(lz4_FOUND FALSE)
++  find_package (lz4 CONFIG REQUIRED)
++  if (lz4_FOUND)
++    set (LINK_COMP_LIBS ${LINK_COMP_LIBS} LZ4::lz4_static)
++    set (H5_HAVE_FILTER_LZ4 1)
++    set (H5_HAVE_LZ4_H 1)
++    set (H5_HAVE_LIBLZ4 1)
++    message (STATUS "Filter LZ4 is ON")
++    if (H5_HAVE_FILTER_LZ4)
++      set (EXTERNAL_FILTERS "${EXTERNAL_FILTERS} DECODE")
++    endif ()
++  else ()
++    message (WARNING "LZ4 support in HDF5 was enabled but not found")
++  endif ()
++endif ()
+diff -ruN hdf5-hdf5_1.14.6.orig/config/cmake/H5pubconf.h.in hdf5-hdf5_1.14.6/config/cmake/H5pubconf.h.in
+--- hdf5-hdf5_1.14.6.orig/config/cmake/H5pubconf.h.in	2025-02-04 17:01:45.000000000 -0500
++++ hdf5-hdf5_1.14.6/config/cmake/H5pubconf.h.in	2025-06-17 12:49:12.506473010 -0400
+@@ -143,6 +143,12 @@
+ /* Define if support for szip filter is enabled */
+ #cmakedefine H5_HAVE_FILTER_SZIP @H5_HAVE_FILTER_SZIP@
+ 
++/* Define if support for zstd filter is enabled */
++#cmakedefine H5_HAVE_FILTER_ZSTD @H5_HAVE_FILTER_ZSTD@
++
++/* Define if support for lz4 filter is enabled */
++#cmakedefine H5_HAVE_FILTER_LZ4 @H5_HAVE_FILTER_LZ4@
++
+ /* Determine if _Float16 is available */
+ #cmakedefine H5_HAVE__FLOAT16 @H5_HAVE__FLOAT16@
+ 
+@@ -325,6 +331,12 @@
+ /* Define to 1 if the compiler supports the __builtin_expect() extension */
+ #cmakedefine H5_HAVE_BUILTIN_EXPECT @H5_HAVE_BUILTIN_EXPECT@
+ 
++/* Define to 1 if you have the <zstd.h> header file. */
++#cmakedefine H5_HAVE_ZSTD_H @H5_HAVE_ZSTD_H@
++
++/* Define to 1 if you have the <lz4.h> header file. */
++#cmakedefine H5_HAVE_LZ4_H @H5_HAVE_LZ4_H@
++
+ #if defined(_WIN32) && !defined(H5_BUILT_AS_DYNAMIC_LIB)
+ /* Not supported on WIN32 platforms with static linking */
+ /* #undef H5_HAVE_THREADSAFE */
+diff -ruN hdf5-hdf5_1.14.6.orig/src/CMakeLists.txt hdf5-hdf5_1.14.6/src/CMakeLists.txt
+--- hdf5-hdf5_1.14.6.orig/src/CMakeLists.txt	2025-02-04 17:01:45.000000000 -0500
++++ hdf5-hdf5_1.14.6/src/CMakeLists.txt	2025-06-17 12:49:12.506473010 -0400
+@@ -708,6 +708,8 @@
+     ${HDF5_SRC_DIR}/H5Zscaleoffset.c
+     ${HDF5_SRC_DIR}/H5Zshuffle.c
+     ${HDF5_SRC_DIR}/H5Zszip.c
++    ${HDF5_SRC_DIR}/H5Zzstd.c
++    ${HDF5_SRC_DIR}/H5Zlz4.c
+     ${HDF5_SRC_DIR}/H5Ztrans.c
+ )
+ if (H5_ZLIB_HEADER)
+diff -ruN hdf5-hdf5_1.14.6.orig/src/H5Z.c hdf5-hdf5_1.14.6/src/H5Z.c
+--- hdf5-hdf5_1.14.6.orig/src/H5Z.c	2025-02-04 17:01:45.000000000 -0500
++++ hdf5-hdf5_1.14.6/src/H5Z.c	2025-06-17 12:49:12.506473010 -0400
+@@ -119,6 +119,14 @@
+             HGOTO_ERROR(H5E_PLINE, H5E_CANTINIT, FAIL, "unable to register szip filter");
+     }
+ #endif /* H5_HAVE_FILTER_SZIP */
++#ifdef H5_HAVE_FILTER_ZSTD
++    if (H5Z_register(H5Z_ZSTD) < 0)
++        HGOTO_ERROR(H5E_PLINE, H5E_CANTINIT, FAIL, "unable to register zstd filter");
++#endif /* H5_HAVE_FILTER_ZSTD */
++#ifdef H5_HAVE_FILTER_LZ4
++    if (H5Z_register(H5Z_LZ4) < 0)
++        HGOTO_ERROR(H5E_PLINE, H5E_CANTINIT, FAIL, "unable to register lz4 filter");
++#endif /* H5_HAVE_FILTER_LZ4 */
+ 
+ done:
+     FUNC_LEAVE_NOAPI(ret_value)
+diff -ruN hdf5-hdf5_1.14.6.orig/src/H5Zlz4.c hdf5-hdf5_1.14.6/src/H5Zlz4.c
+--- hdf5-hdf5_1.14.6.orig/src/H5Zlz4.c	1969-12-31 19:00:00.000000000 -0500
++++ hdf5-hdf5_1.14.6/src/H5Zlz4.c	2025-06-17 12:49:12.506473010 -0400
+@@ -0,0 +1,187 @@
++/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
++ * Copyright by The HDF Group.                                               *
++ * All rights reserved.                                                      *
++ *                                                                           *
++ * This file is part of HDF5.  The full HDF5 copyright notice, including     *
++ * terms governing use, modification, and redistribution, is contained in    *
++ * the COPYING file, which can be found at the root of the source code       *
++ * distribution tree, or in https://www.hdfgroup.org/licenses.               *
++ * If you do not have access to either file, you may request a copy from     *
++ * help@hdfgroup.org.                                                        *
++ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
++
++#include "H5Zmodule.h" /* This source code file is part of the H5Z module */
++
++#include "H5private.h"   /* Generic Functions			*/
++#include "H5Eprivate.h"  /* Error handling		  	*/
++#include "H5MMprivate.h" /* Memory management			*/
++#include "H5Zpkg.h"      /* Data filters				*/
++
++#ifdef H5_HAVE_FILTER_LZ4
++
++#ifdef H5_HAVE_LZ4_H
++#include "lz4.h"
++#endif
++
++#include <sys/types.h>
++#include <stdlib.h>
++#include <string.h>
++#include <assert.h>
++#include <stdio.h>
++#if defined(_WIN32)
++#include <Winsock2.h>
++#endif
++#include "H5PLextern.h"
++
++#define htonll(x) ( ( (uint64_t)(htonl( (uint32_t)((x << 32) >> 32)))<< 32) | htonl( ((uint32_t)(x >> 32)) ))
++#define ntohll(x) htonll(x)
++
++#define htobe16t(x) htons(x)
++#define htobe32t(x) htonl(x)
++#define htobe64t(x) htonll(x)
++#define be16toht(x) ntohs(x)
++#define be32toht(x) ntohl(x)
++#define be64toht(x) ntohll(x)
++
++
++#define DEFAULT_ACCEL 1; /* 1GB. LZ4 needs blocks < 1.9GB. */
++
++/* Local function prototypes */
++static size_t H5Z__filter_lz4(unsigned flags, size_t cd_nelmts, const unsigned cd_values[], size_t nbytes,
++                              size_t *buf_size, void **buf);
++
++/* This message derives from H5Z */
++H5Z_class2_t H5Z_LZ4[1] = {{
++    H5Z_CLASS_T_VERS,    /* H5Z_class_t version */
++    H5Z_FILTER_LZ4,      /* Filter id number		*/
++    1,                   /* encoder_present flag (set to true) */
++    1,                   /* decoder_present flag (set to true) */
++    "lz4",               /* Filter name for debugging	*/
++    NULL,                /* The "can apply" callback     */
++    NULL,                /* The "set local" callback     */
++    H5Z__filter_lz4,     /* The actual filter function	*/
++}};
++
++/*-------------------------------------------------------------------------
++ * Function:	H5Z__filter_cwlz4
++ *
++ * Purpose:	Implement an I/O filter around the 'lz4' algorithm in
++ *              liblz4
++ *
++ * Return:	Success: Size of buffer filtered
++ *		Failure: 0
++ *
++ *-------------------------------------------------------------------------
++ */
++static size_t
++H5Z__filter_lz4(unsigned flags, size_t cd_nelmts, const unsigned cd_values[], size_t nbytes,
++                size_t *buf_size, void **buf)
++{
++    void  *outBuf = NULL; /* Pointer to new buffer */
++    size_t ret_value = 0; /* Return value */
++
++    /* Sanity check */
++    assert(*buf_size > 0);
++    assert(buf);
++    assert(*buf);
++
++    if (flags & H5Z_FLAG_REVERSE)
++    {
++        uint32_t *i32Buf;
++        uint32_t compressedSize;
++        char *roBuf;   /* pointer to current write position */
++        uint64_t decompSize;
++        const char* rpos = (char*)*buf; /* pointer to current read position */
++        const uint64_t * const i64Buf = (uint64_t *) rpos;
++        const uint64_t origSize = (uint64_t)(be64toht(*i64Buf));/* is saved in be format */
++        rpos += 8; /* advance the pointer */
++
++        i32Buf = (uint32_t*)rpos;
++        compressedSize = (uint32_t)(be32toht(*i32Buf));/// is saved in be format
++
++        rpos += 4;
++
++        if (NULL==(outBuf = malloc(origSize)))
++        {
++            printf("cannot malloc\n");
++            goto error;
++        }
++        roBuf = (char*)outBuf;   /* pointer to current write position */
++        decompSize     = 0;
++        /// start with the first block ///
++        uint32_t nDest = LZ4_decompress_fast(rpos, roBuf, origSize);
++		if(nDest != compressedSize)
++		{
++			 printf("decompressed size not the same: %d, != %d\n", nDest, compressedSize);
++			 goto error;
++		}
++        free(*buf);
++        *buf = outBuf;
++        outBuf = NULL;
++        ret_value = (size_t)origSize;  // should always work, as orig_size cannot be > 2GB (sizeof(size_t) < 4GB)
++    }
++    else /* forward filter */
++    {
++    	size_t acceleration;
++        size_t outSize; /* size of the output buffer. Header size (12 bytes) is included */
++        uint64_t *i64Buf;
++        uint32_t *i32Buf;
++        char *rpos;      /* pointer to current read position */
++        char *roBuf;    /* pointer to current write position */
++
++        if (nbytes > INT32_MAX)
++        {
++            /* can only compress chunks up to 2GB */
++            goto error;
++        }
++
++        if(cd_nelmts > 0 && cd_values[0] > 0)
++        {
++        	acceleration = cd_values[0];
++        }
++        else
++        {
++        	acceleration = DEFAULT_ACCEL;
++        }
++        uint32_t nMaxSize = LZ4_COMPRESSBOUND(nbytes);
++
++        if (NULL==(outBuf = malloc(nMaxSize)))
++        {
++            goto error;
++        }
++
++        rpos  = (char*)*buf;      /* pointer to current read position */
++        roBuf = (char*)outBuf;    /* pointer to current write position */
++        /* header */
++        i64Buf = (uint64_t *) (roBuf);
++        i64Buf[0] = htobe64t((uint64_t)nbytes); /* Store decompressed size in be format */
++        roBuf += 8;
++
++        uint32_t nCompressed = LZ4_compress_fast(rpos, roBuf+4, nbytes, nMaxSize, acceleration);
++        if(!nCompressed)
++        	goto error;
++        outSize =  nCompressed + 12; /* size of the output buffer. Header size (12 bytes) is included */
++        i32Buf =  (uint32_t *) (roBuf);
++        i32Buf[0] = htobe32t((uint32_t)nCompressed); /* Store the compressed size in be format */
++
++        free(*buf);
++        *buf = outBuf;
++        *buf_size = outSize;
++        outBuf = NULL;
++        ret_value = outSize;
++
++    }
++
++    if(outBuf)
++        free(outBuf);
++    return ret_value;
++
++
++    error:
++    if(outBuf)
++        free(outBuf);
++    outBuf = NULL;
++    return 0;
++
++}
++#endif /* H5_HAVE_FILTER_LZ4 */
+diff -ruN hdf5-hdf5_1.14.6.orig/src/H5Zpkg.h hdf5-hdf5_1.14.6/src/H5Zpkg.h
+--- hdf5-hdf5_1.14.6.orig/src/H5Zpkg.h	2025-02-04 17:01:45.000000000 -0500
++++ hdf5-hdf5_1.14.6/src/H5Zpkg.h	2025-06-17 12:49:12.507473019 -0400
+@@ -50,6 +50,16 @@
+ H5_DLLVAR H5Z_class2_t H5Z_SZIP[1];
+ #endif /* H5_HAVE_FILTER_SZIP */
+ 
++/* zstd filter */
++#ifdef H5_HAVE_FILTER_ZSTD
++H5_DLLVAR H5Z_class2_t H5Z_ZSTD[1];
++#endif /* H5_HAVE_FILTER_ZSTD */
++
++/* lz4 filter */
++#ifdef H5_HAVE_FILTER_LZ4
++H5_DLLVAR H5Z_class2_t H5Z_LZ4[1];
++#endif /* H5_HAVE_FILTER_LZ4 */
++
+ /* Package internal routines */
+ H5_DLL herr_t H5Z__unregister(H5Z_filter_t filter_id);
+ 
+diff -ruN hdf5-hdf5_1.14.6.orig/src/H5Zpublic.h hdf5-hdf5_1.14.6/src/H5Zpublic.h
+--- hdf5-hdf5_1.14.6.orig/src/H5Zpublic.h	2025-02-04 17:01:45.000000000 -0500
++++ hdf5-hdf5_1.14.6/src/H5Zpublic.h	2025-06-17 12:49:12.507473019 -0400
+@@ -80,6 +80,14 @@
+  */
+ #define H5Z_FILTER_SZIP 4
+ /**
++ * zstd compression
++ */
++#define H5Z_FILTER_ZSTD 32015
++/**
++ * lz4 compression
++ */
++#define H5Z_FILTER_LZ4 32004
++/**
+  * nbit compression
+  */
+ #define H5Z_FILTER_NBIT 5
+diff -ruN hdf5-hdf5_1.14.6.orig/src/H5Zzstd.c hdf5-hdf5_1.14.6/src/H5Zzstd.c
+--- hdf5-hdf5_1.14.6.orig/src/H5Zzstd.c	1969-12-31 19:00:00.000000000 -0500
++++ hdf5-hdf5_1.14.6/src/H5Zzstd.c	2025-06-17 12:49:12.507473019 -0400
+@@ -0,0 +1,113 @@
++/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
++ * Copyright by The HDF Group.                                               *
++ * All rights reserved.                                                      *
++ *                                                                           *
++ * This file is part of HDF5.  The full HDF5 copyright notice, including     *
++ * terms governing use, modification, and redistribution, is contained in    *
++ * the COPYING file, which can be found at the root of the source code       *
++ * distribution tree, or in https://www.hdfgroup.org/licenses.               *
++ * If you do not have access to either file, you may request a copy from     *
++ * help@hdfgroup.org.                                                        *
++ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
++
++#include "H5Zmodule.h" /* This source code file is part of the H5Z module */
++
++#include "H5private.h"   /* Generic Functions			*/
++#include "H5Eprivate.h"  /* Error handling		  	*/
++#include "H5MMprivate.h" /* Memory management			*/
++#include "H5Zpkg.h"      /* Data filters				*/
++
++#ifdef H5_HAVE_FILTER_ZSTD
++
++#ifdef H5_HAVE_ZSTD_H
++#include "zstd.h"
++#endif
++
++/* Local function prototypes */
++static size_t H5Z__filter_zstd(unsigned flags, size_t cd_nelmts, const unsigned cd_values[], size_t nbytes,
++                               size_t *buf_size, void **buf);
++
++/* This message derives from H5Z */
++H5Z_class2_t H5Z_ZSTD[1] = {{
++    H5Z_CLASS_T_VERS,    /* H5Z_class_t version */
++    H5Z_FILTER_ZSTD,     /* Filter id number		*/
++    1,                   /* encoder_present flag (set to true) */
++    1,                   /* decoder_present flag (set to true) */
++    "zstd",              /* Filter name for debugging	*/
++    NULL,                /* The "can apply" callback     */
++    NULL,                /* The "set local" callback     */
++    H5Z__filter_zstd,    /* The actual filter function	*/
++}};
++
++/*-------------------------------------------------------------------------
++ * Function:	H5Z__filter_zstd
++ *
++ * Purpose:	Implement an I/O filter around the 'zstd' algorithm in
++ *              libzstd
++ *
++ * Return:	Success: Size of buffer filtered
++ *		Failure: 0
++ *
++ *-------------------------------------------------------------------------
++ */
++static size_t
++H5Z__filter_zstd(unsigned flags, size_t cd_nelmts, const unsigned cd_values[], size_t nbytes,
++                 size_t *buf_size, void **buf)
++{
++    size_t buf_size_out = 0;
++    void  *outbuf = NULL; /* Pointer to new buffer */
++    size_t ret_value = 0; /* Return value */
++
++    FUNC_ENTER_PACKAGE
++
++    /* Sanity check */
++    assert(*buf_size > 0);
++    assert(buf);
++    assert(*buf);
++
++    /* Check arguments */
++    if (cd_nelmts != 1 || cd_values[0] > 19)
++        HGOTO_ERROR(H5E_ARGS, H5E_BADVALUE, 0, "invalid zstd aggression level");
++
++    if (flags & H5Z_FLAG_REVERSE) {
++        /* Input; uncompress */
++        unsigned long long decompSize = ZSTD_getFrameContentSize(*buf, nbytes);
++        if (NULL == (outbuf = malloc(decompSize)))
++            goto done;
++
++        buf_size_out = ZSTD_decompress(outbuf, decompSize, *buf, nbytes);
++
++    } else {
++        /* We're compressing */
++        /*
++         * cd_values[0] = aggression
++         */
++        int aggression;
++        if (cd_nelmts > 0)
++            aggression = (int)cd_values[0];
++        else
++            aggression = ZSTD_CLEVEL_DEFAULT;
++        if (aggression < 1 /*ZSTD_minCLevel()*/)
++            aggression = 1 /*ZSTD_minCLevel()*/;
++        else if (aggression > ZSTD_maxCLevel())
++            aggression = ZSTD_maxCLevel();
++
++        size_t compSize = ZSTD_compressBound(nbytes);
++        if (NULL == (outbuf = malloc(compSize)))
++            goto done;
++
++        buf_size_out = ZSTD_compress(outbuf, compSize, *buf, nbytes, aggression);
++
++    }
++
++    free(*buf);
++    *buf = outbuf;
++    *buf_size = buf_size_out;
++    return buf_size_out;
++
++done:
++    if (outbuf)
++        H5MM_xfree(outbuf);
++    FUNC_LEAVE_NOAPI(ret_value)
++}
++#endif /* H5_HAVE_FILTER_ZSTD */
