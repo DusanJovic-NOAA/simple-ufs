@@ -1,0 +1,13 @@
+diff -ruN pnetcdf-1.14.0.orig/src/utils/ncmpidump/ncmpidump.h pnetcdf-1.14.0/src/utils/ncmpidump/ncmpidump.h
+--- pnetcdf-1.14.0.orig/src/utils/ncmpidump/ncmpidump.h	2018-06-16 14:07:29.000000000 -0400
++++ pnetcdf-1.14.0/src/utils/ncmpidump/ncmpidump.h	2025-06-22 11:46:18.927864413 -0400
+@@ -16,7 +16,9 @@
+ #define  Printf  (void) printf
+ 
+ typedef int boolean;
++#if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 202311L
+ enum {false=0, true=1};
++#endif
+ 
+ struct ncdim {			/* dimension */
+     char name[NC_MAX_NAME];

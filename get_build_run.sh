@@ -1,4 +1,6 @@
 #!/bin/bash
+[[ -e /etc/bashrc ]] && source /etc/bashrc
+
 set -eu
 
 MYDIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")

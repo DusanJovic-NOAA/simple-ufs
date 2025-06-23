@@ -59,7 +59,7 @@ download_and_check_md5sum 84acd096ab4f3300c20db862eecdf7c7  https://github.com/U
 download_and_check_md5sum 8c200fcf7d9d2761037dfd2dabe2216b  https://github.com/Unidata/netcdf-fortran/archive/v4.6.1.tar.gz                           netcdf_fortran.tar.gz
 
 download_and_check_md5sum a3c39f002a7a81882b65b7eb8c9a7d91  https://github.com/CESM-Development/CMake_Fortran_utils/archive/refs/tags/CMake_Fortran_utils_150308.tar.gz cmake_fortran_utils.tar.gz
-download_and_check_md5sum 31b94d39462b1f1f2293f735c9819bf2  https://parallel-netcdf.github.io/Release/pnetcdf-1.13.0.tar.gz                           pnetcdf.tar.gz
+download_and_check_md5sum 503dd95ef96439a7189a4cd25759a252  https://parallel-netcdf.github.io/Release/pnetcdf-1.14.0.tar.gz                           pnetcdf.tar.gz
 download_and_check_md5sum 7f3504dfb5aab846f4a9018dda7bb8ad  https://github.com/PARALLELIO/genf90/archive/refs/tags/genf90_200608.tar.gz               genf90.tar.gz
 download_and_check_md5sum b16e88125fbb7e5bd06e8f392f91ae26  https://github.com/NCAR/ParallelIO/archive/refs/tags/pio2_6_2.tar.gz                      pio.tar.gz
 
@@ -74,7 +74,7 @@ download_and_check_md5sum e19101124af68ee6a8f9c8051aa3aa6a  https://github.com/N
 download_and_check_md5sum fc50806fb552b114a9f18d57ad3747a7  https://github.com/NOAA-EMC/NCEPLIBS-sp/archive/refs/tags/v2.5.0.tar.gz                   sp.tar.gz
 download_and_check_md5sum ab162725c04899b8295bd74ed184debf  https://github.com/NOAA-EMC/NCEPLIBS-w3emc/archive/refs/tags/v2.12.0.tar.gz               w3emc.tar.gz
 
-download_and_check_md5sum 95a040cdfb0426448f1aab38b0c7601b  https://github.com/JCSDA/crtm/archive/refs/tags/v2.4.0_emc.3.tar.gz                       crtm.tar.gz
+download_and_check_md5sum bca66a095f903c0aca728d4cdbe76ae5  https://github.com/JCSDA/CRTMv3/archive/refs/tags/v3.1.2.tar.gz                           crtm.tar.gz
 
 download_and_check_md5sum 7a7b4138e0c7e68abcd64e56002cbfcf  https://github.com/ecmwf/ecbuild/archive/refs/tags/3.7.2.tar.gz                           ecbuild.tar.gz
 download_and_check_md5sum 3921ba13701606cc0e55dc046508f66d  https://github.com/GEOS-ESM/ESMA_cmake/archive/refs/tags/v3.55.0.tar.gz                   esma_cmake.tar.gz

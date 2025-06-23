@@ -259,9 +259,10 @@ ExternalProject_Add(cmake_fortran_utils
 ##
 ExternalProject_Add(pnetcdf
     URL ${downloads_prefix}/pnetcdf.tar.gz
-    URL_HASH MD5=31b94d39462b1f1f2293f735c9819bf2
+    URL_HASH MD5=503dd95ef96439a7189a4cd25759a252
     BUILD_IN_SOURCE ON
     PATCH_COMMAND bash -l -c "sed -i -e 's/1.16.5/1.16.2/g' configure.ac"
+          COMMAND patch -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/patches/pnetcdf-1.14.0_gcc15.patch
           COMMAND autoreconf -i
     CONFIGURE_COMMAND env "MPICC=${MPI_C_COMPILER}"
                       env "MPICXX=${MPI_CXX_COMPILER}"
@@ -389,6 +390,7 @@ ExternalProject_Add(esmf
     URL_HASH MD5=6308b2a13d151475a4f2ecb3eb6cbebe
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND ""
+    PATCH_COMMAND bash -l -c "sed -i '1 i\#include <cstdint>' src/prologue/yaml-cpp/src/emitterutils.cpp"
     BUILD_COMMAND   env ${esmf_env} make -j 8
     INSTALL_COMMAND env ${esmf_env} make -j 1 install
     LOG_DOWNLOAD ON
@@ -516,12 +518,13 @@ ExternalProject_Add_StepDependencies(w3emc build bacio)
 ##
 ExternalProject_Add(crtm
     URL ${downloads_prefix}/crtm.tar.gz
-    URL_HASH MD5=95a040cdfb0426448f1aab38b0c7601b
-    PATCH_COMMAND bash -l -c "sed -i -e 's/-fbacktrace/-fbacktrace -ffree-line-length-none/g' libsrc/CMakeLists.txt"
+    URL_HASH MD5=bca66a095f903c0aca728d4cdbe76ae5
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/crtm
                -DCMAKE_INSTALL_LIBDIR=lib
                -DNetCDF_ROOT=${install_prefix}/netcdf
+               -DBUILD_SHARED_LIBS=OFF
+               -DBUILD_TESTING=OFF
     LOG_DOWNLOAD ON
     LOG_PATCH ON
     LOG_CONFIGURE ON

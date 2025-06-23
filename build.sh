@@ -186,7 +186,7 @@ export ip_ROOT=${ufslibs_install_prefix}/ip
 export sp_ROOT=${ufslibs_install_prefix}/sp
 export w3emc_ROOT=${ufslibs_install_prefix}/w3emc
 
-export crtm_ROOT=${ufslibs_install_prefix}/crtm
+export crtm_ROOT=${ufslibs_install_prefix}/crtm/cmake/crtm
 
 export GFTL_ROOT=${ufslibs_install_prefix}/gftl
 export GFTL_SHARED_ROOT=${ufslibs_install_prefix}/gftl_shared
@@ -231,6 +231,7 @@ SECONDS=0
 printf '%-.30s ' "Building model ..........................."
 (
   cd src/model
+  sed -i -e 's/crtm::crtm/crtm/g' FV3/upp/sorc/ncep_post.fd/CMakeLists.txt
 
   rm -rf build
   mkdir build
