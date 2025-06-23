@@ -18,7 +18,7 @@ jobs:
 
     - name: Update brew packages
       run: |
-        brew install autoconf automake bison coreutils open-mpi
+        brew install autoconf automake bison coreutils libtool open-mpi
         echo "/opt/homebrew/opt/bison/bin" >> $GITHUB_PATH
         echo "/opt/homebrew/opt/coreutils/libexec/gnubin" >> $GITHUB_PATH
 

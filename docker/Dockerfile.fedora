@@ -1,24 +1,27 @@
-FROM fedora:39
+FROM fedora:42
 
 RUN dnf -y install 'dnf-command(config-manager)'
 RUN dnf -y update
-RUN dnf clean all
 RUN dnf -y install \
            bison \
            cmake \
            diffutils \
+           expat-devel \
+           file \
            flex \
+           gawk \
            g++ \
            gfortran \
            git \
-           git-lfs \
            libjpeg-devel \
            libtool \
            m4 \
            make \
            openmpi-devel \
+           texinfo \
            patch \
            which
+RUN dnf clean all
 
 ENV PATH=/usr/lib64/openmpi/bin:$PATH
 

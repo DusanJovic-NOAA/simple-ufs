@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
@@ -13,7 +13,6 @@ RUN apt-get update && \
             gcc \
             gfortran \
             git \
-            git-lfs \
             libexpat1-dev \
             libjpeg-dev \
             libopenmpi-dev \
@@ -26,9 +25,7 @@ RUN apt-get update && \
 
 RUN useradd -ms /bin/bash builder
 WORKDIR /home/builder
-RUN mkdir /home/builder/simple-ufs
-COPY . /home/builder/simple-ufs
-RUN chown -R builder:builder /home/builder/simple-ufs
+COPY --chown=builder:builder . /home/builder/simple-ufs
 WORKDIR /home/builder/simple-ufs
 
 USER builder

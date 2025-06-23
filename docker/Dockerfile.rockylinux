@@ -14,7 +14,6 @@ RUN dnf -y install \
            g++ \
            gfortran \
            git \
-           git-lfs \
            libjpeg-devel \
            libtool \
            m4 \
@@ -23,6 +22,7 @@ RUN dnf -y install \
            texinfo \
            patch \
            which
+RUN dnf clean all
 
 ENV PATH=/usr/lib64/openmpi/bin:/opt/rh/autoconf271/bin:$PATH
 

@@ -1,17 +1,18 @@
-FROM intel/oneapi-hpckit
+FROM intel/oneapi-hpckit:2025.1.3-0-devel-ubuntu24.04
 
 RUN apt-get update -y && \
 apt-get install -y --no-install-recommends -o=Dpkg::Use-Pty=0 \
-git \
-gnupg \
-libjpeg-dev \
-m4 \
-pkg-config \
-python3 \
-vim \
---
-
-RUN curl -f -s -S -R -L https://github.com/Kitware/CMake/releases/download/v3.22.2/cmake-3.22.2-Linux-x86_64.tar.gz | tar -zx -C /usr --strip-components=1
+            autoconf \
+            automake \
+            bison \
+            flex \
+            libexpat1-dev \
+            libjpeg-dev \
+            libtool \
+            make \
+            texinfo \
+            pkg-config \
+            vim
 
 RUN useradd -ms /bin/bash builder
 WORKDIR /home/builder
@@ -20,20 +21,6 @@ WORKDIR /home/builder/simple-ufs
 
 USER builder
 
-RUN ./get.sh
-
-RUN ./build.sh gnu -ufslibs
-
-RUN ./build.sh gnu -preproc -model -post && rm -rf libs/ufslibs/build
-
-RUN cd run && \
- sed -i -e 's/NHOURS_FCST=24/NHOURS_FCST=3/g' configuration.sh && \
- sed -i -e 's/NFHMAX_HF=12/NFHMAX_HF=3/g' configuration.sh && \
- ./fetch_fix_data.sh && \
- ./fetch_input_data.sh && \
- ./run.sh && \
- ls -l preproc_run && \
- ls -l model_run && \
- ls -l post_run
+RUN ./get_build_run.sh intel_llvm
 
 CMD ["/bin/bash"]

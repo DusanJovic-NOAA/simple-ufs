@@ -6,11 +6,13 @@ set -eu
 MYDIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 readonly MYDIR
 
+readonly COMPILER=${1:-gnu}
+
 cd "${MYDIR}"
 
 ./get.sh
 
-./build.sh gnu -all
+./build.sh ${COMPILER} -all
 
 cd run
 
