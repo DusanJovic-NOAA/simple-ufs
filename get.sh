@@ -10,6 +10,6 @@ readonly MYDIR
 )
 
 (
-    cd "${MYDIR}"/libs/ufslibs
+    cd "${MYDIR}"/libs
     ./fetch.sh
 )

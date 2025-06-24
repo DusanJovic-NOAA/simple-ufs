@@ -1,10 +1,9 @@
-FROM rockylinux:9
+FROM rockylinux/rockylinux:10.0
 
 RUN dnf -y install 'dnf-command(config-manager)'
 RUN dnf config-manager --set-enabled crb
 RUN dnf -y update
 RUN dnf -y install \
-           autoconf271 \
            bison \
            cmake \
            diffutils \
@@ -18,13 +17,14 @@ RUN dnf -y install \
            libtool \
            m4 \
            make \
-           openmpi-devel \
+           mpich-devel \
            texinfo \
            patch \
            which
 RUN dnf clean all
 
-ENV PATH=/usr/lib64/openmpi/bin:/opt/rh/autoconf271/bin:$PATH
+ENV PATH=/usr/lib64/mpich/bin:$PATH
+ENV LD_LIBRARY_PATH=/usr/lib64/mpich/lib:$LD_LIBRARY_PATH
 
 RUN useradd -ms /bin/bash builder
 WORKDIR /home/builder

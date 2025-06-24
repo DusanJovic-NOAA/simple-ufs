@@ -132,7 +132,7 @@ if [ $BUILD_UFSLIBS == yes ]; then
 SECONDS=0
 printf '%-.30s ' "Building ufslibs .........................."
 (
-  cd libs/ufslibs
+  cd libs
 
   rm -rf build install
   mkdir build
@@ -168,7 +168,7 @@ export CC=${MPICC}
 export CXX=${MPICXX}
 export FC=${MPIF90}
 
-ufslibs_install_prefix=${MYDIR}/libs/ufslibs/install
+ufslibs_install_prefix=${MYDIR}/libs/install
 
 export ZLIB_ROOT=${ufslibs_install_prefix}/zlib
 export PNG_ROOT=${ufslibs_install_prefix}/libpng
