@@ -12,42 +12,43 @@ usage() {
 export COMPILER=$1
 shift
 
-if [[ $COMPILER == gnu ]]; then
-  export CC=${CC:-gcc}
-  export CXX=${CXX:-g++}
-  export FC=${FC:-gfortran}
-  export MPICC=${MPICC:-mpicc}
-  export MPICXX=${MPICXX:-mpicxx}
-  export MPIF90=${MPIF90:-mpif90}
-elif [[ $COMPILER == intel ]]; then
-  if [[ $(command -v ftn) ]]; then
-    # Special case on Cray systems
+if [[ $(command -v ftn) && -n ${CRAYPE_VERSION} ]]; then
+    # Special case on Cray systems with Cray PE
+    echo "Cray with Cray PE ${CRAYPE_VERSION}"
     export CC=${CC:-cc}
     export CXX=${CXX:-CC}
     export FC=${FC:-ftn}
-    export MPICC=${MPICC:-cc}
-    export MPICXX=${MPICXX:-CC}
-    export MPIF90=${MPIF90:-ftn}
-  else
+    export MPICC=${CC}
+    export MPICXX=${CXX}
+    export MPIF90=${FC}
+else
+  if [[ $COMPILER == gnu ]]; then
+    export CC=${CC:-gcc}
+    export CXX=${CXX:-g++}
+    export FC=${FC:-gfortran}
+    export MPICC=${MPICC:-mpicc}
+    export MPICXX=${MPICXX:-mpicxx}
+    export MPIF90=${MPIF90:-mpif90}
+  elif [[ $COMPILER == intel ]]; then
     export CC=${CC:-icc}
     export CXX=${CXX:-icpc}
     export FC=${FC:-ifort}
     export MPICC=${MPICC:-mpiicc}
     export MPICXX=${MPICXX:-mpiicpc}
     export MPIF90=${MPIF90:-mpiifort}
+  elif [[ $COMPILER == intel_llvm ]]; then
+    export CC=${CC:-icx}
+    export CXX=${CXX:-icpx}
+    export FC=${FC:-ifx}
+    export MPICC=${MPICC:-mpiicx}
+    export MPICXX=${MPICXX:-mpiicpx}
+    export MPIF90=${MPIF90:-mpiifx}
+    export I_MPI_CC=${CC}
+    export I_MPI_CXX=${CXX}
+    export I_MPI_F90=${FC}
+  else
+    usage
   fi
-elif [[ $COMPILER == intel_llvm ]]; then
-  export CC=${CC:-icx}
-  export CXX=${CXX:-icpx}
-  export FC=${FC:-ifx}
-  export MPICC=${MPICC:-mpiicx}
-  export MPICXX=${MPICXX:-mpiicpx}
-  export MPIF90=${MPIF90:-mpiifx}
-  export I_MPI_CC=${CC}
-  export I_MPI_CXX=${CXX}
-  export I_MPI_F90=${FC}
-else
-  usage
 fi
 
 BUILD_UFSLIBS=no
@@ -153,7 +154,7 @@ printf 'done [%4d sec]\n' ${SECONDS}
     echo "--- log_ufslibs"
     cat log_ufslibs
     echo "---------------------------------------------------------------"
-    for f in libs/ufslibs/build/*-prefix/src/*-stamp/*-*-*.log; do
+    for f in libs/build/*-prefix/src/*-stamp/*-*-err.log; do
       echo
       echo "---------------------------------------------------------------"
       echo "--- $f"

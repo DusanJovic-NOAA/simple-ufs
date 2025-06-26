@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.24)
 
 if(POLICY CMP0135)
   # DOWNLOAD_EXTRACT_TIMESTAMP
@@ -17,8 +17,13 @@ message(STATUS "MPI find_package Found MPI_Fortran_COMPILER = ${MPI_Fortran_COMP
 
 # Overwrite found mpi compiler wrappers
 message(STATUS "CMAKE_VERSION = ${CMAKE_VERSION}")
+set(CRAYPE_DETECTED FALSE)
+if(DEFINED ENV{CRAYPE_VERSION})
+  message("Cray PE detected")
+  set(CRAYPE_DETECTED TRUE)
+endif()
 # FindMPI.cmake in CMake < 3.29.0 does not find IntelLLVM mpi wrappers. Set them explicitly
-if (CMAKE_VERSION VERSION_LESS "3.29.0" AND ${CMAKE_Fortran_COMPILER_ID} MATCHES "IntelLLVM")
+if (CMAKE_VERSION VERSION_LESS "3.29.0" AND ${CMAKE_Fortran_COMPILER_ID} MATCHES "IntelLLVM" AND NOT CRAYPE_DETECTED)
 set(MPI_C_COMPILER mpiicx)
 set(MPI_CXX_COMPILER mpiicpx)
 set(MPI_Fortran_COMPILER mpiifx)
@@ -117,7 +122,8 @@ ExternalProject_Add(libpng
     URL ${downloads_prefix}/libpng.tar.gz
     URL_HASH MD5=564aa9f6c678dbb016b07ecfae8b7245
     BUILD_IN_SOURCE ON
-    CONFIGURE_COMMAND env "CPPFLAGS=-I${install_prefix}/zlib/include"
+    CONFIGURE_COMMAND env "CC=${CMAKE_C_COMPILER}"
+                      env "CPPFLAGS=-I${install_prefix}/zlib/include"
                       env "LDFLAGS=-L${install_prefix}/zlib/lib"
                       ./configure --prefix=${install_prefix}/libpng
                                   --libdir=${install_prefix}/libpng/lib
@@ -259,10 +265,9 @@ ExternalProject_Add(cmake_fortran_utils
 ##
 ExternalProject_Add(pnetcdf
     URL ${downloads_prefix}/pnetcdf.tar.gz
-    URL_HASH MD5=503dd95ef96439a7189a4cd25759a252
+    URL_HASH MD5=bb4552a07eadb6c5a54677f96282489d
     BUILD_IN_SOURCE ON
-    PATCH_COMMAND bash -l -c "sed -i -e 's/1.16.5/1.16.2/g' configure.ac"
-          COMMAND patch -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/patches/pnetcdf-1.14.0_gcc15.patch
+    PATCH_COMMAND patch -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/patches/pnetcdf-1.14.0_gcc15.patch
           COMMAND autoreconf -i
     CONFIGURE_COMMAND env "MPICC=${MPI_C_COMPILER}"
                       env "MPICXX=${MPI_CXX_COMPILER}"
@@ -332,7 +337,7 @@ list(APPEND esmf_env ESMF_DIR=${CMAKE_CURRENT_BINARY_DIR}/esmf-prefix/src/esmf)
 if(${CMAKE_C_COMPILER_ID} STREQUAL "Intel")
   list(APPEND esmf_env ESMF_COMPILER=intel)
 elseif(${CMAKE_C_COMPILER_ID} MATCHES "IntelLLVM")
-  list(APPEND esmf_env ESMF_COMPILER=intel ESMF_C=mpiicx ESMF_CXX=mpiicpx ESMF_F90=mpiifx I_MPI_F90=ifx ESMF_CXXLINKLIBS=-lstdc++)
+  list(APPEND esmf_env ESMF_COMPILER=intel ESMF_C=${MPI_C_COMPILER} ESMF_CXX=${MPI_CXX_COMPILER} ESMF_F90=${MPI_Fortran_COMPILER} ESMF_CXXLINKLIBS=-lstdc++)
 elseif(${CMAKE_C_COMPILER_ID} MATCHES "^(GNU|Clang|AppleClang)$")
   list(APPEND esmf_env ESMF_COMPILER=gfortran)
 else()
@@ -601,6 +606,7 @@ ExternalProject_Add(udunits
     BUILD_IN_SOURCE ON
     PATCH_COMMAND autoreconf -i
     CONFIGURE_COMMAND env "CFLAGS=-fPIC"
+                      env "MAKEINFO=true"
                       ./configure --prefix=${install_prefix}/udunits
                                   --libdir=${install_prefix}/udunits/lib
                                   --disable-shared
