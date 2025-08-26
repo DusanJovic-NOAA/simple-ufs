@@ -41,15 +41,14 @@ elif [[ $gtype == regional* ]]; then
 
   HALO=$(( halo + 1 ))
 
-  NCDUMP=${sufs}/libs/ufslibs/install/netcdf/bin/ncdump
+  NCDUMP=${sufs}/libs/install/netcdf/bin/ncdump
   reg_res=$( $NCDUMP -h ${GRID_OROG_DATA}/C*/C*_grid.tile7.nc | grep -o ":RES_equiv = [0-9]\+" | grep -o "[0-9]" )
   reg_res=${reg_res//$'\n'/}
   cp -r ${GRID_OROG_DATA}/C${reg_res}/* .
-  rm -f  C${reg_res}_grid.tile7.halo0.nc
-  rm -f  C${reg_res}_oro_data.tile7.halo${halo}.nc
   ln -sf C${reg_res}_mosaic.nc                      grid_spec.nc
   ln -sf C${reg_res}_grid.tile7.halo${halo}.nc      C${reg_res}_grid.tile7.nc
   ln -sf C${reg_res}_grid.tile7.halo${HALO}.nc      grid.tile7.halo${HALO}.nc
+  ln -sf C${reg_res}_grid.tile7.halo0.nc            grid.tile7.halo0.nc
   ln -sf C${reg_res}_oro_data.tile7.halo0.nc        oro_data.nc
   ln -sf C${reg_res}_oro_data.tile7.halo${HALO}.nc  oro_data.tile7.halo${HALO}.nc
 
@@ -74,9 +73,6 @@ elif [[ $gtype == regional* ]]; then
 fi
 
 cd ${MODEL_RUN_DIR}
-
-NPX=$(( $res + 1 ))
-NPY=$(( $res + 1 ))
 
 case $res in
   48)

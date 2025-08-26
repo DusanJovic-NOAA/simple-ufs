@@ -28,20 +28,39 @@ GRID_OROG_DATA=$(pwd)/grid_orog
 INPUT_TYPE=grib2
 
 if [[ $gtype == uniform ]]; then
+  NPX=$(( $res + 1 ))
+  NPY=$(( $res + 1 ))
   LAYOUT_1=1
   LAYOUT_2=1
   WRITE_GROUPS=1
   WRITE_TASKS_PER_GROUP=2
   NTASKS=$(( 6*LAYOUT_1*LAYOUT_2 + WRITE_GROUPS*WRITE_TASKS_PER_GROUP ))
 elif [[ $gtype == regional* ]]; then
-  target_lon=15 # Europe
-  target_lat=45 # Europe
-  # target_lon=135 # Australia
-  # target_lat=-25 # Australia
-  idim=210 # for esg
-  jdim=192 # for esg
-  delx=0.1 # for esg
-  dely=0.1 # for esg
+  # target_lon=15     # Europe
+  # target_lat=45     # Europe
+  # target_lon=135    # Australia
+  # target_lat=-25    # Australia
+  target_lon=-140.4 # Arctic
+  target_lat=82.2   # Arctic
+  if [[ $gtype == regional_esg ]]; then
+    pazi=30.5         # Arctic
+    idim=155
+    jdim=125
+    delx=0.25
+    dely=0.25
+    NPX=156
+    NPY=126
+  elif [[ $gtype == regional_gfdl ]]; then
+    stretch_fac=1.5
+    refine_ratio=3
+    istart_nest=27
+    jstart_nest=37
+    iend_nest=166
+    jend_nest=164
+    NPX=211
+    NPY=193
+  fi
+
   LAYOUT_1=6
   LAYOUT_2=6
   WRITE_GROUPS=1

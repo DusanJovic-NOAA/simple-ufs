@@ -2,7 +2,7 @@
   blocksize = 32
   chksum_debug = .false.
   dycore_only = .false.
-  ccpp_suite = 'FV3_GFS_2017_gfdlmp_regional'
+  ccpp_suite = 'FV3_GFS_v16'
 /
 
 &diag_manager_nml
@@ -28,8 +28,8 @@
 &fv_core_nml
   layout =  ${LAYOUT_1}, ${LAYOUT_2}
   io_layout = 1,1
-  npx = 211
-  npy = 193
+  npx = ${NPX}
+  npy = ${NPY}
   ntiles = 1
   npz = 64
 ! grid_type = -1
@@ -64,9 +64,9 @@
   d2_bg = 0.
   nord = 2
   dddmp = 0.1
-  d4_bg = 0.08
-  vtdm4 = 0.0
-  delt_max = 0.008
+  d4_bg = 0.12
+  vtdm4 = 0.02
+  delt_max = 0.002
   ke_bg = 0.
   do_vort_damp = .true.
   external_ic = .true.
@@ -76,11 +76,11 @@
   mountain = .false.
   ncep_ic = .false.
   d_con = 1.
-  hord_mt = 6
-  hord_vt = -5
-  hord_tm = -5
+  hord_mt = 5
+  hord_vt = 5
+  hord_tm = 5
   hord_dp = -5
-  hord_tr = -8
+  hord_tr = 8
   adjust_dry_mass = .false.
   consv_te = 0.
   do_sat_adj = .true.
@@ -91,6 +91,7 @@
   warm_start = .false.
   no_dycore = .false.
   z_tracer = .true.
+  agrid_vel_rst = .true.
   read_increment = .false.
   res_latlon_dynamics = "fv3_increment.nc"
   do_schmidt = .true.
@@ -116,9 +117,9 @@
 
 &gfs_physics_nml
   fhzero       = 6
+  h2o_phys     = .true.
   ldiag3d      = .false.
   fhcyc        = 24
-  nst_anl      = .true.
   use_ufo      = .true.
   pre_rad      = .false.
   imp_physics  = 11
@@ -127,7 +128,9 @@
   fhlwr        = 3600.
   ialb         = 1
   iems         = 1
-  iaer         = 111
+  iaer         = 5111
+  icliq_sw     = 2
+  iovr         = 3
   ico2         = 2
   isubc_sw     = 2
   isubc_lw     = 2
@@ -136,23 +139,27 @@
   swhtr        = .true.
   cnvgwd       = .true.
   shal_cnv     = .true.
-  cal_pre      = .true.
+  cal_pre      = .false.
   redrag       = .true.
   dspheat      = .true.
-  hybedmf      = .true.
-  satmedmf     = .false.
+  hybedmf      = .false.
+  satmedmf     = .true.
+  isatmedmf    = 1
   lheatstrg    = .false.
-  random_clds  = .true.
+  lseaspray    = .false.
+  random_clds  = .false.
   trans_trac   = .true.
   cnvcld       = .true.
   imfshalcnv   = 2
   imfdeepcnv   = 2
-  cdmbgwd      = 2.0, 0.25
+  ras          = .false.
+  cdmbgwd      = 0.14,1.8,1.0,1.0
   prslrd0      = 0.
   ivegsrc      = 1
   isot         = 1
+  lsoil        = 4
   lsm          = 1
-  iopt_dveg    = 2
+  iopt_dveg    = 1
   iopt_crs     = 1
   iopt_btr     = 1
   iopt_run     = 1
@@ -163,34 +170,40 @@
   iopt_alb     = 2
   iopt_snf     = 4
   iopt_tbot    = 2
-  iopt_stc       = 1
-  debug          = .false.
-  oz_phys        = .false.
-  oz_phys_2015   = .true.
-  h2o_phys       = .true.
-  nstf_name      = 1,1,1,0,5
-  cplflx         = .false.
-  cplwav         = .false.
-  iau_delthrs    = 6
-  iaufhrs        = 30
-  iau_inc_files  = ''
-  do_sppt        = .false.
-  do_shum        = .false.
-  do_skeb        = .false.
-  lndp_type      = 0
-  n_var_lndp     = 0
+  iopt_stc     = 1
+  debug        = .false.
+  oz_phys      = .F.
+  oz_phys_2015 = .true.
+  nstf_name    = 2,1,0,0,0
+  nst_anl      = .true.
+  psautco      = 0.0008,0.0005
+  prautco      = 0.00015,0.00015
+  lgfdlmprad   = .true.
+  cplchm       = .false.
+  cplwav       = .false.
+  cplwav2atm   = .false.
+  effr_in      = .true.
+  ldiag_ugwp   = .false.
+  do_ugwp      = .false.
+  do_tofd      = .true.
+  do_sppt      = .false.
+  do_shum      = .false.
+  do_skeb      = .false.
+  lndp_type    = 0
+  n_var_lndp   = 0
+  fscav_aero   = '*:0.0'
 /
 
 &gfdl_cloud_microphysics_nml
-  sedi_transport = .false.
+  sedi_transport = .true.
   do_sedi_heat = .false.
   rad_snow = .true.
   rad_graupel = .true.
   rad_rain = .true.
-  const_vi = .false.
-  const_vs = .false.
-  const_vg = .false.
-  const_vr = .false.
+  const_vi = .F.
+  const_vs = .F.
+  const_vg = .F.
+  const_vr = .F.
   vi_max = 1.
   vs_max = 2.
   vg_max = 12.
@@ -199,8 +212,8 @@
   prog_ccn = .false.
   do_qa = .true.
   fast_sat_adj = .true.
-  tau_l2v = 180.
-  tau_v2l = 90.
+  tau_l2v = 225.
+  tau_v2l = 150.
   tau_g2v = 900.
   rthresh = 10.e-6  ! This is a key parameter for cloud water
   dw_land  = 0.16
@@ -227,7 +240,8 @@
   de_ice = .false.
   fix_negative = .true.
   icloud_f = 1
-  mp_time = 90.
+  mp_time = 150.
+  reiflag = 2
 /
 
 &interpolator_nml
@@ -295,6 +309,6 @@
   knob_ugwp_dokdis  = 1
   knob_ugwp_ndx4lh  = 1
   knob_ugwp_version = 0
-  launch_level      = 25
+  launch_level      = 54
 /
 

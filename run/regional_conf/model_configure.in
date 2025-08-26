@@ -8,7 +8,6 @@ nhours_fcst:             ${NHOURS_FCST}
 fhrot:                   0
 
 dt_atmos:                225
-calendar:                'julian'
 restart_interval:        12 -1
 output_1st_tstep_rst:    .false.
 
@@ -44,19 +43,32 @@ output_file:             'netcdf'
 # dlat:                      0.2
 
 # Europe
- output_grid:             'lambert_conformal'
- cen_lon:                  15.5   # central longitude
- cen_lat:                  45.0   # central latitude
- stdlat1:                  30.0
- stdlat2:                  60.0
- nx:                       561     # Number of points along x-axis.
- ny:                       521     # Number of points along y-axis.
- lon1:                    -10.00   # longitude of first grid point (lower-left) (in degrees)
- lat1:                     17.0    # latitude of first grid point (lower-left) (in degrees)
- dx:                       10000.0 # x-direction grid length
- dy:                       10000.0 # y-direction grid length
+# output_grid:             'cubed_sphere_grid'
+# output_grid:             'lambert_conformal'
+# cen_lon:                  15.5   # central longitude
+# cen_lat:                  45.0   # central latitude
+# stdlat1:                  30.0
+# stdlat2:                  60.0
+# nx:                       561     # Number of points along x-axis.
+# ny:                       521     # Number of points along y-axis.
+# lon1:                    -10.00   # longitude of first grid point (lower-left) (in degrees)
+# lat1:                     17.0    # latitude of first grid point (lower-left) (in degrees)
+# dx:                       10000.0 # x-direction grid length
+# dy:                       10000.0 # y-direction grid length
 
- # Australia
+# Arctic
+# output_grid:             'cubed_sphere_grid'
+ output_grid:             'rotated_latlon'
+ cen_lon:                  -110.0 # central longitude
+ cen_lat:                  83.0   # central latitude
+ lon1:                    -50.0   # longitude of lower-left point in rotated coordinate system (in degrees)
+ lat1:                    -33.0   # latitude of lower-left . . . .
+ lon2:                     43.0   # longitude of upper-right . . . .
+ lat2:                     33.0   # latitude of upper-right . . . .
+ dlon:                      0.25
+ dlat:                      0.25
+
+# Australia
 # output_grid:             'lambert_conformal'
 # cen_lon:                  135.0   # central longitude
 # cen_lat:                 -25.0    # central latitude
