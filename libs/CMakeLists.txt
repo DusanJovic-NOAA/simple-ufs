@@ -32,6 +32,21 @@ message(STATUS "Overwritten for IntelLLVM MPI_CXX_COMPILER = ${MPI_CXX_COMPILER}
 message(STATUS "Overwritten for IntelLLVM MPI_Fortran_COMPILER = ${MPI_Fortran_COMPILER}")
 endif()
 
+if(DEFINED ENV{MPICC})
+set(MPI_C_COMPILER $ENV{MPICC})
+message(STATUS "Overwritten MPI_C_COMPILER = ${MPI_C_COMPILER}")
+endif()
+
+if(DEFINED ENV{MPICXX})
+set(MPI_CXX_COMPILER $ENV{MPICXX})
+message(STATUS "Overwritten MPI_CXX_COMPILER = ${MPI_CXX_COMPILER}")
+endif()
+
+if(DEFINED ENV{MPIFC})
+set(MPI_Fortran_COMPILER $ENV{MPIFC})
+message(STATUS "Overwritten MPI_Fortran_COMPILER = ${MPI_Fortran_COMPILER}")
+endif()
+
 set(install_prefix ${CMAKE_INSTALL_PREFIX})
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
