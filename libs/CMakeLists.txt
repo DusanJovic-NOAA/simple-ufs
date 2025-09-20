@@ -61,6 +61,7 @@ ExternalProject_Add(zstd
     URL_HASH MD5=63251602329a106220e0a5ad26ba656f
     SOURCE_SUBDIR build/cmake
     CMAKE_ARGS -LH
+               -DCMAKE_POLICY_VERSION_MINIMUM=3.5
                -DCMAKE_INSTALL_PREFIX=${install_prefix}/zstd
                -DCMAKE_INSTALL_LIBDIR=lib
                -DZSTD_MULTITHREAD_SUPPORT=OFF
@@ -115,7 +116,8 @@ ExternalProject_Add(jasper
     URL ${downloads_prefix}/jasper.tar.gz
     URL_HASH MD5=2c6017d275146f8792fa448227a7c373
     BUILD_IN_SOURCE OFF
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/jasper
+    CMAKE_ARGS -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+               -DCMAKE_INSTALL_PREFIX=${install_prefix}/jasper
                -DCMAKE_INSTALL_LIBDIR=lib
                -DCMAKE_BUILD_TYPE=Release
                -DJAS_ENABLE_DOC=OFF
@@ -303,7 +305,8 @@ ExternalProject_Add(pio
     URL ${downloads_prefix}/pio.tar.gz
     URL_HASH MD5=b16e88125fbb7e5bd06e8f392f91ae26
     BUILD_IN_SOURCE OFF
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/pio
+    CMAKE_ARGS -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+               -DCMAKE_INSTALL_PREFIX=${install_prefix}/pio
                -DCMAKE_C_COMPILER=${MPI_C_COMPILER}
                -DCMAKE_Fortran_COMPILER=${MPI_Fortran_COMPILER}
                -DPIO_ENABLE_TIMING=OFF
@@ -560,7 +563,8 @@ ExternalProject_Add(ecbuild
     URL ${downloads_prefix}/ecbuild.tar.gz
     URL_HASH MD5=7a7b4138e0c7e68abcd64e56002cbfcf
     BUILD_IN_SOURCE OFF
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/ecbuild
+    CMAKE_ARGS -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+               -DCMAKE_INSTALL_PREFIX=${install_prefix}/ecbuild
                -DCMAKE_INSTALL_LIBDIR=lib
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
