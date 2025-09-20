@@ -289,6 +289,7 @@ ExternalProject_Add(pnetcdf
     CONFIGURE_COMMAND env "MPICC=${MPI_C_COMPILER}"
                       env "MPICXX=${MPI_CXX_COMPILER}"
                       env "MPIF90=${MPI_Fortran_COMPILER}"
+                      env "MPIF77=${MPI_Fortran_COMPILER}"
                       ./configure --prefix=${install_prefix}/pnetcdf
                                   --disable-shared
                                   --enable-static
