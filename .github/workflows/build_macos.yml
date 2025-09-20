@@ -3,9 +3,9 @@ name: Build macOS
 on: [push, pull_request]
 
 env:
-  CC: gcc-13
-  CXX: g++-13
-  FC: gfortran-13
+  CC: gcc-15
+  CXX: g++-15
+  FC: gfortran-15
 
 jobs:
   build:
