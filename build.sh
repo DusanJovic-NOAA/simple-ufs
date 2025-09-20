@@ -232,7 +232,7 @@ SECONDS=0
 printf '%-.30s ' "Building model ..........................."
 (
   cd src/model
-  sed -i -e 's/crtm::crtm/crtm/g' FV3/upp/sorc/ncep_post.fd/CMakeLists.txt
+  sed -i -e 's/crtm::crtm/crtm/g' UFSATM/upp/sorc/ncep_post.fd/CMakeLists.txt
 
   rm -rf build
   mkdir build
@@ -282,7 +282,7 @@ if [ $BUILD_POST == yes ]; then
 SECONDS=0
 printf '%-.30s ' "Building post ..........................."
 (
-  cd src/model/FV3/upp
+  cd src/model/UFSATM/upp
 
   rm -rf build
   mkdir build

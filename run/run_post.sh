@@ -38,7 +38,7 @@ else
   conf_dir='global_conf'
 fi
 
-cp ${sufs}/src/model/FV3/upp/parm/params_grib2_tbl_new .
+cp ${sufs}/src/model/UFSATM/upp/parm/params_grib2_tbl_new .
 
 for FHR in "${FHRS[@]}"; do
 
