@@ -410,10 +410,9 @@ list(APPEND esmf_env ESMF_INSTALL_BINDIR=bin)
 
 ExternalProject_Add(esmf
     URL ${downloads_prefix}/esmf.tar.gz
-    URL_HASH MD5=6308b2a13d151475a4f2ecb3eb6cbebe
+    URL_HASH MD5=e4fa27d720c323db600a42b65d4f20f7
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND ""
-    PATCH_COMMAND bash -l -c "sed -i '1 i\#include <cstdint>' src/prologue/yaml-cpp/src/emitterutils.cpp"
     BUILD_COMMAND   env ${esmf_env} make -j 8
     INSTALL_COMMAND env ${esmf_env} make -j 1 install
     LOG_DOWNLOAD ON

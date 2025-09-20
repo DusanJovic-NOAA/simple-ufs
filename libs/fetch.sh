@@ -64,7 +64,7 @@ download_and_check_md5sum 7f3504dfb5aab846f4a9018dda7bb8ad  https://github.com/P
 download_and_check_md5sum b16e88125fbb7e5bd06e8f392f91ae26  https://github.com/NCAR/ParallelIO/archive/refs/tags/pio2_6_2.tar.gz                      pio.tar.gz
 
 download_and_check_md5sum 82a26e62825d4439b58535d9b29da7a4  https://github.com/NOAA-GFDL/FMS/archive/refs/tags/2024.01.tar.gz                         fms.tar.gz
-download_and_check_md5sum 6308b2a13d151475a4f2ecb3eb6cbebe  https://github.com/esmf-org/esmf/archive/refs/tags/v8.8.0.tar.gz                          esmf.tar.gz
+download_and_check_md5sum e4fa27d720c323db600a42b65d4f20f7  https://github.com/esmf-org/esmf/archive/refs/tags/v8.9.0.tar.gz                          esmf.tar.gz
 
 
 download_and_check_md5sum 95bab417fbaf7c1f6f99316052189bea  https://github.com/NOAA-EMC/NCEPLIBS-bacio/archive/refs/tags/v2.4.1.tar.gz                bacio.tar.gz
