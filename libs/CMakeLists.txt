@@ -287,11 +287,11 @@ ExternalProject_Add(pnetcdf
     PATCH_COMMAND patch -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/patches/pnetcdf-1.14.0_gcc15.patch
           COMMAND autoreconf -i
     CONFIGURE_COMMAND env "MPICC=${MPI_C_COMPILER}"
-                      env "MPICXX=${MPI_CXX_COMPILER}"
-                      env "MPIF90=${MPI_Fortran_COMPILER}"
-                      env "MPIF77=${MPI_Fortran_COMPILER}"
                       ./configure --prefix=${install_prefix}/pnetcdf
+                                  --libdir=${install_prefix}/pnetcdf/lib
                                   --disable-shared
+                                  --disable-fortran
+                                  --disable-cxx
                                   --enable-static
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
