@@ -3,7 +3,7 @@ set -u
 set -o pipefail
 
 usage() {
-  echo "Usage: $0 gnu | intel | intel_llvm [-all] [-ufslibs] [-preproc] [-model] [-post]"
+  echo "Usage: $0 gnu | intel | intel_llvm | llvm [-all] [-ufslibs] [-preproc] [-model] [-post]"
   exit 1
 }
 
@@ -26,6 +26,16 @@ else
     export CC=${CC:-gcc}
     export CXX=${CXX:-g++}
     export FC=${FC:-gfortran}
+    export MPICC=${MPICC:-mpicc}
+    export MPICXX=${MPICXX:-mpicxx}
+    export MPIF90=${MPIF90:-mpif90}
+  elif [[ $COMPILER == llvm ]]; then
+    export CC=${CC:-clang}
+    export CXX=${CXX:-clang++}
+    export FC=${FC:-flang}
+    export MPICH_CC=${CC}
+    export MPICH_CXX=${CXX}
+    export MPICH_FC=${FC}
     export MPICC=${MPICC:-mpicc}
     export MPICXX=${MPICXX:-mpicxx}
     export MPIF90=${MPIF90:-mpif90}
@@ -180,6 +190,7 @@ export ESMFMKFILE=${ufslibs_install_prefix}/esmf/lib/esmf.mk
 export ESMF_ROOT=${ufslibs_install_prefix}/esmf
 export FMS_ROOT=${ufslibs_install_prefix}/fms
 
+export LAPACK_ROOT=${ufslibs_install_prefix}/lapack
 export bacio_ROOT=${ufslibs_install_prefix}/bacio
 export g2_ROOT=${ufslibs_install_prefix}/g2
 export g2tmpl_ROOT=${ufslibs_install_prefix}/g2tmpl

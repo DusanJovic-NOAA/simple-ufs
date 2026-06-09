@@ -137,7 +137,7 @@ ExternalProject_Add(jasper
 ##
 ExternalProject_Add(libpng
     URL ${downloads_prefix}/libpng.tar.gz
-    URL_HASH MD5=564aa9f6c678dbb016b07ecfae8b7245
+    URL_HASH MD5=92972b05f1895240139f749ff24afce8
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND env "CC=${CMAKE_C_COMPILER}"
                       env "CPPFLAGS=-I${install_prefix}/zlib/include"
@@ -185,7 +185,7 @@ ExternalProject_Add(hdf5
     LOG_BUILD ON
     LOG_INSTALL ON
 )
-ExternalProject_Add_StepDependencies(hdf5 build zlib zstd)
+ExternalProject_Add_StepDependencies(hdf5 build zlib zstd lz4)
 
 
 ##
@@ -341,6 +341,7 @@ ExternalProject_Add(fms
                -D64BIT=ON
                -DOPENMP=ON
                -DUSE_DEPRECATED_IO=ON
+               -DENABLE_QUAD_PRECISION=OFF
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
     LOG_BUILD ON
@@ -357,8 +358,10 @@ if(${CMAKE_C_COMPILER_ID} STREQUAL "Intel")
   list(APPEND esmf_env ESMF_COMPILER=intel)
 elseif(${CMAKE_C_COMPILER_ID} MATCHES "IntelLLVM")
   list(APPEND esmf_env ESMF_COMPILER=intel ESMF_C=${MPI_C_COMPILER} ESMF_CXX=${MPI_CXX_COMPILER} ESMF_F90=${MPI_Fortran_COMPILER} ESMF_CXXLINKLIBS=-lstdc++)
-elseif(${CMAKE_C_COMPILER_ID} MATCHES "^(GNU|Clang|AppleClang)$")
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL "GNU")
   list(APPEND esmf_env ESMF_COMPILER=gfortran)
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL "LLVMFlang")
+  list(APPEND esmf_env ESMF_COMPILER=llvm ESMF_C=${MPI_C_COMPILER} ESMF_CXX=${MPI_CXX_COMPILER} ESMF_F90=${MPI_Fortran_COMPILER} ESMF_CXXLINKLIBS=-lstdc++)
 else()
   message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
 endif()
@@ -375,6 +378,8 @@ if(NOT ESMF_COMM)
   elseif(MPI_C_LIBRARY_VERSION_STRING MATCHES ".*HPE MPT.*" AND MPI_C_VERSION_MAJOR MATCHES "3")
     set(ESMF_COMM "mpt")
   elseif(MPI_C_LIBRARY_VERSION_STRING MATCHES ".*Intel.*" AND MPI_C_VERSION_MAJOR MATCHES "3")
+    set(ESMF_COMM "intelmpi")
+  elseif(MPI_C_LIBRARY_VERSION_STRING MATCHES ".*Intel.*" AND MPI_C_VERSION_MAJOR MATCHES "4")
     set(ESMF_COMM "intelmpi")
   elseif(MPI_C_LIBRARY_VERSION_STRING MATCHES ".*MVAPICH2.*" AND MPI_C_VERSION_MAJOR MATCHES "3")
     set(ESMF_COMM "mvapich2")
@@ -428,6 +433,22 @@ ExternalProject_Add_Step(esmf post_install
     LOG ON
 )
 ExternalProject_Add_StepDependencies(esmf build netcdf_fortran pio)
+
+##
+## lapack
+##
+ExternalProject_Add(lapack
+    URL ${downloads_prefix}/lapack.tar.gz
+    URL_HASH MD5=2f069617e16b42f5eddcfee85768f204
+    BUILD_IN_SOURCE OFF
+    LIST_SEPARATOR ,
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/lapack
+               -DCMAKE_INSTALL_LIBDIR=lib
+    LOG_DOWNLOAD ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
+)
 
 ##
 ## bacio
@@ -504,31 +525,33 @@ ExternalProject_Add(sp
 ##
 ExternalProject_Add(ip
     URL ${downloads_prefix}/ip.tar.gz
-    URL_HASH MD5=e19101124af68ee6a8f9c8051aa3aa6a
+    URL_HASH MD5=de2cc3097a96d4f06a467a1ceff2fe26
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/ip
                -DCMAKE_INSTALL_LIBDIR=lib
+               -DLAPACK_ROOT=${install_prefix}/lapack
                -Dsp_ROOT=${install_prefix}/sp
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
     LOG_BUILD ON
     LOG_INSTALL ON
 )
-ExternalProject_Add_StepDependencies(ip build sp)
+ExternalProject_Add_StepDependencies(ip build lapack sp)
 
 ##
 ## w3emc
 ##
 ExternalProject_Add(w3emc
     URL ${downloads_prefix}/w3emc.tar.gz
-    URL_HASH MD5=ab162725c04899b8295bd74ed184debf
+    URL_HASH MD5=b67fc5206ba59eecf78ebf2f5de40584
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/w3emc
                -DCMAKE_INSTALL_LIBDIR=lib
                -Dbacio_ROOT=${install_prefix}/bacio
                -DBUILD_WITH_BUFR=OFF
+               -DBUILD_TESTING=OFF
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
     LOG_BUILD ON
@@ -604,7 +627,7 @@ ExternalProject_Add(gftl
 ##
 ExternalProject_Add(gftl_shared
     URL ${downloads_prefix}/gftl_shared.tar.gz
-    URL_HASH MD5=4f9413fa40962ea17b37706296c0263e
+    URL_HASH MD5=d3c0a851db23503131d1f05031faea50
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/gftl_shared
                -DCMAKE_PREFIX_PATH=${install_prefix}/gftl

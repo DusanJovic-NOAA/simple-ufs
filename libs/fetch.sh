@@ -52,7 +52,7 @@ download_and_check_md5sum 63251602329a106220e0a5ad26ba656f  https://github.com/f
 download_and_check_md5sum 9c7d356c5acaa563555490676ca14d23  https://github.com/madler/zlib/archive/refs/tags/v1.2.13.tar.gz                           zlib.tar.gz
 download_and_check_md5sum dead9f5f1966d9ae56e1e32761e4e675  https://github.com/lz4/lz4/releases/download/v1.10.0/lz4-1.10.0.tar.gz                    lz4.tar.gz
 download_and_check_md5sum 2c6017d275146f8792fa448227a7c373  https://github.com/jasper-software/jasper/archive/refs/tags/version-2.0.32.tar.gz         jasper.tar.gz
-download_and_check_md5sum 564aa9f6c678dbb016b07ecfae8b7245  https://github.com/glennrp/libpng/archive/refs/tags/v1.6.37.tar.gz                        libpng.tar.gz
+download_and_check_md5sum 92972b05f1895240139f749ff24afce8  https://github.com/pnggroup/libpng/archive/refs/tags/v1.6.58.tar.gz                       libpng.tar.gz
 
 download_and_check_md5sum 73b513b9c40a8ca2913fcb38570ecdbd  https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5_1.14.6.tar.gz                     hdf5.tar.gz
 download_and_check_md5sum 84acd096ab4f3300c20db862eecdf7c7  https://github.com/Unidata/netcdf-c/archive/v4.9.2.tar.gz                                 netcdf.tar.gz
@@ -66,20 +66,21 @@ download_and_check_md5sum b16e88125fbb7e5bd06e8f392f91ae26  https://github.com/N
 download_and_check_md5sum 82a26e62825d4439b58535d9b29da7a4  https://github.com/NOAA-GFDL/FMS/archive/refs/tags/2024.01.tar.gz                         fms.tar.gz
 download_and_check_md5sum e4fa27d720c323db600a42b65d4f20f7  https://github.com/esmf-org/esmf/archive/refs/tags/v8.9.0.tar.gz                          esmf.tar.gz
 
+download_and_check_md5sum 2f069617e16b42f5eddcfee85768f204  https://github.com/Reference-LAPACK/lapack/archive/refs/tags/v3.12.1.tar.gz               lapack.tar.gz
 
 download_and_check_md5sum 95bab417fbaf7c1f6f99316052189bea  https://github.com/NOAA-EMC/NCEPLIBS-bacio/archive/refs/tags/v2.4.1.tar.gz                bacio.tar.gz
 download_and_check_md5sum 9931fb0740e66d3bfc09fb6cb842532b  https://github.com/NOAA-EMC/NCEPLIBS-g2/archive/refs/tags/v3.5.1.tar.gz                   g2.tar.gz
 download_and_check_md5sum dd40b6ff5d08f76e71475c24a81ea2a3  https://github.com/NOAA-EMC/NCEPLIBS-g2tmpl/archive/refs/tags/v1.13.0.tar.gz              g2tmpl.tar.gz
-download_and_check_md5sum e19101124af68ee6a8f9c8051aa3aa6a  https://github.com/NOAA-EMC/NCEPLIBS-ip/archive/refs/tags/v4.3.0.tar.gz                   ip.tar.gz
+download_and_check_md5sum de2cc3097a96d4f06a467a1ceff2fe26  https://github.com/NOAA-EMC/NCEPLIBS-ip/archive/refs/tags/v5.4.1.tar.gz                   ip.tar.gz
 download_and_check_md5sum fc50806fb552b114a9f18d57ad3747a7  https://github.com/NOAA-EMC/NCEPLIBS-sp/archive/refs/tags/v2.5.0.tar.gz                   sp.tar.gz
-download_and_check_md5sum ab162725c04899b8295bd74ed184debf  https://github.com/NOAA-EMC/NCEPLIBS-w3emc/archive/refs/tags/v2.12.0.tar.gz               w3emc.tar.gz
+download_and_check_md5sum b67fc5206ba59eecf78ebf2f5de40584  https://github.com/NOAA-EMC/NCEPLIBS-w3emc/archive/refs/tags/v2.13.0.tar.gz               w3emc.tar.gz
 
 download_and_check_md5sum bca66a095f903c0aca728d4cdbe76ae5  https://github.com/JCSDA/CRTMv3/archive/refs/tags/v3.1.2.tar.gz                           crtm.tar.gz
 
 download_and_check_md5sum 7a7b4138e0c7e68abcd64e56002cbfcf  https://github.com/ecmwf/ecbuild/archive/refs/tags/3.7.2.tar.gz                           ecbuild.tar.gz
 download_and_check_md5sum 3921ba13701606cc0e55dc046508f66d  https://github.com/GEOS-ESM/ESMA_cmake/archive/refs/tags/v3.55.0.tar.gz                   esma_cmake.tar.gz
 download_and_check_md5sum 2f29353658bc8a40cdd453b7870c06ab  https://github.com/Goddard-Fortran-Ecosystem/gFTL/archive/refs/tags/v1.14.0.tar.gz        gftl.tar.gz
-download_and_check_md5sum 4f9413fa40962ea17b37706296c0263e  https://github.com/Goddard-Fortran-Ecosystem/gFTL-shared/archive/refs/tags/v1.9.0.tar.gz  gftl_shared.tar.gz
+download_and_check_md5sum d3c0a851db23503131d1f05031faea50  https://github.com/Goddard-Fortran-Ecosystem/gFTL-shared/archive/refs/tags/v1.10.0.tar.gz gftl_shared.tar.gz
 download_and_check_md5sum 58259d94f766c13b5b0cf1aed92ebbe3  https://downloads.unidata.ucar.edu/udunits/2.2.28/udunits-2.2.28.tar.gz                   udunits.tar.gz
 download_and_check_md5sum 2277e5fc3128cda361403c5f202bf9cd  https://github.com/GEOS-ESM/MAPL/archive/refs/tags/v2.53.4.tar.gz                         mapl.tar.gz
 
