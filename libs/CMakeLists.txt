@@ -58,7 +58,7 @@ set(downloads_prefix "${CMAKE_CURRENT_SOURCE_DIR}/downloads")
 ##
 ExternalProject_Add(zstd
     URL ${downloads_prefix}/zstd.tar.gz
-    URL_HASH MD5=63251602329a106220e0a5ad26ba656f
+    URL_HASH MD5=780fc1896922b1bc52a4e90980cdda48
     SOURCE_SUBDIR build/cmake
     CMAKE_ARGS -LH
                -DCMAKE_POLICY_VERSION_MINIMUM=3.5
@@ -114,7 +114,7 @@ ExternalProject_Add(lz4
 ##
 ExternalProject_Add(jasper
     URL ${downloads_prefix}/jasper.tar.gz
-    URL_HASH MD5=2c6017d275146f8792fa448227a7c373
+    URL_HASH MD5=aa4df693b90223fe6848b34cf1208624
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_POLICY_VERSION_MINIMUM=3.5
                -DCMAKE_INSTALL_PREFIX=${install_prefix}/jasper
@@ -331,16 +331,16 @@ ExternalProject_Add_StepDependencies(pio build netcdf_fortran pnetcdf genf90 cma
 ##
 ExternalProject_Add(fms
     URL ${downloads_prefix}/fms.tar.gz
-    URL_HASH MD5=82a26e62825d4439b58535d9b29da7a4
+    URL_HASH MD5=ec14342f320e36749c16a2f97e3e817e
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/fms
                -DCMAKE_PREFIX_PATH=${install_prefix}/netcdf
                -DCMAKE_Fortran_COMPILER=${MPI_Fortran_COMPILER}
                -DGFS_PHYS=ON
                -DCONSTANTS=GFS
+               -D32BIT=ON
                -D64BIT=ON
                -DOPENMP=ON
-               -DUSE_DEPRECATED_IO=ON
                -DENABLE_QUAD_PRECISION=OFF
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
@@ -358,7 +358,7 @@ if(${CMAKE_C_COMPILER_ID} STREQUAL "Intel")
   list(APPEND esmf_env ESMF_COMPILER=intel)
 elseif(${CMAKE_C_COMPILER_ID} MATCHES "IntelLLVM")
   list(APPEND esmf_env ESMF_COMPILER=intel ESMF_C=${MPI_C_COMPILER} ESMF_CXX=${MPI_CXX_COMPILER} ESMF_F90=${MPI_Fortran_COMPILER} ESMF_CXXLINKLIBS=-lstdc++)
-elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL "GNU")
+elseif(${CMAKE_C_COMPILER_ID} MATCHES "^(GNU|Clang|AppleClang)$")
   list(APPEND esmf_env ESMF_COMPILER=gfortran)
 elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL "LLVMFlang")
   list(APPEND esmf_env ESMF_COMPILER=llvm ESMF_C=${MPI_C_COMPILER} ESMF_CXX=${MPI_CXX_COMPILER} ESMF_F90=${MPI_Fortran_COMPILER} ESMF_CXXLINKLIBS=-lstdc++)
@@ -416,7 +416,7 @@ list(APPEND esmf_env ESMF_INSTALL_BINDIR=bin)
 
 ExternalProject_Add(esmf
     URL ${downloads_prefix}/esmf.tar.gz
-    URL_HASH MD5=e4fa27d720c323db600a42b65d4f20f7
+    URL_HASH MD5=6c2ce6beef832abb3b10a70c3920ac63
     BUILD_IN_SOURCE ON
     CONFIGURE_COMMAND ""
     BUILD_COMMAND   env ${esmf_env} make -j 8
@@ -434,6 +434,7 @@ ExternalProject_Add_Step(esmf post_install
 )
 ExternalProject_Add_StepDependencies(esmf build netcdf_fortran pio)
 
+
 ##
 ## lapack
 ##
@@ -450,12 +451,13 @@ ExternalProject_Add(lapack
     LOG_INSTALL ON
 )
 
+
 ##
 ## bacio
 ##
 ExternalProject_Add(bacio
     URL ${downloads_prefix}/bacio.tar.gz
-    URL_HASH MD5=95bab417fbaf7c1f6f99316052189bea
+    URL_HASH MD5=ff3634c531758a8c0a7edc7a88a4a4c2
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/bacio
@@ -493,7 +495,7 @@ ExternalProject_Add_StepDependencies(g2 build jasper libpng bacio)
 ##
 ExternalProject_Add(g2tmpl
     URL ${downloads_prefix}/g2tmpl.tar.gz
-    URL_HASH MD5=dd40b6ff5d08f76e71475c24a81ea2a3
+    URL_HASH MD5=3f7a795f17ed08df9a39c020c127cd77
     BUILD_IN_SOURCE OFF
     LIST_SEPARATOR ,
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/g2tmpl
@@ -531,13 +533,12 @@ ExternalProject_Add(ip
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/ip
                -DCMAKE_INSTALL_LIBDIR=lib
                -DLAPACK_ROOT=${install_prefix}/lapack
-               -Dsp_ROOT=${install_prefix}/sp
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
     LOG_BUILD ON
     LOG_INSTALL ON
 )
-ExternalProject_Add_StepDependencies(ip build lapack sp)
+ExternalProject_Add_StepDependencies(ip build lapack)
 
 ##
 ## w3emc
@@ -551,7 +552,6 @@ ExternalProject_Add(w3emc
                -DCMAKE_INSTALL_LIBDIR=lib
                -Dbacio_ROOT=${install_prefix}/bacio
                -DBUILD_WITH_BUFR=OFF
-               -DBUILD_TESTING=OFF
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
     LOG_BUILD ON
@@ -564,7 +564,7 @@ ExternalProject_Add_StepDependencies(w3emc build bacio)
 ##
 ExternalProject_Add(crtm
     URL ${downloads_prefix}/crtm.tar.gz
-    URL_HASH MD5=bca66a095f903c0aca728d4cdbe76ae5
+    URL_HASH MD5=b4bbe8e0704d4aea096bdf33b9e908af
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/crtm
                -DCMAKE_INSTALL_LIBDIR=lib
@@ -613,7 +613,7 @@ ExternalProject_Add(esma_cmake
 ##
 ExternalProject_Add(gftl
     URL ${downloads_prefix}/gftl.tar.gz
-    URL_HASH MD5=2f29353658bc8a40cdd453b7870c06ab
+    URL_HASH MD5=c504f3890c407cf9625066492232dc7d
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/gftl
     LOG_DOWNLOAD ON
@@ -627,7 +627,7 @@ ExternalProject_Add(gftl
 ##
 ExternalProject_Add(gftl_shared
     URL ${downloads_prefix}/gftl_shared.tar.gz
-    URL_HASH MD5=d3c0a851db23503131d1f05031faea50
+    URL_HASH MD5=a456ae1f6ea8abf525143a1c92f542e2
     BUILD_IN_SOURCE OFF
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/gftl_shared
                -DCMAKE_PREFIX_PATH=${install_prefix}/gftl
@@ -640,6 +640,25 @@ ExternalProject_Add_StepDependencies(gftl_shared build gftl)
 
 
 ##
+## expat
+##
+ExternalProject_Add(expat
+    URL ${downloads_prefix}/expat.tar.gz
+    URL_HASH MD5=5be251ee1d93f9e60a3cdcf0f740efa9
+    BUILD_IN_SOURCE OFF
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/expat
+               -DCMAKE_INSTALL_LIBDIR=lib
+               -DBUILD_SHARED_LIBS=OFF
+               -DEXPAT_BUILD_EXAMPLES=OFF
+               -DEXPAT_BUILD_TESTS=OFF
+               -DEXPAT_BUILD_TOOLS=OFF
+    LOG_DOWNLOAD ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
+)
+
+##
 ## udunits
 ##
 ExternalProject_Add(udunits
@@ -648,6 +667,9 @@ ExternalProject_Add(udunits
     BUILD_IN_SOURCE ON
     PATCH_COMMAND autoreconf -i
     CONFIGURE_COMMAND env "CFLAGS=-fPIC"
+                      env "CPPFLAGS=-I${install_prefix}/expat/include"
+                      env "LDFLAGS=-L${install_prefix}/expat/lib"
+                      env "LIBS=-lexpat"
                       env "MAKEINFO=true"
                       ./configure --prefix=${install_prefix}/udunits
                                   --libdir=${install_prefix}/udunits/lib
@@ -657,6 +679,7 @@ ExternalProject_Add(udunits
     LOG_BUILD ON
     LOG_INSTALL ON
 )
+ExternalProject_Add_StepDependencies(udunits build expat)
 
 
 ##
@@ -693,7 +716,7 @@ ExternalProject_Add(mapl
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${install_prefix}/mapl
                -DCMAKE_C_COMPILER=${MPI_C_COMPILER}
                -DCMAKE_Fortran_COMPILER=${MPI_Fortran_COMPILER}
-               -DCMAKE_PREFIX_PATH=${install_prefix}/ecbuild,${install_prefix}/udunits
+               -DCMAKE_PREFIX_PATH=${install_prefix}/ecbuild,${install_prefix}/expat,${install_prefix}/udunits
                -DCMAKE_MODULE_PATH=${install_prefix}/esma_cmake,${install_prefix}/ecbuild
                -DNetCDF_ROOT=${install_prefix}/netcdf
                -DNetCDF_Fortran_EXTRA_LIBRARIES=-L${install_prefix}/netcdf/lib,-lnetcdf,-L${install_prefix}/hdf5/lib,-lhdf5_hl,-lhdf5,-L${install_prefix}/zstd/lib,-lzstd,-L${install_prefix}/lz4/lib,-llz4,-L${install_prefix}/zlib/lib,-lz,-ldl,-lm
